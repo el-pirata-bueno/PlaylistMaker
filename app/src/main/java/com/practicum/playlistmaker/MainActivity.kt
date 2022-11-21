@@ -30,42 +30,5 @@ class MainActivity : AppCompatActivity() {
             val settingsIntent = Intent(this, SettingsActivity::class.java)
             startActivity(settingsIntent)
         }
-
-        /*val searchButtonListener: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                Toast.makeText(this@MainActivity, "Поиск в разработке", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        val mediaButtonListener: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                Toast.makeText(this@MainActivity, "Медиатека в разработке", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        val settingsButtonListener: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                Toast.makeText(this@MainActivity, "Настройки в разработке", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        searchButton.setOnClickListener(searchButtonListener)
-        mediaButton.setOnClickListener(mediaButtonListener)
-        settingsButton.setOnClickListener(settingsButtonListener)*/
-
-        /*searchButton.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Поиск в разработке", Toast.LENGTH_SHORT).show()
-        }
-
-        mediaButton.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Медиатека в разработке", Toast.LENGTH_SHORT).show()
-        }
-
-        settingsButton.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Настройки в разработке", Toast.LENGTH_SHORT).show()
-        }*/
-
-
     }
-
 }
