@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size">22sp</dimen>
+    <dimen name="small_text_size">16sp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="string_height">61dp</dimen>
+    <dimen name="corner_radius">16dp</dimen>
+    <dimen name="icon_padding">8dp</dimen>
+    <dimen name="standard_padding">16dp</dimen>
+    <dimen name="right_padding">12dp</dimen>
+    <dimen name="inset_button">8dp</dimen>
+    <dimen name="small_icon">16dp</dimen>
+    <dimen name="icon">24dp</dimen>
+</resources>
