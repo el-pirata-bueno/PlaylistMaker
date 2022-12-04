@@ -31,7 +31,7 @@
         <item name="android:textColor">?attr/colorOnSecondary</item>
     </style>
 
-    <style name="MainButtonStyle" parent="Widget.MaterialComponents.Button">
+    <style name="MainButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_weight">1</item>

@@ -24,14 +24,14 @@ class SettingsActivity : AppCompatActivity() {
 
         shareButton.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.setType("text/plain")
+            shareIntent.setType(getString(R.string.input_text_type))
             shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_button_link))
-            startActivity(Intent.createChooser(shareIntent, "Поделиться приложением"))
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
         }
 
         helpButton.setOnClickListener {
             val helpIntent = Intent(Intent.ACTION_SENDTO)
-            helpIntent.data = Uri.parse("mailto:")
+            helpIntent.data = Uri.parse(getString(R.string.mailto))
             helpIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.email_address)))
             helpIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
             helpIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.email_text))
