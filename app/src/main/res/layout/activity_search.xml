@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tracks_view"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/LayoutStyle">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
-        android:layout_marginBottom="24dp">
+        android:paddingStart="@dimen/standard_padding"
+        android:layout_marginBottom="8dp"
+        tools:ignore="RtlSymmetry">
 
         <Button
+            style="@style/ArrowBackStyle"
             android:id="@+id/arrow_back"
-            android:layout_width="@dimen/icon"
-            android:layout_height="@dimen/icon"
-            android:stateListAnimator="@null"
-            android:backgroundTint="?attr/colorSecondary"
-            android:inset="0dp"
-            android:layout_gravity="start|center_vertical"
             app:icon="@drawable/arrow_back"
             app:iconGravity="textStart"
             app:iconTint="?attr/colorOnSecondary"/>
@@ -28,24 +27,19 @@
 
     </FrameLayout>
 
-<FrameLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="61dp"
-        android:layout_marginTop="80dp"
-        android:orientation="horizontal">
+        android:layout_height="@dimen/input_height"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
+        android:layout_marginBottom="24dp">
 
         <EditText
+            style="@style/InputText"
             android:id="@+id/inputSearch"
-            android:layout_width="match_parent"
-            android:layout_height="61dp"
-            android:background="@drawable/border"
-            android:hint="@string/input_hint"
-            android:saveEnabled="false"
-            android:paddingEnd="44dp"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:textColorHint="@color/icon" />
+            android:drawableStart="@drawable/ic_search_16"
+            android:drawablePadding="8dp"
+            android:hint="@string/input_hint" />
 
         <ImageView
             android:id="@+id/clearIcon"
@@ -59,5 +53,11 @@
 
     </FrameLayout>
 
-</FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trackList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+</LinearLayout>
 

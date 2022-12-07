@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/string_height"
+    android:backgroundTint="?attr/colorSecondary"
+    android:layout_marginBottom="0dp"
+    app:cardElevation="0dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/artwork"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center|start"
+        android:layout_marginStart="13dp" />
+
+    <TextView
+        style="@style/PrimaryTrackStyle"
+        android:id="@+id/trackName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="66dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginTop="14dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="66dp"
+        android:layout_marginTop="34dp"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/SecondaryTrackStyle"
+            android:id="@+id/artistName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:src="@drawable/ic_dot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/SecondaryTrackStyle"
+            android:id="@+id/trackTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:src="@drawable/arrow_forward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|end"
+        android:layout_marginEnd="12dp" />
+
+</androidx.cardview.widget.CardView>

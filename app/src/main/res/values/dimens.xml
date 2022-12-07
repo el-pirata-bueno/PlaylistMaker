@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="text_size">22sp</dimen>
+    <dimen name="text_size_track_big">16sp</dimen>
+    <dimen name="text_size_track_small">11sp</dimen>
     <dimen name="small_text_size">16sp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
     <dimen name="string_height">61dp</dimen>
-    <dimen name="corner_radius">16dp</dimen>
+    <dimen name="corner_radius_big">16dp</dimen>
+    <dimen name="corner_radius_small">8dp</dimen>
+    <dimen name="input_height">36dp</dimen>
     <dimen name="icon_padding">8dp</dimen>
     <dimen name="standard_padding">16dp</dimen>
     <dimen name="right_padding">12dp</dimen>
