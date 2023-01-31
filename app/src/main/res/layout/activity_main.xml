@@ -13,19 +13,19 @@
         style="@style/MainButtonStyle"
         android:id="@+id/search"
         android:text="@string/search"
-        app:icon="@drawable/search" />
+        app:icon="@drawable/ic_search_24" />
 
     <Button
         style="@style/MainButtonStyle"
         android:id="@+id/media"
         android:text="@string/media"
-        app:icon="@drawable/media" />
+        app:icon="@drawable/ic_media" />
 
     <Button
         style="@style/MainButtonStyle"
         android:id="@+id/settings"
         android:text="@string/settings"
-        app:icon="@drawable/settings" />
+        app:icon="@drawable/ic_settings" />
 
 </LinearLayout>
 
