@@ -7,6 +7,7 @@
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:orientation">vertical</item>
         <item name="android:paddingStart">@dimen/standard_padding</item>
+        <item name="android:paddingTop">20dp</item>
         <item name="android:paddingEnd">15dp</item>
         <item name="android:paddingBottom">20dp</item>
     </style>
@@ -16,6 +17,7 @@
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">0dp</item>
         <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingTop">0dp</item>
     </style>
 
     <style name="MainToolbarTextStyle">
@@ -31,6 +33,14 @@
 
     <style name="ToolbarTextStyle" parent="MainToolbarTextStyle">
         <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="ErrorTextStyle">
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">@dimen/text_size_error</item>
     </style>
 
     <style name="PrimaryTrackStyle">
@@ -102,6 +112,25 @@
         <item name="cornerRadius">0dp</item>
         <item name="iconGravity">end</item>
         <item name="iconTint">@color/icon</item>
+    </style>
+
+    <style name="SimpleButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">91dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:backgroundTint">?attr/colorOnSecondary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:inset">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:textSize">@dimen/text_size_button</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="cornerRadius">54dp</item>
     </style>
 
     <style name="ArrowBackStyle">
