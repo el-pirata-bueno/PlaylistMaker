@@ -39,56 +39,28 @@ class SearchActivity : AppCompatActivity() {
 
     var userText: String = ""
     lateinit var placeholderMessage: TextView
-    lateinit var placeholderImageNotFound: ImageView
-    lateinit var placeholderImageSomethingWrong: ImageView
+    lateinit var placeholderImage: ImageView
     lateinit var updateButton: Button
     lateinit var searchText: String
+    lateinit var inputEditText: EditText
+    lateinit var clearButton: ImageView
+    lateinit var arrowBackButton: Button
+    lateinit var trackList: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        placeholderMessage = findViewById(R.id.placeholderMessage)
-        placeholderImageNotFound = findViewById(R.id.placeholderImageNotFound)
-        placeholderImageSomethingWrong = findViewById(R.id.placeholderImageSomethingWrong)
-        updateButton = findViewById(R.id.updateButton)
-
-        val inputEditText = findViewById<EditText>(R.id.inputSearch)
-        val clearButton = findViewById<ImageView>(R.id.clearIcon)
-        val arrowBackButton = findViewById<Button>(R.id.arrow_back)
-        val trackList = findViewById<RecyclerView>(R.id.trackList)
+        initVars()
 
         adapter.tracks = tracks
         trackList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         trackList.adapter = adapter
 
-        arrowBackButton.setOnClickListener {
-            val mainIntent = Intent(this, MainActivity::class.java)
-            startActivity(mainIntent)
-        }
-
-        clearButton.setOnClickListener {
-            inputEditText.setText("")
-            hideKeyboard(currentFocus?: View(this))
-            tracks.clear()
-            adapter.notifyDataSetChanged()
-            placeholderMessage.visibility = View.GONE
-            placeholderImageNotFound.visibility = View.GONE
-            placeholderImageSomethingWrong.visibility = View.GONE
-            updateButton.visibility = View.GONE
-        }
-
-        updateButton.setOnClickListener {
-            search(searchText)
-        }
-
-        inputEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchText = inputEditText.text.toString()
-                search(searchText)
-            }
-            false
-        }
+        arrowBackButtonListener()
+        clearButtonListener()
+        updateButtonListener()
+        inputEditTextListener()
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -143,8 +115,8 @@ class SearchActivity : AppCompatActivity() {
         if (text.isNotEmpty()) {
             if (text.equals(getString(R.string.nothing_found))) {
                 placeholderMessage.visibility = View.VISIBLE
-                placeholderImageNotFound.visibility = View.VISIBLE
-                placeholderImageSomethingWrong.visibility = View.GONE
+                placeholderImage.setImageResource(R.drawable.nothing_found)
+                placeholderImage.visibility = View.VISIBLE
                 updateButton.visibility = View.GONE
                 tracks.clear()
                 adapter.notifyDataSetChanged()
@@ -152,17 +124,16 @@ class SearchActivity : AppCompatActivity() {
             }
             if (text.equals(getString(R.string.something_went_wrong))) {
                 placeholderMessage.visibility = View.VISIBLE
-                placeholderImageSomethingWrong.visibility = View.VISIBLE
+                placeholderImage.setImageResource(R.drawable.something_went_wrong)
+                placeholderImage.visibility = View.VISIBLE
                 updateButton.visibility = View.VISIBLE
-                placeholderImageNotFound.visibility = View.GONE
                 tracks.clear()
                 adapter.notifyDataSetChanged()
                 placeholderMessage.text = text
             }
         } else {
             placeholderMessage.visibility = View.GONE
-            placeholderImageNotFound.visibility = View.GONE
-            placeholderImageSomethingWrong.visibility = View.GONE
+            placeholderImage.visibility = View.GONE
             updateButton.visibility = View.GONE
         }
     }
@@ -184,6 +155,51 @@ class SearchActivity : AppCompatActivity() {
             View.GONE
         } else {
             View.VISIBLE
+        }
+    }
+
+    private fun initVars() {
+        placeholderMessage = findViewById(R.id.placeholderMessage)
+        placeholderImage = findViewById(R.id.placeholderImage)
+        updateButton = findViewById(R.id.updateButton)
+        inputEditText = findViewById(R.id.inputSearch)
+        clearButton = findViewById(R.id.clearIcon)
+        arrowBackButton = findViewById(R.id.arrow_back)
+        trackList = findViewById(R.id.trackList)
+    }
+
+    private fun arrowBackButtonListener() {
+        arrowBackButton.setOnClickListener {
+            val mainIntent = Intent(this, MainActivity::class.java)
+            startActivity(mainIntent)
+        }
+    }
+
+    private fun clearButtonListener() {
+        clearButton.setOnClickListener {
+            inputEditText.setText("")
+            hideKeyboard(currentFocus ?: View(this))
+            tracks.clear()
+            adapter.notifyDataSetChanged()
+            placeholderMessage.visibility = View.GONE
+            placeholderImage.visibility = View.GONE
+            updateButton.visibility = View.GONE
+        }
+    }
+
+    private fun updateButtonListener() {
+        updateButton.setOnClickListener {
+            search(searchText)
+        }
+    }
+
+    private fun inputEditTextListener() {
+        inputEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                searchText = inputEditText.text.toString()
+                search(searchText)
+            }
+            false
         }
     }
 }

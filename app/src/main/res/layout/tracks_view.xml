@@ -67,6 +67,7 @@
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/string_height"
     android:backgroundTint="?attr/colorSecondary"
@@ -85,6 +86,7 @@
     <TextView
         style="@style/PrimaryTrackStyle"
         android:id="@+id/trackName"
+        tools:text="Track Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="66dp"
@@ -101,6 +103,7 @@
         <TextView
             style="@style/SecondaryTrackStyle"
             android:id="@+id/artistName"
+            tools:text="Artist Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -112,6 +115,7 @@
         <TextView
             style="@style/SecondaryTrackStyle"
             android:id="@+id/trackTime"
+            tools:text="Track Time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

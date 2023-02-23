@@ -4,10 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/MainLayoutStyle">
 
-    <TextView
-        style="@style/MainToolbarTextStyle"
-        android:text="@string/app_name" />
-
     <Button
         style="@style/MainButtonStyle"
         android:id="@+id/search"
