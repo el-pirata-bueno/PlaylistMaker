@@ -2,9 +2,10 @@ package com.practicum.playlistmaker
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,15 +13,22 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         val arrowBackButton = findViewById<Button>(R.id.arrow_back)
+        val shareButton = findViewById<Button>(R.id.share)
+        val helpButton = findViewById<Button>(R.id.help)
+        val agreementButton = findViewById<Button>(R.id.agreement)
+        val themeSwitcher = findViewById<SwitchCompat>(R.id.themeSwitcher)
+        val sharedPrefs = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
 
         arrowBackButton.setOnClickListener {
             val mainIntent = Intent(this, MainActivity::class.java)
             startActivity(mainIntent)
         }
 
-        val shareButton = findViewById<Button>(R.id.share)
-        val helpButton = findViewById<Button>(R.id.help)
-        val agreementButton = findViewById<Button>(R.id.agreement)
+        themeSwitcher.isChecked = sharedPrefs.getBoolean(APP_DARK_THEME, false)
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
 
         shareButton.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND)
@@ -44,5 +52,6 @@ class SettingsActivity : AppCompatActivity() {
             agreementIntent.data = Uri.parse(getString(R.string.agreement_link))
             startActivity(agreementIntent)
         }
+
     }
 }
