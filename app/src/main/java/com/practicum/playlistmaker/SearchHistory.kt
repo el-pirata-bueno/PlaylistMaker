@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.google.gson.Gson
 
 class SearchHistory (var sharedPreferences: SharedPreferences) {
@@ -14,16 +15,15 @@ class SearchHistory (var sharedPreferences: SharedPreferences) {
     // запись в историю
     fun write(tracks: ArrayList<Track>) {
         val json = Gson().toJson(tracks)
-        sharedPreferences.edit()
-            .putString(TRACKLIST_HISTORY, json)
-            .apply()
+        sharedPreferences.edit() {
+            putString(TRACKLIST_HISTORY, json)
+        }
     }
 
     // очистка истории
     fun delete() {
-        sharedPreferences.edit()
-            .clear()
-            .apply()
+        sharedPreferences.edit() {
+            clear()
+        }
     }
-
 }

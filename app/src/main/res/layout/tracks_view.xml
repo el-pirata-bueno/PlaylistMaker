@@ -96,35 +96,41 @@
         android:layout_marginEnd="44dp"
         android:layout_marginTop="14dp" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="66dp"
         android:layout_marginTop="34dp"
-        android:orientation="horizontal">
+        android:layout_marginEnd="44dp"
+        android:gravity="left">
 
         <TextView
             style="@style/SecondaryTrackStyle"
             android:id="@+id/artistName"
-            tools:text="Artist Name"
+            tools:text="Long Long Long Long  Long Long  Long Long Artist Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/dot"
             android:maxLines="1"
             android:ellipsize="end" />
 
         <ImageView
             android:src="@drawable/ic_dot"
+            android:id="@+id/dot"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/trackTime" />
 
         <TextView
             style="@style/SecondaryTrackStyle"
             android:id="@+id/trackTime"
             tools:text="Track Time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:maxLines="1" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <ImageView
         android:src="@drawable/arrow_forward"

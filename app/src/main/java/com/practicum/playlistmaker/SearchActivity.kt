@@ -81,6 +81,7 @@ class SearchActivity : AppCompatActivity() {
             tracksHistory.clear()
             searchHistoryList.delete()
             historyAdapter.notifyDataSetChanged()
+            searchHistoryViewGroup.visibility = View.GONE
         }
 
         trackAdapter.itemClickListener = {position, track ->
@@ -101,7 +102,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             searchHistoryList.write(tracksHistory)
-            historyAdapter.notifyDataSetChanged()
+            historyAdapter.notifyItemInserted(position)
             Toast.makeText(this, "Трек ${track.artistName} - ${track.trackName} добавлен в историю поиска", Toast.LENGTH_SHORT).show()
         }
 
