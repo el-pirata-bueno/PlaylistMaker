@@ -84,10 +84,11 @@ class SearchActivity : AppCompatActivity() {
             searchHistoryViewGroup.visibility = View.GONE
         }
 
-        trackAdapter.itemClickListener = {position, track ->
+        trackAdapter.itemClickListener = {track ->
             for (i in 0 until tracksHistory.size) {
                 if (track.trackId == tracksHistory[i].trackId) {
                     tracksHistory.removeAt(i)
+                    historyAdapter.notifyItemRemoved(i)
                     break
                 }
 
@@ -98,11 +99,12 @@ class SearchActivity : AppCompatActivity() {
             }
             else {
                 tracksHistory.removeAt(9)
+                historyAdapter.notifyItemRemoved(9)
                 tracksHistory.add(0, track)
             }
 
             searchHistoryList.write(tracksHistory)
-            historyAdapter.notifyItemInserted(position)
+            historyAdapter.notifyItemInserted(0)
             Toast.makeText(this, "Трек ${track.artistName} - ${track.trackName} добавлен в историю поиска", Toast.LENGTH_SHORT).show()
         }
 

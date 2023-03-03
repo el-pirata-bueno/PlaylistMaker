@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class TrackAdapter () : RecyclerView.Adapter<TrackViewHolder> () {
 
-    var itemClickListener: ((Int, Track) -> Unit)? = null
+    var itemClickListener: ((Track) -> Unit)? = null
     var tracks = ArrayList<Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder = TrackViewHolder(parent)
@@ -14,7 +14,7 @@ class TrackAdapter () : RecyclerView.Adapter<TrackViewHolder> () {
         val track = tracks.get(position)
         holder.bind(track)
         holder.itemView.setOnClickListener {
-            itemClickListener?.invoke(position, track)
+            itemClickListener?.invoke(track)
             //Toast.makeText(holder.itemView.context, "Информация о треке ${holder.artistNameView.text} - ${holder.trackNameView.text} в разработке", Toast.LENGTH_SHORT).show()
         }
     }
