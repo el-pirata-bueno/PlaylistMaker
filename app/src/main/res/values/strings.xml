@@ -21,5 +21,7 @@
     <string name="mailto">mailto:</string>
     <string name="nothing_found">Ничего не нашлось</string>
     <string name="something_went_wrong">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
+    <string name="search_history_text">Вы искали</string>
+    <string name="delete_history">Очистить историю</string>
 
 </resources>

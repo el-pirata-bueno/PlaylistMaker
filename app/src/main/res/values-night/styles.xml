@@ -33,4 +33,11 @@
     <style name="SecondaryTrackStyle" parent="PrimaryTrackStyle">
         <item name="android:textSize">@dimen/text_size_track_small</item>
     </style>
+
+    <style name="Switch" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/switch_active</item>
+        <item name="colorSwitchThumbNormal">@color/switch_inactive</item>
+        <item name="android:colorForeground">@color/switch_inactive</item>
+    </style>
+
 </resources>

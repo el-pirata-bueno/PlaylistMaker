@@ -25,6 +25,7 @@
 
     </FrameLayout>
 
+    <!--
     <Switch
         android:layout_width="match_parent"
         android:layout_height="@dimen/string_height"
@@ -38,6 +39,21 @@
         android:fontFamily="@font/ys_display_regular"
         android:textFontWeight="400"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
+    !-->
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/themeSwitcher"
+        android:theme="@style/Switch"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/string_height"
+        android:layout_gravity="start"
+        android:fontFamily="@font/ys_display_regular"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="0dp"
+        android:text="@string/dark_theme"
+        android:textColor="?attr/colorOnPrimary"
+        android:textFontWeight="400"
+        android:textSize="@dimen/small_text_size" />
 
     <Button
         style="@style/ButtonStyle"
