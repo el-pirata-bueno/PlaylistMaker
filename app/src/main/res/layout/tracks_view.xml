@@ -82,7 +82,7 @@
         android:layout_height="45dp"
         android:layout_gravity="center|start"
         android:layout_marginStart="13dp"
-        android:src="@drawable/placeholder" />
+        android:src="@drawable/cover_placeholder" />
 
     <TextView
         style="@style/PrimaryTrackStyle"

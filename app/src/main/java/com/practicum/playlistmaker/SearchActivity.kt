@@ -9,11 +9,10 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.internal.ViewUtils.hideKeyboard
-import com.practicum.playlistmaker.SearchActivity.Companion.SEARCH_TEXT
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,6 +38,7 @@ class SearchActivity : AppCompatActivity() {
     val trackAdapter = TrackAdapter()
     var tracksHistory = ArrayList<Track>()
     val historyAdapter = TrackAdapter()
+    val gson = Gson()
 
     var userText: String = ""
     lateinit var placeholderMessage: TextView
@@ -105,7 +105,18 @@ class SearchActivity : AppCompatActivity() {
 
             searchHistoryList.write(tracksHistory)
             historyAdapter.notifyItemInserted(0)
-            Toast.makeText(this, "Трек ${track.artistName} - ${track.trackName} добавлен в историю поиска", Toast.LENGTH_SHORT).show()
+
+            // надо передать в активити конкретный трек. Как?
+            val playerIntent = Intent(this, PlayerActivity::class.java)
+            playerIntent.putExtra("track", track)
+            startActivity(playerIntent)
+        }
+
+        historyAdapter.itemClickListener = {track ->
+            // надо передать в активити конкретный трек. Как?
+            val playerIntent = Intent(this, PlayerActivity::class.java)
+            playerIntent.putExtra("track", track)
+            startActivity(playerIntent)
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -218,7 +229,7 @@ class SearchActivity : AppCompatActivity() {
         updateButton = findViewById(R.id.updateButton)
         inputEditText = findViewById(R.id.inputSearch)
         clearButton = findViewById(R.id.clearIcon)
-        arrowBackButton = findViewById(R.id.arrow_back)
+        arrowBackButton = findViewById(R.id.arrow_back_search)
         trackList = findViewById(R.id.trackList)
         searchHistoryTitle = findViewById(R.id.searchHistoryTitle)
         deleteHistoryButton = findViewById(R.id.deleteHistory)

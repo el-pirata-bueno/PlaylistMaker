@@ -4,16 +4,29 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable-night/border.xml" value="0.1" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable-night/button_add_to_favourites.xml" value="0.156" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable-night/button_added_to_playlist.xml" value="0.156" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable-night/ic_arrow_forward.xml" value="0.1" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable-night/ic_dot.xml" value="0.1" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/arrow_forward.xml" value="0.1" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/border.xml" value="0.1665" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/border_old.xml" value="0.1" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/button_add_to_favourites.xml" value="0.156" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/button_add_to_playlist.xml" value="0.156" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/button_added_to_favourites.xml" value="0.156" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/button_added_to_playlist.xml" value="0.156" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/button_pause.xml" value="0.156" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/button_play.xml" value="0.1615" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/color_cursor.xml" value="0.1" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.1715" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/ic_dot.xml" value="0.1" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/ic_media.xml" value="0.1615" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/ic_search_16.xml" value="0.1615" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/ic_search_24.xml" value="0.1615" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/ic_settings.xml" value="0.1" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/ic_share.xml" value="0.1615" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/ic_support.xml" value="0.1615" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/media.xml" value="0.1" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/search.xml" value="0.1" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/search_icon.xml" value="0.1" />
@@ -23,6 +36,7 @@
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/drawable/switch.xml" value="0.1" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/layout/activity_media.xml" value="0.25" />
+        <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/layout/activity_player.xml" value="0.1" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/layout/activity_search.xml" value="0.22" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/layout/activity_settings.xml" value="0.25" />
         <entry key="..\:/Users/zharinov/AndroidStudioProjects/PlaylistMaker2/app/src/main/res/layout/activity_settings2.xml" value="0.24954710144927536" />

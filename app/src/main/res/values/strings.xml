@@ -23,5 +23,11 @@
     <string name="something_went_wrong">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
     <string name="search_history_text">Вы искали</string>
     <string name="delete_history">Очистить историю</string>
+    <string name="length">Длительность</string>
+    <string name="album">Альбом</string>
+    <string name="year">Год</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
+    <string name="current_track_time_placeholder">00:00</string>
 
 </resources>
