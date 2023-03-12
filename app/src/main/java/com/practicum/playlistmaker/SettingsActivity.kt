@@ -12,7 +12,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val arrowBackButton = findViewById<Button>(R.id.arrow_back)
+        val arrowBackButton = findViewById<Button>(R.id.arrow_back_settings)
         val shareButton = findViewById<Button>(R.id.share)
         val helpButton = findViewById<Button>(R.id.help)
         val agreementButton = findViewById<Button>(R.id.agreement)
@@ -20,8 +20,7 @@ class SettingsActivity : AppCompatActivity() {
         val sharedPrefs = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
 
         arrowBackButton.setOnClickListener {
-            val mainIntent = Intent(this, MainActivity::class.java)
-            startActivity(mainIntent)
+            finish()
         }
 
         themeSwitcher.isChecked = sharedPrefs.getBoolean(APP_DARK_THEME, false)

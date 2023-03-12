@@ -16,7 +16,7 @@
 
         <Button
             style="@style/ArrowBackStyle"
-            android:id="@+id/arrow_back"
+            android:id="@+id/arrow_back_search"
             app:icon="@drawable/arrow_back"
             app:iconGravity="textStart"
             app:iconTint="?attr/colorOnSecondary"/>
