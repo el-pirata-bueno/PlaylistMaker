@@ -26,7 +26,8 @@ class App : Application() {
     }
 
     fun isDarkMode(context: Context): Boolean {
-        val darkModeFlag = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val darkModeFlag =
+            context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         return darkModeFlag == Configuration.UI_MODE_NIGHT_YES
     }
 

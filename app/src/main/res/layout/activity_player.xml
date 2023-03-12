@@ -106,38 +106,12 @@
         tools:text="Add to playlist" />
 
     <ImageButton
-        android:id="@+id/button_added_to_playlist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="54dp"
-        android:layout_marginStart="0dp"
-        android:background="?attr/colorSecondary"
-        android:src="@drawable/button_added_to_playlist"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/first_left_border"
-        app:layout_constraintTop_toBottomOf="@id/artist_name"
-        tools:text="Add to playlist" />
-
-    <ImageButton
         android:id="@+id/button_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:src="@drawable/button_play"
         android:background="?attr/colorSecondary"
-        app:layout_constraintStart_toStartOf="@id/first_left_border"
-        app:layout_constraintEnd_toStartOf="@id/first_right_border"
-        app:layout_constraintTop_toBottomOf="@id/artist_name"
-        />
-
-    <ImageButton
-        android:id="@+id/button_pause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:src="@drawable/button_pause"
-        android:background="?attr/colorSecondary"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/first_left_border"
         app:layout_constraintEnd_toStartOf="@id/first_right_border"
         app:layout_constraintTop_toBottomOf="@id/artist_name"
@@ -151,19 +125,6 @@
         android:layout_marginTop="54dp"
         android:src="@drawable/button_add_to_favourites"
         android:background="?attr/colorSecondary"
-        app:layout_constraintEnd_toStartOf="@id/second_right_border"
-        app:layout_constraintTop_toBottomOf="@id/artist_name"
-        />
-
-    <ImageButton
-        android:id="@+id/button_added_to_favourites"
-        tools:text="Add to favourites"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="54dp"
-        android:src="@drawable/button_added_to_favourites"
-        android:background="?attr/colorSecondary"
-        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/second_right_border"
         app:layout_constraintTop_toBottomOf="@id/artist_name"
         />

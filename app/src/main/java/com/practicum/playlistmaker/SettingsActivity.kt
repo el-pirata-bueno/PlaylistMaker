@@ -20,8 +20,7 @@ class SettingsActivity : AppCompatActivity() {
         val sharedPrefs = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
 
         arrowBackButton.setOnClickListener {
-            val mainIntent = Intent(this, MainActivity::class.java)
-            startActivity(mainIntent)
+            finish()
         }
 
         themeSwitcher.isChecked = sharedPrefs.getBoolean(APP_DARK_THEME, false)

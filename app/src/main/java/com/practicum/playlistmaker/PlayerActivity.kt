@@ -1,8 +1,6 @@
 package com.practicum.playlistmaker
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -13,7 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PlayerActivity: AppCompatActivity() {
+class PlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,67 +29,72 @@ class PlayerActivity: AppCompatActivity() {
         val trackCover: ImageView = findViewById(R.id.track_cover_big)
         val arrowBackButton = findViewById<Button>(R.id.arrow_back_player)
         val playButton: ImageButton = findViewById(R.id.button_play)
-        val pauseButton: ImageButton = findViewById(R.id.button_pause)
         val addToPlaylistButton: ImageButton = findViewById(R.id.button_add_to_playlist)
-        val addedToPlaylistButton: ImageButton = findViewById(R.id.button_added_to_playlist)
         val addToFavouritesButton: ImageButton = findViewById(R.id.button_add_to_favourites)
-        val addedToFavouritesButton: ImageButton = findViewById(R.id.button_added_to_favourites)
+        var playOn = false
+        var addedToPlaylist = false
+        var addedToFavourites = false
 
         arrowBackButton.setOnClickListener {
-            val searchIntent = Intent(this, SearchActivity::class.java)
-            startActivity(searchIntent)
+            finish()
         }
 
-            trackLength.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentTrack!!.trackTimeMillis)
-            if (currentTrack.collectionName != null) {
-                trackAlbum.text = currentTrack.collectionName
-            }
-            trackName.text = currentTrack.trackName
-            artistName.text = currentTrack.artistName
-            trackYear.text = getYear(currentTrack)
-            trackGenre.text = currentTrack.primaryGenreName
-            artistCountry.text = currentTrack.country
+        trackLength.text =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentTrack!!.trackTimeMillis)
+        if (currentTrack.collectionName != null) {
+            trackAlbum.text = currentTrack.collectionName
+        }
+        trackName.text = currentTrack.trackName
+        artistName.text = currentTrack.artistName
+        trackYear.text = getYear(currentTrack)
+        trackGenre.text = currentTrack.primaryGenreName
+        artistCountry.text = currentTrack.country
 
-            Glide.with(applicationContext)
-                .load(getCoverArtwork(currentTrack))
-                .placeholder(R.drawable.cover_placeholder_big)
-                .centerCrop()
-                .transform(RoundedCorners(8))
-                .into(trackCover)
+        Glide.with(applicationContext)
+            .load(getCoverArtwork(currentTrack))
+            .placeholder(R.drawable.cover_placeholder_big)
+            .centerCrop()
+            .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_cover_rounded_corners)))
+            .into(trackCover)
 
         playButton.setOnClickListener {
-            playButton.visibility = View.GONE
-            pauseButton.visibility = View.VISIBLE
-        }
-
-        pauseButton.setOnClickListener {
-            pauseButton.visibility = View.GONE
-            playButton.visibility = View.VISIBLE
+            if (playOn) {
+                playOn = false
+                playButton.setImageResource(R.drawable.button_play)
+            }
+            else {
+                playOn = true
+                playButton.setImageResource(R.drawable.button_pause)
+            }
         }
 
         addToPlaylistButton.setOnClickListener {
-            addToPlaylistButton.visibility = View.GONE
-            addedToPlaylistButton.visibility = View.VISIBLE
-        }
-
-        addedToPlaylistButton.setOnClickListener {
-            addedToPlaylistButton.visibility = View.GONE
-            addToPlaylistButton.visibility = View.VISIBLE
+            if (addedToPlaylist) {
+                addedToPlaylist = false
+                addToPlaylistButton.setImageResource(R.drawable.button_add_to_playlist)
+            }
+            else {
+                addedToPlaylist = true
+                addToPlaylistButton.setImageResource(R.drawable.button_added_to_playlist)
+            }
         }
 
         addToFavouritesButton.setOnClickListener {
-            addToFavouritesButton.visibility = View.GONE
-            addedToFavouritesButton.visibility = View.VISIBLE
+            if (addedToFavourites) {
+                addedToFavourites = false
+                addToFavouritesButton.setImageResource(R.drawable.button_add_to_favourites)
+            }
+            else {
+                addedToFavourites = true
+                addToFavouritesButton.setImageResource(R.drawable.button_added_to_favourites)
+            }
         }
 
-        addedToFavouritesButton.setOnClickListener {
-            addedToFavouritesButton.visibility = View.GONE
-            addToFavouritesButton.visibility = View.VISIBLE
-        }
     }
 
-    fun getCoverArtwork(currentTrack: Track): String? = currentTrack.artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
+    fun getCoverArtwork(currentTrack: Track): String? =
+        currentTrack.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
 
-    fun getYear(currentTrack: Track): String? = currentTrack.releaseDate.substring(0,4)
+    fun getYear(currentTrack: Track): String? = currentTrack.releaseDate.substring(0, 4)
 
 }

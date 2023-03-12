@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.google.gson.Gson
 
-class SearchHistory (var sharedPreferences: SharedPreferences) {
+class SearchHistory(var sharedPreferences: SharedPreferences) {
 
     // чтение истории
     fun read(): Array<Track> {
