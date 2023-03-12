@@ -13,6 +13,16 @@ import java.util.*
 
 class PlayerActivity : AppCompatActivity() {
 
+    companion object {
+        const val PLAY_STATUS = "PLAY_STATUS"
+        const val PLAYLIST_STATUS = "PLAYLIST_STATUS"
+        const val FAVOURITES_STATUS = "FAVOURITES_STATUS"
+    }
+
+    var playOn = false
+    var addedToPlaylist = false
+    var addedToFavourites = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
@@ -31,9 +41,7 @@ class PlayerActivity : AppCompatActivity() {
         val playButton: ImageButton = findViewById(R.id.button_play)
         val addToPlaylistButton: ImageButton = findViewById(R.id.button_add_to_playlist)
         val addToFavouritesButton: ImageButton = findViewById(R.id.button_add_to_favourites)
-        var playOn = false
-        var addedToPlaylist = false
-        var addedToFavourites = false
+
 
         arrowBackButton.setOnClickListener {
             finish()
@@ -97,4 +105,17 @@ class PlayerActivity : AppCompatActivity() {
 
     fun getYear(currentTrack: Track): String? = currentTrack.releaseDate.substring(0, 4)
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(PLAY_STATUS, playOn)
+        outState.putBoolean(PLAYLIST_STATUS, addedToPlaylist)
+        outState.putBoolean(FAVOURITES_STATUS, addedToFavourites)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        playOn = savedInstanceState.getBoolean(PLAY_STATUS, false)
+        addedToPlaylist = savedInstanceState.getBoolean(PLAYLIST_STATUS, false)
+        addedToFavourites = savedInstanceState.getBoolean(FAVOURITES_STATUS, false)
+    }
 }
