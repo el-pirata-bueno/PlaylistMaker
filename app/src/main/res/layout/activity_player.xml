@@ -131,7 +131,7 @@
 
     <TextView
         android:id="@+id/current_track_time"
-        tools:text="Current track time"
+        tools:text="0:00"
         style="@style/TrackTextStyle"
         android:layout_width="100dp"
         android:layout_height="16dp"

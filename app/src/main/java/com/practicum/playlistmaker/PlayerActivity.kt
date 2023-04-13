@@ -1,6 +1,9 @@
 package com.practicum.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -14,14 +17,36 @@ import java.util.*
 class PlayerActivity : AppCompatActivity() {
 
     companion object {
-        const val PLAY_STATUS = "PLAY_STATUS"
         const val PLAYLIST_STATUS = "PLAYLIST_STATUS"
         const val FAVOURITES_STATUS = "FAVOURITES_STATUS"
+        const val PLAYTIME_UPDATE_DELAY = 250L
     }
 
-    var playOn = false
+    enum class PlayerState { STATE_DEFAULT, STATE_PREPARED, STATE_PLAYING, STATE_PAUSED }
+
+    //var playOn = false
     var addedToPlaylist = false
     var addedToFavourites = false
+
+    private var mediaPlayer = MediaPlayer()
+        private var playerState = PlayerState.STATE_DEFAULT
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    lateinit var trackName: TextView
+    lateinit var artistName: TextView
+    lateinit var trackLength: TextView
+    lateinit var trackAlbum: TextView
+    lateinit var trackYear: TextView
+    lateinit var trackGenre: TextView
+    lateinit var artistCountry: TextView
+    lateinit var trackTime: TextView
+    lateinit var trackCover: ImageView
+    lateinit var arrowBackButton: Button
+    lateinit var playButton: ImageButton
+    lateinit var addToPlaylistButton: ImageButton
+    lateinit var addToFavouritesButton: ImageButton
+    lateinit var previewUrl: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,51 +54,46 @@ class PlayerActivity : AppCompatActivity() {
 
         val currentTrack = intent.getParcelableExtra<Track>("track")
 
-        val trackName: TextView = findViewById(R.id.track_name)
-        val artistName: TextView = findViewById(R.id.artist_name)
-        val trackLength: TextView = findViewById(R.id.track_length)
-        val trackAlbum: TextView = findViewById(R.id.track_album)
-        val trackYear: TextView = findViewById(R.id.track_year)
-        val trackGenre: TextView = findViewById(R.id.track_genre)
-        val artistCountry: TextView = findViewById(R.id.artist_country)
-        val trackCover: ImageView = findViewById(R.id.track_cover_big)
-        val arrowBackButton = findViewById<Button>(R.id.arrow_back_player)
-        val playButton: ImageButton = findViewById(R.id.button_play)
-        val addToPlaylistButton: ImageButton = findViewById(R.id.button_add_to_playlist)
-        val addToFavouritesButton: ImageButton = findViewById(R.id.button_add_to_favourites)
-
+        initVars()
 
         arrowBackButton.setOnClickListener {
             finish()
         }
 
-        trackLength.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentTrack!!.trackTimeMillis)
-        if (currentTrack.collectionName != null) {
-            trackAlbum.text = currentTrack.collectionName
-        }
-        trackName.text = currentTrack.trackName
-        artistName.text = currentTrack.artistName
-        trackYear.text = getYear(currentTrack)
-        trackGenre.text = currentTrack.primaryGenreName
-        artistCountry.text = currentTrack.country
+        if (currentTrack != null) {
+            previewUrl = currentTrack.previewUrl
 
-        Glide.with(applicationContext)
-            .load(getCoverArtwork(currentTrack))
-            .placeholder(R.drawable.cover_placeholder_big)
-            .centerCrop()
-            .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_cover_rounded_corners)))
-            .into(trackCover)
+            preparePlayer()
 
-        playButton.setOnClickListener {
-            if (playOn) {
-                playOn = false
-                playButton.setImageResource(R.drawable.button_play)
+            trackLength.text =
+                SimpleDateFormat(
+                    "mm:ss",
+                    Locale.getDefault()
+                ).format(currentTrack!!.trackTimeMillis)
+
+            if (currentTrack.collectionName != null) {
+                trackAlbum.text = currentTrack.collectionName
             }
             else {
-                playOn = true
-                playButton.setImageResource(R.drawable.button_pause)
+                trackAlbum.text = ""
             }
+
+            trackName.text = currentTrack.trackName
+            artistName.text = currentTrack.artistName
+            trackYear.text = getYear(currentTrack)
+            trackGenre.text = currentTrack.primaryGenreName
+            artistCountry.text = currentTrack.country
+
+            Glide.with(applicationContext)
+                .load(getCoverArtwork(currentTrack))
+                .placeholder(R.drawable.cover_placeholder_big)
+                .centerCrop()
+                .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_cover_rounded_corners)))
+                .into(trackCover)
+        }
+
+        playButton.setOnClickListener {
+            playbackControl()
         }
 
         addToPlaylistButton.setOnClickListener {
@@ -97,7 +117,17 @@ class PlayerActivity : AppCompatActivity() {
                 addToFavouritesButton.setImageResource(R.drawable.button_added_to_favourites)
             }
         }
+    }
 
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        handler.removeCallbacks(updateTimer())
     }
 
     fun getCoverArtwork(currentTrack: Track): String? =
@@ -107,15 +137,93 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(PLAY_STATUS, playOn)
         outState.putBoolean(PLAYLIST_STATUS, addedToPlaylist)
         outState.putBoolean(FAVOURITES_STATUS, addedToFavourites)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        playOn = savedInstanceState.getBoolean(PLAY_STATUS, false)
         addedToPlaylist = savedInstanceState.getBoolean(PLAYLIST_STATUS, false)
         addedToFavourites = savedInstanceState.getBoolean(FAVOURITES_STATUS, false)
     }
-}
+
+    private fun initVars() {
+        trackName = findViewById(R.id.track_name)
+        artistName = findViewById(R.id.artist_name)
+        trackLength = findViewById(R.id.track_length)
+        trackAlbum = findViewById(R.id.track_album)
+        trackYear = findViewById(R.id.track_year)
+        trackGenre = findViewById(R.id.track_genre)
+        artistCountry = findViewById(R.id.artist_country)
+        trackTime = findViewById(R.id.current_track_time)
+        trackCover = findViewById(R.id.track_cover_big)
+        arrowBackButton = findViewById(R.id.arrow_back_player)
+        playButton = findViewById(R.id.button_play)
+        addToPlaylistButton = findViewById(R.id.button_add_to_playlist)
+        addToFavouritesButton = findViewById(R.id.button_add_to_favourites)
+    }
+
+    private fun preparePlayer() {
+        mediaPlayer.setDataSource(previewUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playButton.isEnabled = true
+            playerState = PlayerState.STATE_PREPARED
+        }
+        mediaPlayer.setOnCompletionListener {
+            playerState = PlayerState.STATE_PREPARED
+            handler.removeCallbacks(updateTimer())
+            playButton.setImageResource(R.drawable.button_play)
+            trackTime.text = "0:00"
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playButton.setImageResource(R.drawable.button_pause)
+        playerState = PlayerState.STATE_PLAYING
+    }
+
+    private fun pausePlayer() {
+        handler.removeCallbacks(updateTimer())
+        mediaPlayer.pause()
+        playButton.setImageResource(R.drawable.button_play)
+        playerState = PlayerState.STATE_PAUSED
+    }
+
+    private fun playbackControl() {
+        when(playerState) {
+            PlayerState.STATE_PLAYING -> {
+                pausePlayer()
+            }
+            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
+                startPlayer()
+                startTimer()
+            }
+            else -> { }
+        }
+    }
+
+    private fun startTimer() {
+        handler.post(
+            updateTimer()
+        )
+    }
+
+    private fun updateTimer (): Runnable {
+        return object : Runnable {
+            override fun run() {
+                if (playerState == PlayerState.STATE_PLAYING) {
+                    trackTime.text = SimpleDateFormat(
+                        "mm:ss",
+                        Locale.getDefault()
+                    ).format(mediaPlayer.currentPosition)
+                    handler.postDelayed(this, PLAYTIME_UPDATE_DELAY)
+                }
+
+                }
+            }
+        }
+    }
+
+
