@@ -17,22 +17,19 @@ import java.util.*
 class PlayerActivity : AppCompatActivity() {
 
     companion object {
-        //const val PLAY_STATUS = "PLAY_STATUS"
         const val PLAYLIST_STATUS = "PLAYLIST_STATUS"
         const val FAVOURITES_STATUS = "FAVOURITES_STATUS"
         const val PLAYTIME_UPDATE_DELAY = 250L
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
     }
+
+    enum class PlayerState { STATE_DEFAULT, STATE_PREPARED, STATE_PLAYING, STATE_PAUSED }
 
     //var playOn = false
     var addedToPlaylist = false
     var addedToFavourites = false
 
     private var mediaPlayer = MediaPlayer()
-        private var playerState = STATE_DEFAULT
+        private var playerState = PlayerState.STATE_DEFAULT
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -140,14 +137,12 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        //outState.putBoolean(PLAY_STATUS, playOn)
         outState.putBoolean(PLAYLIST_STATUS, addedToPlaylist)
         outState.putBoolean(FAVOURITES_STATUS, addedToFavourites)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        //playOn = savedInstanceState.getBoolean(PLAY_STATUS, false)
         addedToPlaylist = savedInstanceState.getBoolean(PLAYLIST_STATUS, false)
         addedToFavourites = savedInstanceState.getBoolean(FAVOURITES_STATUS, false)
     }
@@ -173,10 +168,10 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             playButton.isEnabled = true
-            playerState = STATE_PREPARED
+            playerState = PlayerState.STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
-            playerState = STATE_PREPARED
+            playerState = PlayerState.STATE_PREPARED
             handler.removeCallbacks(updateTimer())
             playButton.setImageResource(R.drawable.button_play)
             trackTime.text = "0:00"
@@ -186,26 +181,26 @@ class PlayerActivity : AppCompatActivity() {
     private fun startPlayer() {
         mediaPlayer.start()
         playButton.setImageResource(R.drawable.button_pause)
-        playerState = STATE_PLAYING
+        playerState = PlayerState.STATE_PLAYING
     }
 
     private fun pausePlayer() {
         handler.removeCallbacks(updateTimer())
         mediaPlayer.pause()
         playButton.setImageResource(R.drawable.button_play)
-        playerState = STATE_PAUSED
+        playerState = PlayerState.STATE_PAUSED
     }
 
     private fun playbackControl() {
         when(playerState) {
-            STATE_PLAYING -> {
+            PlayerState.STATE_PLAYING -> {
                 pausePlayer()
-
             }
-            STATE_PREPARED, STATE_PAUSED -> {
+            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
                 startPlayer()
                 startTimer()
             }
+            else -> { }
         }
     }
 
@@ -218,12 +213,12 @@ class PlayerActivity : AppCompatActivity() {
     private fun updateTimer (): Runnable {
         return object : Runnable {
             override fun run() {
-                if (playerState == STATE_PLAYING) {
+                if (playerState == PlayerState.STATE_PLAYING) {
                     trackTime.text = SimpleDateFormat(
                         "mm:ss",
                         Locale.getDefault()
                     ).format(mediaPlayer.currentPosition)
-                    handler?.postDelayed(this, PLAYTIME_UPDATE_DELAY)
+                    handler.postDelayed(this, PLAYTIME_UPDATE_DELAY)
                 }
 
                 }
