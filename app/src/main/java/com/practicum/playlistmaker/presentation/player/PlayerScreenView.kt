@@ -12,4 +12,5 @@ interface PlayerScreenView {
     fun goBack()
     fun startTimer()
     fun updateTimer(): Runnable
+    //fun playerCompleted()
 }

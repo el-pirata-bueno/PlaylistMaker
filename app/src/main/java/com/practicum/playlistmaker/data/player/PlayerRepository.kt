@@ -10,7 +10,7 @@ class PlayerRepository(
     //private val cachedTracks = mutableMapOf<String, Track>()
     private val mediaPlayer = MediaPlayer()
 
-    enum class PlayerState { STATE_DEFAULT, STATE_PREPARED, STATE_PLAYING, STATE_PAUSED, STATE_COMPLETED }
+    enum class PlayerState { STATE_DEFAULT, STATE_PREPARED, STATE_PLAYING, STATE_PAUSED }
 
     override  var playerState = PlayerState.STATE_DEFAULT
 
@@ -21,7 +21,7 @@ class PlayerRepository(
             playerState = PlayerState.STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
-            playerState = PlayerState.STATE_COMPLETED
+            playerState = PlayerState.STATE_PREPARED
         }
     }
 

@@ -171,8 +171,8 @@ class PlayerActivity : AppCompatActivity(), PlayerScreenView {
                 }
                 if (state == PlayerRepository.PlayerState.STATE_PREPARED) {
                     trackTime.text = "0:00"
-                    handler.removeCallbacks(updateTimer())
                     playButton.setImageResource(R.drawable.button_play)
+                    handler.removeCallbacks(updateTimer())
                 }
             }
         }

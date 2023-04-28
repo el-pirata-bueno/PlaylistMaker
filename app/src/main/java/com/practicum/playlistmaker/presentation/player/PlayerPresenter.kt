@@ -57,15 +57,6 @@ class PlayerPresenter(
 
     fun preparePlayer(trackUrl: String) {
             playerInteractor.preparePlayer(trackUrl)
-            when (getPlayerState()) {
-                PlayerRepository.PlayerState.STATE_PREPARED -> {
-                    view?.playerPrepared()
-                }
-            //    PlayerRepository.PlayerState.STATE_COMPLETED -> {
-            //        view?.playerCompleted()
-            //    }
-                else -> {}
-            }
     }
 
     fun startPlayer() {
