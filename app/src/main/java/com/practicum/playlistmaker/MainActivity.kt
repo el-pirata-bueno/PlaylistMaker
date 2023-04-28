@@ -1,13 +1,10 @@
 package com.practicum.playlistmaker
 
-import android.app.Application
 import android.content.Intent
-import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
-import android.widget.Toast
+import com.practicum.playlistmaker.presentation.search.SearchActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

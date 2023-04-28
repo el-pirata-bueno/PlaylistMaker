@@ -14,12 +14,12 @@
             android:id="@+id/arrow_back_media"
             app:icon="@drawable/arrow_back"
             app:iconGravity="textStart"
-            app:iconTint="?attr/colorOnSecondary"/>
+            app:iconTint="?attr/colorOnSecondary" />
 
         <TextView
             style="@style/ToolbarTextStyle"
             android:paddingStart="48dp"
-            android:text="@string/media"/>
+            android:text="@string/media" />
 
     </FrameLayout>
 
@@ -33,7 +33,6 @@
         android:textColor="?attr/colorOnSecondary"
         android:text="@string/media_unfinished"
         android:textSize="@dimen/text_size"
-        app:fontFamily="@font/ys_display_regular"
-        />
+        app:fontFamily="@font/ys_display_regular" />
 
 </FrameLayout>

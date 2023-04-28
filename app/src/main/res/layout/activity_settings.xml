@@ -16,12 +16,12 @@
             android:id="@+id/arrow_back_settings"
             app:icon="@drawable/arrow_back"
             app:iconGravity="textStart"
-            app:iconTint="?attr/colorOnSecondary"/>
+            app:iconTint="?attr/colorOnSecondary" />
 
         <TextView
             style="@style/ToolbarTextStyle"
             android:paddingStart="48dp"
-            android:text="@string/settings"/>
+            android:text="@string/settings" />
 
     </FrameLayout>
 
