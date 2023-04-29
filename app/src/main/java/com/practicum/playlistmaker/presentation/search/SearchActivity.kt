@@ -16,30 +16,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.SEARCH_HISTORY
 import com.practicum.playlistmaker.TrackAdapter
-import com.practicum.playlistmaker.data.search.SearchHistory
-import com.practicum.playlistmaker.data.search.SearchRepository
-import com.practicum.playlistmaker.domain.api.ITunesApi
-import com.practicum.playlistmaker.domain.impl.SearchInteractor
+import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.presentation.models.TrackUi
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity(), SearchScreenView {
 
     companion object {
-        const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private val iTunesBaseUrl = "https://itunes.apple.com"
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val repository = SearchRepository(retrofit.create(ITunesApi::class.java))
     private val searchRunnable = Runnable { loadTracks() }
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var presenter: SearchPresenter
@@ -62,23 +48,21 @@ class SearchActivity : AppCompatActivity(), SearchScreenView {
     lateinit var placeholder: FrameLayout
     lateinit var progressBar: ProgressBar
     lateinit var sharedPrefsSearchHistory: SharedPreferences
-    private lateinit var searchHistoryList: SearchHistory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
         initView()
-        initHistory()
         initTrackAdapter()
         initHistoryAdapter()
 
-        presenter = SearchPresenter(
+        sharedPrefsSearchHistory = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE)
+
+        presenter = Creator.provideSearchPresenter(
             view = this,
-            interactor = SearchInteractor(
-                searchHistoryList, repository
-            ),
-            router = SearchRouter(this)
+            router = SearchRouter(this),
+            sharedPrefsSearchHistory = sharedPrefsSearchHistory,
         )
 
         arrowBackButton.setOnClickListener {
@@ -220,11 +204,6 @@ class SearchActivity : AppCompatActivity(), SearchScreenView {
         searchHistoryViewGroup = findViewById(R.id.searchHistoryViewGroup)
         placeholder = findViewById(R.id.placeholder)
         progressBar = findViewById(R.id.progressBar)
-    }
-
-    private fun initHistory() {
-        sharedPrefsSearchHistory = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE)
-        searchHistoryList = SearchHistory(sharedPrefsSearchHistory)
     }
 
     private fun initHistoryAdapter() {

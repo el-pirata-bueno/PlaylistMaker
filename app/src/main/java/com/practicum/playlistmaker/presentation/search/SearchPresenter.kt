@@ -1,13 +1,13 @@
 package com.practicum.playlistmaker.presentation.search
 
-import com.practicum.playlistmaker.domain.impl.SearchInteractor
+import com.practicum.playlistmaker.domain.impl.TrackSearchInteractor
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.presentation.models.TrackUi
 
 class SearchPresenter(
     private val view: SearchScreenView,
-    private val interactor: SearchInteractor,
-    private val router: SearchRouter
+    private val router: SearchRouter,
+    private val searchInteractor: TrackSearchInteractor
 ) {
 
     private val cachedTracks = mutableListOf<Track>()
@@ -17,12 +17,12 @@ class SearchPresenter(
     }
 
     fun onHistoryDeleteClicked() {
-        interactor.delete()
-        view.showHistory(interactor.read().map { mapTrackToUi(it) })
+        searchInteractor.delete()
+        view.showHistory(searchInteractor.read().map { mapTrackToUi(it) })
     }
 
     fun searchFocusChanged(hasFocus: Boolean, text: String) {
-        val historyTracks = interactor.read()
+        val historyTracks = searchInteractor.read()
         if (hasFocus && text.isEmpty() && historyTracks.isNotEmpty()) {
             view.showHistory(historyTracks.map { mapTrackToUi(it) })
         } else {
@@ -31,7 +31,7 @@ class SearchPresenter(
     }
 
     fun searchTextClearClicked() {
-        val historyTracks = interactor.read()
+        val historyTracks = searchInteractor.read()
         view.clearSearchText()
         view.hideKeyboard()
         if (historyTracks.isNotEmpty()) {
@@ -44,7 +44,7 @@ class SearchPresenter(
             return
         }
         view.showLoading()
-        interactor.search(
+        searchInteractor.search(
             query = query,
             onSuccess = { tracks ->
                 cachedTracks.clear()
@@ -64,7 +64,7 @@ class SearchPresenter(
     fun onTrackClicked(track: TrackUi) {
         //todo: move logic t
         if (view.clickDebounce()) {
-            interactor.saveTrack(mapTrackUiToTrack(track))
+            searchInteractor.saveTrack(mapTrackUiToTrack(track))
             router.openTrack(track)
         }
 

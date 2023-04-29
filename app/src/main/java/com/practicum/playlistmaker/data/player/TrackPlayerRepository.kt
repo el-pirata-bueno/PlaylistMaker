@@ -1,16 +1,14 @@
 package com.practicum.playlistmaker.data.player
 
 import android.media.MediaPlayer
-import com.practicum.playlistmaker.data.network.NetworkClient
-import com.practicum.playlistmaker.domain.player.PlayerRepositoryInterface
+import com.practicum.playlistmaker.data.network.ITunesNetworkClient
+import com.practicum.playlistmaker.domain.player.PlayerRepository
 
-class PlayerRepository(
-    private val networkClient: NetworkClient
-) : PlayerRepositoryInterface {
+class TrackPlayerRepository(
+    private val ITunesNetworkClient: ITunesNetworkClient
+) : PlayerRepository {
     //private val cachedTracks = mutableMapOf<String, Track>()
     private val mediaPlayer = MediaPlayer()
-
-    enum class PlayerState { STATE_DEFAULT, STATE_PREPARED, STATE_PLAYING, STATE_PAUSED }
 
     override  var playerState = PlayerState.STATE_DEFAULT
 

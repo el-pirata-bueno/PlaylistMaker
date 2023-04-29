@@ -2,7 +2,7 @@ package com.practicum.playlistmaker.domain.api
 
 import com.practicum.playlistmaker.domain.models.Track
 
-interface SearchInteractorInterface {
+interface SearchInteractor {
     fun delete()
     fun read(): List<Track>
     fun addTrack(track: Track)

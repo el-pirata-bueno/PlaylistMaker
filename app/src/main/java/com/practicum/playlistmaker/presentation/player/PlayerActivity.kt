@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.creator.Creator
-import com.practicum.playlistmaker.data.player.PlayerRepository
+import com.practicum.playlistmaker.data.player.PlayerState
 import com.practicum.playlistmaker.presentation.models.TrackUi
 import java.text.SimpleDateFormat
 import java.util.*
@@ -47,7 +47,7 @@ class PlayerActivity : AppCompatActivity(), PlayerScreenView {
 
         val currentTrack = intent.getParcelableExtra<TrackUi>("track")
 
-        presenter = Creator.providePresenter(
+        presenter = Creator.providePlayerPresenter(
             view = this,
             trackId = currentTrack?.trackId.toString()
         )
@@ -162,14 +162,14 @@ class PlayerActivity : AppCompatActivity(), PlayerScreenView {
         return object : Runnable {
             override fun run() {
                 var state = presenter.getPlayerState()
-                if (state == PlayerRepository.PlayerState.STATE_PLAYING) {
+                if (state == PlayerState.STATE_PLAYING) {
                     trackTime.text = SimpleDateFormat(
                         "mm:ss",
                         Locale.getDefault()
                     ).format(presenter.getPlayerCurrentPosition())
                     handler.postDelayed(this, PLAYTIME_UPDATE_DELAY)
                 }
-                if (state == PlayerRepository.PlayerState.STATE_PREPARED) {
+                if (state == PlayerState.STATE_PREPARED) {
                     trackTime.text = "0:00"
                     playButton.setImageResource(R.drawable.button_play)
                     handler.removeCallbacks(updateTimer())

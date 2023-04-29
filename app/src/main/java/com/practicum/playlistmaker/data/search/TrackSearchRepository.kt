@@ -1,15 +1,16 @@
 package com.practicum.playlistmaker.data.search
 
-import com.practicum.playlistmaker.data.models.TrackDto
 import com.practicum.playlistmaker.data.dto.TracksResponse
-import com.practicum.playlistmaker.domain.api.ITunesApi
+import com.practicum.playlistmaker.data.models.TrackDto
+import com.practicum.playlistmaker.data.api.ITunesApi
 import com.practicum.playlistmaker.domain.models.Track
-import com.practicum.playlistmaker.domain.search.SearchRepositoryInterface
+import com.practicum.playlistmaker.domain.search.SearchRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SearchRepository(private val api: ITunesApi) : SearchRepositoryInterface {
+class TrackSearchRepository(private val api: ITunesApi) :
+    SearchRepository {
 
     override fun search(query: String, onSuccess: (List<Track>) -> Unit, onError: () -> Unit) {
         api.searchTracks(query)

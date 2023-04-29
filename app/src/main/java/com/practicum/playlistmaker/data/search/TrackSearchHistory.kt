@@ -6,10 +6,11 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.TRACKLIST_HISTORY
 import com.practicum.playlistmaker.domain.models.Track
-import com.practicum.playlistmaker.domain.search.SearchHistoryInterface
+import com.practicum.playlistmaker.domain.search.SearchHistory
 
 
-class SearchHistory(var sharedPreferences: SharedPreferences) : SearchHistoryInterface {
+class TrackSearchHistory(var sharedPreferences: SharedPreferences) :
+    SearchHistory {
 
     companion object {
         const val MAX_HISTORY_SIZE = 10

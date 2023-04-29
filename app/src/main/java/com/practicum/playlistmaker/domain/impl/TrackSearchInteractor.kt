@@ -1,14 +1,14 @@
 package com.practicum.playlistmaker.domain.impl
 
-import com.practicum.playlistmaker.domain.api.SearchInteractorInterface
+import com.practicum.playlistmaker.domain.api.SearchInteractor
 import com.practicum.playlistmaker.domain.models.Track
-import com.practicum.playlistmaker.domain.search.SearchHistoryInterface
-import com.practicum.playlistmaker.domain.search.SearchRepositoryInterface
+import com.practicum.playlistmaker.domain.search.SearchHistory
+import com.practicum.playlistmaker.domain.search.SearchRepository
 
-class SearchInteractor(
-    private val searchHistory: SearchHistoryInterface,
-    private val repository: SearchRepositoryInterface
-) : SearchInteractorInterface {
+class TrackSearchInteractor(
+    private val searchHistory: SearchHistory,
+    private val repository: SearchRepository
+) : SearchInteractor {
     override fun delete() {
         searchHistory.delete()
     }

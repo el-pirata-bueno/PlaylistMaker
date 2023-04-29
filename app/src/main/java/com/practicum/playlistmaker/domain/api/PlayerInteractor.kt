@@ -1,9 +1,9 @@
 package com.practicum.playlistmaker.domain.api
 
-import com.practicum.playlistmaker.data.player.PlayerRepository
+import com.practicum.playlistmaker.data.player.PlayerState
 import com.practicum.playlistmaker.domain.models.Track
 
-interface PlayerInteractorInterface {
+interface PlayerInteractor {
     fun preparePlayer(trackUrl: String)
     fun startPlayer()
     fun pausePlayer()
@@ -18,6 +18,6 @@ interface PlayerInteractorInterface {
         fun consume(track: Track)
     }
 
-    fun getPlayerState(): PlayerRepository.PlayerState
+    fun getPlayerState(): PlayerState
     fun getCurrentPosition(): Int
 }

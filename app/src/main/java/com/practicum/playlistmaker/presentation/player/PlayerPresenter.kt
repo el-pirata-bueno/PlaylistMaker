@@ -1,8 +1,7 @@
 package com.practicum.playlistmaker.presentation.player
 
-import com.practicum.playlistmaker.data.player.PlayerRepository
-import com.practicum.playlistmaker.domain.api.PlayerInteractorInterface
-import com.practicum.playlistmaker.domain.impl.PlayerInteractor
+import com.practicum.playlistmaker.data.player.PlayerState
+import com.practicum.playlistmaker.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.presentation.models.TrackUi
 
@@ -19,8 +18,8 @@ class PlayerPresenter(
     var addedToPlaylist = false
     var addedToFavourites = false
 
-    private val playerConsumer: PlayerInteractorInterface.PlayerInfoConsumer =
-        object : PlayerInteractorInterface.PlayerInfoConsumer {
+    private val playerConsumer: PlayerInteractor.PlayerInfoConsumer =
+        object : PlayerInteractor.PlayerInfoConsumer {
             override fun consume(track: Track) {
                 view?.drawTrack(mapTrackToUi(track))
             }
@@ -61,24 +60,24 @@ class PlayerPresenter(
 
     fun startPlayer() {
         playerInteractor.startPlayer()
-        if (getPlayerState() == PlayerRepository.PlayerState.STATE_PLAYING) {
+        if (getPlayerState() == PlayerState.STATE_PLAYING) {
             view?.startedTrack()
         }
     }
 
     fun pausePlayer() {
         playerInteractor.pausePlayer()
-        if (getPlayerState() == PlayerRepository.PlayerState.STATE_PAUSED) {
+        if (getPlayerState() == PlayerState.STATE_PAUSED) {
             view?.pausedTrack()
         }
     }
 
     fun playbackControl() {
         when (getPlayerState()) {
-            PlayerRepository.PlayerState.STATE_PLAYING -> {
+            PlayerState.STATE_PLAYING -> {
                 pausePlayer()
             }
-            PlayerRepository.PlayerState.STATE_PREPARED, PlayerRepository.PlayerState.STATE_PAUSED -> {
+            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
                 startPlayer()
                 view?.startTimer()
             }
@@ -86,7 +85,7 @@ class PlayerPresenter(
         }
     }
 
-    fun getPlayerState(): PlayerRepository.PlayerState  {
+    fun getPlayerState(): PlayerState  {
         return playerInteractor.getPlayerState()
     }
 

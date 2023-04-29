@@ -1,20 +1,20 @@
 package com.practicum.playlistmaker.domain.impl
 
-import com.practicum.playlistmaker.data.player.PlayerRepository
-import com.practicum.playlistmaker.domain.api.PlayerInteractorInterface
-import com.practicum.playlistmaker.domain.player.PlayerRepositoryInterface
+import com.practicum.playlistmaker.data.player.PlayerState
+import com.practicum.playlistmaker.domain.api.PlayerInteractor
+import com.practicum.playlistmaker.domain.player.PlayerRepository
 import java.util.concurrent.Executors
 
-class PlayerInteractor(
-    private val repository: PlayerRepositoryInterface,
-) : PlayerInteractorInterface {
+class TrackPlayerInteractor(
+    private val repository: PlayerRepository,
+) : PlayerInteractor {
     private val executor = Executors.newCachedThreadPool()
 
     override fun preparePlayer(trackUrl: String) {
         repository.preparePlayer(trackUrl)
     }
 
-    override fun getPlayerState(): PlayerRepository.PlayerState {
+    override fun getPlayerState(): PlayerState {
         return repository.playerState
     }
 
@@ -36,7 +36,7 @@ class PlayerInteractor(
 
     override fun likeTrack(
         trackId: String,
-        consumer: PlayerInteractorInterface.PlayerInfoConsumer
+        consumer: com.practicum.playlistmaker.domain.api.PlayerInteractor.PlayerInfoConsumer
     ) {
         /* В разработке
         executor.execute {
@@ -48,7 +48,7 @@ class PlayerInteractor(
 
     override fun unlikeTrack(
         trackId: String,
-        consumer: PlayerInteractorInterface.PlayerInfoConsumer
+        consumer: com.practicum.playlistmaker.domain.api.PlayerInteractor.PlayerInfoConsumer
     ) {
         /* В разработке
         executor.execute {
@@ -60,7 +60,7 @@ class PlayerInteractor(
 
     override fun addTrackToPlaylist(
         trackId: String,
-        consumer: PlayerInteractorInterface.PlayerInfoConsumer
+        consumer: com.practicum.playlistmaker.domain.api.PlayerInteractor.PlayerInfoConsumer
     ) {
         /* В разработке
         executor.execute {
@@ -73,7 +73,7 @@ class PlayerInteractor(
 
     override fun removeTrackFromPlaylist(
         trackId: String,
-        consumer: PlayerInteractorInterface.PlayerInfoConsumer
+        consumer: com.practicum.playlistmaker.domain.api.PlayerInteractor.PlayerInfoConsumer
     ) {
         /* В разработке
         executor.execute {
@@ -85,7 +85,7 @@ class PlayerInteractor(
 
     override fun getTrackForId(
         trackId: String,
-        consumer: PlayerInteractorInterface.PlayerInfoConsumer
+        consumer: com.practicum.playlistmaker.domain.api.PlayerInteractor.PlayerInfoConsumer
     ) {
         /* В разработке
         executor.execute {

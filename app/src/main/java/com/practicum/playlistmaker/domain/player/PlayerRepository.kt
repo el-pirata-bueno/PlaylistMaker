@@ -1,9 +1,9 @@
 package com.practicum.playlistmaker.domain.player
 
-import com.practicum.playlistmaker.data.player.PlayerRepository
+import com.practicum.playlistmaker.data.player.PlayerState
 
-interface PlayerRepositoryInterface {
-    var playerState: PlayerRepository.PlayerState
+interface PlayerRepository {
+    var playerState: PlayerState
 
     fun preparePlayer(trackUrl: String)
     fun startPlayer()

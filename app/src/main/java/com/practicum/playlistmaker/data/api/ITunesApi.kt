@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.domain.api
+package com.practicum.playlistmaker.data.api
 
 import com.practicum.playlistmaker.data.dto.TracksResponse
 import retrofit2.Call

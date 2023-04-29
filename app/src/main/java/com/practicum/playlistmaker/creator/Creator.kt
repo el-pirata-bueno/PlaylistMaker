@@ -1,21 +1,55 @@
 package com.practicum.playlistmaker.creator
 
-import com.practicum.playlistmaker.data.network.NetworkClient
-import com.practicum.playlistmaker.data.player.PlayerRepository
-import com.practicum.playlistmaker.domain.impl.PlayerInteractor
+import android.content.SharedPreferences
+import com.practicum.playlistmaker.data.network.ITunesNetworkClient
+import com.practicum.playlistmaker.data.player.TrackPlayerRepository
+import com.practicum.playlistmaker.data.search.TrackSearchHistory
+import com.practicum.playlistmaker.data.search.TrackSearchRepository
+import com.practicum.playlistmaker.data.api.ITunesApi
+import com.practicum.playlistmaker.domain.impl.TrackPlayerInteractor
+import com.practicum.playlistmaker.domain.impl.TrackSearchInteractor
 import com.practicum.playlistmaker.presentation.player.PlayerPresenter
 import com.practicum.playlistmaker.presentation.player.PlayerScreenView
+import com.practicum.playlistmaker.presentation.search.SearchPresenter
+import com.practicum.playlistmaker.presentation.search.SearchRouter
+import com.practicum.playlistmaker.presentation.search.SearchScreenView
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 object Creator {
-    private fun getRepository(): PlayerRepository {
-        return PlayerRepository(NetworkClient())
+
+    private val iTunesBaseUrl = "https://itunes.apple.com"
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(iTunesBaseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private fun getPlayerRepository(): TrackPlayerRepository {
+        return TrackPlayerRepository(ITunesNetworkClient())
     }
 
-    fun providePresenter(view: PlayerScreenView, trackId: String): PlayerPresenter {
+    private fun getSearchRepository(): TrackSearchRepository {
+        return TrackSearchRepository(retrofit.create(ITunesApi::class.java))
+    }
+
+    private fun getSearchHistory(sharedPrefsSearchHistory: SharedPreferences): TrackSearchHistory {
+        return TrackSearchHistory(sharedPrefsSearchHistory)
+    }
+
+    fun providePlayerPresenter(view: PlayerScreenView, trackId: String): PlayerPresenter {
         return PlayerPresenter(
             view = view,
             trackId = trackId,
-            playerInteractor = PlayerInteractor(getRepository())
+            playerInteractor = TrackPlayerInteractor(getPlayerRepository()),
+        )
+    }
+
+    fun provideSearchPresenter(view: SearchScreenView, router: SearchRouter, sharedPrefsSearchHistory: SharedPreferences): SearchPresenter {
+        return SearchPresenter(
+            view = view,
+            router = router,
+            searchInteractor = TrackSearchInteractor(getSearchHistory(sharedPrefsSearchHistory), getSearchRepository())
         )
     }
 }
