@@ -19,12 +19,12 @@
             android:id="@+id/arrow_back_search"
             app:icon="@drawable/arrow_back"
             app:iconGravity="textStart"
-            app:iconTint="?attr/colorOnSecondary"/>
+            app:iconTint="?attr/colorOnSecondary" />
 
         <TextView
             style="@style/ToolbarTextStyle"
             android:paddingStart="48dp"
-            android:text="@string/search"/>
+            android:text="@string/search" />
 
     </FrameLayout>
 
@@ -56,13 +56,14 @@
 
     </FrameLayout>
 
-    <ProgressBar android:id="@+id/progressBar"
+    <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:layout_marginTop="124dp"
         android:layout_gravity="center"
         android:indeterminateTint="@color/background_blue"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -79,7 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/searchHistoryViewGroup"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -112,8 +113,6 @@
 
         </LinearLayout>
 
-
-
     </FrameLayout>
 
     <FrameLayout
@@ -121,7 +120,7 @@
         android:layout_height="match_parent"
         android:id="@+id/placeholder"
         android:layout_marginTop="86dp"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -133,8 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="16dp"
-                android:visibility="gone" />
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 style="@style/ErrorTextStyle"
@@ -143,16 +141,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:layout_gravity="center"
-                android:textAlignment="center"
-                android:visibility="gone" />
+                android:textAlignment="center" />
 
             <Button
                 style="@style/SimpleButtonStyle"
                 android:id="@+id/updateButton"
                 android:text="@string/update"
                 android:padding="0dp"
-                android:layout_gravity="center"
-                android:visibility="gone" />
+                android:layout_gravity="center" />
 
         </LinearLayout>
 

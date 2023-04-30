@@ -2,21 +2,21 @@ package com.practicum.playlistmaker
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.presentation.models.TrackUi
 
 class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder>() {
 
-    var itemClickListener: ((Track) -> Unit)? = null
-    var tracks = ArrayList<Track>()
+    var itemClickListener: ((TrackUi) -> Unit)? = null
+    val tracks = ArrayList<TrackUi>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
         TrackViewHolder(parent)
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        val track = tracks.get(position)
+        val track = tracks[position]
         holder.bind(track)
         holder.itemView.setOnClickListener {
             itemClickListener?.invoke(track)
-            //Toast.makeText(holder.itemView.context, "Информация о треке ${holder.artistNameView.text} - ${holder.trackNameView.text} в разработке", Toast.LENGTH_SHORT).show()
         }
     }
 
