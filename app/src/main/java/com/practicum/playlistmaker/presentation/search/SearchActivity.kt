@@ -160,11 +160,6 @@ class SearchActivity : AppCompatActivity(), SearchScreenView {
         placeholderMessage.text = getString(R.string.something_went_wrong)
     }
 
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
-
     override fun clearSearchText() {
         inputEditText.setText("")
         progressBar.visibility = View.GONE
@@ -182,6 +177,20 @@ class SearchActivity : AppCompatActivity(), SearchScreenView {
         trackAdapter.tracks.clear()
         trackAdapter.notifyDataSetChanged()
         progressBar.visibility = View.VISIBLE
+    }
+
+    override fun clickDebounce(): Boolean {
+        val current: Boolean = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun loadTracks() {
@@ -225,14 +234,4 @@ class SearchActivity : AppCompatActivity(), SearchScreenView {
         trackListRecycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     }
-
-    override fun clickDebounce(): Boolean {
-        val current: Boolean = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
 }

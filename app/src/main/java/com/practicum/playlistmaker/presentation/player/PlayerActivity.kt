@@ -88,48 +88,9 @@ class PlayerActivity : AppCompatActivity(), PlayerScreenView {
         presenter.onViewDestroyed()
     }
 
-    /* Удалить?
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(PLAYLIST_STATUS, addedToPlaylist)
-        outState.putBoolean(FAVOURITES_STATUS, addedToFavourites)
-    }
-    */
-
-    /* Удалить?
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        addedToPlaylist = savedInstanceState.getBoolean(PLAYLIST_STATUS, false)
-        addedToFavourites = savedInstanceState.getBoolean(FAVOURITES_STATUS, false)
-    }
-    */
-
-
-    private fun initView() {
-        trackName = findViewById(R.id.track_name)
-        artistName = findViewById(R.id.artist_name)
-        trackLength = findViewById(R.id.track_length)
-        trackAlbum = findViewById(R.id.track_album)
-        trackYear = findViewById(R.id.track_year)
-        trackGenre = findViewById(R.id.track_genre)
-        artistCountry = findViewById(R.id.artist_country)
-        trackTime = findViewById(R.id.current_track_time)
-        trackCover = findViewById(R.id.track_cover_big)
-        arrowBackButton = findViewById(R.id.arrow_back_player)
-        playButton = findViewById(R.id.button_play)
-        addToPlaylistButton = findViewById(R.id.button_add_to_playlist)
-        addToFavouritesButton = findViewById(R.id.button_add_to_favourites)
-    }
-
     override fun playerPrepared() {
         playButton.isEnabled = true
     }
-
-    //override fun playerCompleted() {
-    //    trackTime.text = "0:00"
-    //    handler.removeCallbacks(updateTimer())
-    //    playButton.setImageResource(R.drawable.button_play)
-    //}
 
     override fun startedTrack() {
         playButton.setImageResource(R.drawable.button_pause)
@@ -207,6 +168,46 @@ class PlayerActivity : AppCompatActivity(), PlayerScreenView {
             .centerCrop()
             .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_cover_rounded_corners)))
             .into(trackCover)
+    }
+
+    /* Удалить?
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(PLAYLIST_STATUS, addedToPlaylist)
+        outState.putBoolean(FAVOURITES_STATUS, addedToFavourites)
+    }
+    */
+
+    /* Удалить?
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        addedToPlaylist = savedInstanceState.getBoolean(PLAYLIST_STATUS, false)
+        addedToFavourites = savedInstanceState.getBoolean(FAVOURITES_STATUS, false)
+    }
+    */
+
+    /* Удалить?
+    //override fun playerCompleted() {
+    //    trackTime.text = "0:00"
+    //    handler.removeCallbacks(updateTimer())
+    //    playButton.setImageResource(R.drawable.button_play)
+    //}
+     */
+
+    private fun initView() {
+        trackName = findViewById(R.id.track_name)
+        artistName = findViewById(R.id.artist_name)
+        trackLength = findViewById(R.id.track_length)
+        trackAlbum = findViewById(R.id.track_album)
+        trackYear = findViewById(R.id.track_year)
+        trackGenre = findViewById(R.id.track_genre)
+        artistCountry = findViewById(R.id.artist_country)
+        trackTime = findViewById(R.id.current_track_time)
+        trackCover = findViewById(R.id.track_cover_big)
+        arrowBackButton = findViewById(R.id.arrow_back_player)
+        playButton = findViewById(R.id.button_play)
+        addToPlaylistButton = findViewById(R.id.button_add_to_playlist)
+        addToFavouritesButton = findViewById(R.id.button_add_to_favourites)
     }
 }
 

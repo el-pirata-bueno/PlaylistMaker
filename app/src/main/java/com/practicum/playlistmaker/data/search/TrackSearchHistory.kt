@@ -9,8 +9,7 @@ import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.search.SearchHistory
 
 
-class TrackSearchHistory(var sharedPreferences: SharedPreferences) :
-    SearchHistory {
+class TrackSearchHistory(var sharedPreferences: SharedPreferences) : SearchHistory {
 
     companion object {
         const val MAX_HISTORY_SIZE = 10

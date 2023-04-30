@@ -55,7 +55,7 @@ class PlayerPresenter(
     }
 
     fun preparePlayer(trackUrl: String) {
-            playerInteractor.preparePlayer(trackUrl)
+        playerInteractor.preparePlayer(trackUrl)
     }
 
     fun startPlayer() {
@@ -85,11 +85,11 @@ class PlayerPresenter(
         }
     }
 
-    fun getPlayerState(): PlayerState  {
+    fun getPlayerState(): PlayerState {
         return playerInteractor.getPlayerState()
     }
 
-    fun getPlayerCurrentPosition(): Int  {
+    fun getPlayerCurrentPosition(): Int {
         return playerInteractor.getCurrentPosition()
     }
 

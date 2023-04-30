@@ -45,11 +45,18 @@ object Creator {
         )
     }
 
-    fun provideSearchPresenter(view: SearchScreenView, router: SearchRouter, sharedPrefsSearchHistory: SharedPreferences): SearchPresenter {
+    fun provideSearchPresenter(
+        view: SearchScreenView,
+        router: SearchRouter,
+        sharedPrefsSearchHistory: SharedPreferences
+    ): SearchPresenter {
         return SearchPresenter(
             view = view,
             router = router,
-            searchInteractor = TrackSearchInteractor(getSearchHistory(sharedPrefsSearchHistory), getSearchRepository())
+            searchInteractor = TrackSearchInteractor(
+                getSearchHistory(sharedPrefsSearchHistory),
+                getSearchRepository()
+            )
         )
     }
 }

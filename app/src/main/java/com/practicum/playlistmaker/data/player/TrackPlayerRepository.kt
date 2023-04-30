@@ -10,7 +10,7 @@ class TrackPlayerRepository(
     //private val cachedTracks = mutableMapOf<String, Track>()
     private val mediaPlayer = MediaPlayer()
 
-    override  var playerState = PlayerState.STATE_DEFAULT
+    override var playerState = PlayerState.STATE_DEFAULT
 
     override fun preparePlayer(previewUrl: String) {
         mediaPlayer.setDataSource(previewUrl)

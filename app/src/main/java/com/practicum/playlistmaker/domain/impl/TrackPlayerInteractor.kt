@@ -36,7 +36,7 @@ class TrackPlayerInteractor(
 
     override fun likeTrack(
         trackId: String,
-        consumer: com.practicum.playlistmaker.domain.api.PlayerInteractor.PlayerInfoConsumer
+        consumer: PlayerInteractor.PlayerInfoConsumer
     ) {
         /* В разработке
         executor.execute {
@@ -48,7 +48,7 @@ class TrackPlayerInteractor(
 
     override fun unlikeTrack(
         trackId: String,
-        consumer: com.practicum.playlistmaker.domain.api.PlayerInteractor.PlayerInfoConsumer
+        consumer: PlayerInteractor.PlayerInfoConsumer
     ) {
         /* В разработке
         executor.execute {
@@ -60,7 +60,7 @@ class TrackPlayerInteractor(
 
     override fun addTrackToPlaylist(
         trackId: String,
-        consumer: com.practicum.playlistmaker.domain.api.PlayerInteractor.PlayerInfoConsumer
+        consumer: PlayerInteractor.PlayerInfoConsumer
     ) {
         /* В разработке
         executor.execute {
@@ -73,7 +73,7 @@ class TrackPlayerInteractor(
 
     override fun removeTrackFromPlaylist(
         trackId: String,
-        consumer: com.practicum.playlistmaker.domain.api.PlayerInteractor.PlayerInfoConsumer
+        consumer: PlayerInteractor.PlayerInfoConsumer
     ) {
         /* В разработке
         executor.execute {
@@ -85,7 +85,7 @@ class TrackPlayerInteractor(
 
     override fun getTrackForId(
         trackId: String,
-        consumer: com.practicum.playlistmaker.domain.api.PlayerInteractor.PlayerInfoConsumer
+        consumer: PlayerInteractor.PlayerInfoConsumer
     ) {
         /* В разработке
         executor.execute {
