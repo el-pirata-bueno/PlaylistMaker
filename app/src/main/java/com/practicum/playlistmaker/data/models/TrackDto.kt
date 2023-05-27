@@ -15,6 +15,4 @@ data class TrackDto(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String,
-    val isLiked: Boolean,
-    val isFavourite: Boolean
 ) : Parcelable

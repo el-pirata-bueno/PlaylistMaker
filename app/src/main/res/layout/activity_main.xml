@@ -6,19 +6,19 @@
 
     <Button
         style="@style/MainButtonStyle"
-        android:id="@+id/search"
+        android:id="@+id/openSearchScreenButton"
         android:text="@string/search"
         app:icon="@drawable/ic_search_24" />
 
     <Button
         style="@style/MainButtonStyle"
-        android:id="@+id/media"
+        android:id="@+id/openMediaScreenButton"
         android:text="@string/media"
         app:icon="@drawable/ic_media" />
 
     <Button
         style="@style/MainButtonStyle"
-        android:id="@+id/settings"
+        android:id="@+id/openSettingsScreenButton"
         android:text="@string/settings"
         app:icon="@drawable/ic_settings" />
 

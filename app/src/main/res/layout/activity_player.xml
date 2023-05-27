@@ -12,57 +12,66 @@
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/first_left_border"
+            android:id="@+id/firstLeftBorder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.04444" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/first_right_border"
+            android:id="@+id/firstRightBorder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.95556" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/second_left_border"
+            android:id="@+id/secondLeftBorder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.06667" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/second_right_border"
+            android:id="@+id/secondRightBorder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.93333" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <Button
             style="@style/ArrowBackStyle"
-            android:id="@+id/arrow_back_player"
+            android:id="@+id/arrowBackButton"
             android:layout_marginTop="@dimen/standard_padding"
-            app:layout_constraintStart_toStartOf="@id/first_left_border"
+            app:layout_constraintStart_toStartOf="@id/firstLeftBorder"
             app:layout_constraintTop_toTopOf="parent"
             app:icon="@drawable/arrow_back"
             app:iconGravity="textStart"
             app:iconTint="?attr/colorOnSecondary" />
 
         <ImageView
-            android:id="@+id/track_cover_big"
+            android:id="@+id/trackCoverBig"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="42dp"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="@id/second_right_border"
-            app:layout_constraintStart_toStartOf="@id/second_left_border"
-            app:layout_constraintTop_toBottomOf="@id/arrow_back_player"
+            app:layout_constraintEnd_toEndOf="@id/secondRightBorder"
+            app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
+            app:layout_constraintTop_toBottomOf="@id/arrowBackButton"
             app:srcCompat="@drawable/cover_placeholder_big" />
 
         <TextView
-            android:id="@+id/track_name"
+            android:id="@+id/trackName"
             tools:text="Track Name"
             style="@style/TrackTextStyle"
             android:layout_width="0dp"
@@ -71,13 +80,12 @@
             android:textSize="@dimen/text_size"
             android:maxLines="1"
             android:ellipsize="end"
-            android:visibility="visible"
-            app:layout_constraintStart_toStartOf="@id/second_left_border"
-            app:layout_constraintEnd_toEndOf="@id/second_right_border"
-            app:layout_constraintTop_toBottomOf="@id/track_cover_big" />
+            app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
+            app:layout_constraintEnd_toEndOf="@id/secondRightBorder"
+            app:layout_constraintTop_toBottomOf="@id/trackCoverBig" />
 
         <TextView
-            android:id="@+id/artist_name"
+            android:id="@+id/artistName"
             tools:text="Artist Name"
             style="@style/TrackTextStyle"
             android:layout_width="0dp"
@@ -86,59 +94,102 @@
             android:textSize="@dimen/text_size_button"
             android:maxLines="1"
             android:ellipsize="end"
-            android:visibility="visible"
-            app:layout_constraintStart_toStartOf="@id/second_left_border"
-            app:layout_constraintEnd_toEndOf="@id/second_right_border"
-            app:layout_constraintTop_toBottomOf="@id/track_name" />
+            app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
+            app:layout_constraintEnd_toEndOf="@id/secondRightBorder"
+            app:layout_constraintTop_toBottomOf="@id/trackName" />
 
         <ImageButton
-            android:id="@+id/button_add_to_playlist"
+            android:id="@+id/addToPlaylistButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="54dp"
             android:layout_marginStart="0dp"
             android:background="?attr/colorSecondary"
             android:src="@drawable/button_add_to_playlist"
-            app:layout_constraintStart_toStartOf="@id/first_left_border"
-            app:layout_constraintTop_toBottomOf="@id/artist_name"
+            app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
+            app:layout_constraintTop_toBottomOf="@id/artistName"
             tools:text="Add to playlist" />
 
         <ImageButton
-            android:id="@+id/button_play"
+            android:id="@+id/playButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:src="@drawable/button_play"
             android:background="?attr/colorSecondary"
-            app:layout_constraintStart_toStartOf="@id/first_left_border"
-            app:layout_constraintEnd_toStartOf="@id/first_right_border"
-            app:layout_constraintTop_toBottomOf="@id/artist_name" />
+            app:layout_constraintStart_toStartOf="@id/firstLeftBorder"
+            app:layout_constraintEnd_toStartOf="@id/firstRightBorder"
+            app:layout_constraintTop_toBottomOf="@id/artistName" />
 
         <ImageButton
-            android:id="@+id/button_add_to_favourites"
+            android:id="@+id/likeButton"
             tools:text="Add to favourites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="54dp"
-            android:src="@drawable/button_add_to_favourites"
+            android:src="@drawable/button_like"
             android:background="?attr/colorSecondary"
-            app:layout_constraintEnd_toStartOf="@id/second_right_border"
-            app:layout_constraintTop_toBottomOf="@id/artist_name" />
+            app:layout_constraintEnd_toStartOf="@id/secondRightBorder"
+            app:layout_constraintTop_toBottomOf="@id/artistName" />
 
         <TextView
-            android:id="@+id/current_track_time"
+            android:id="@+id/currentTrackTime"
             tools:text="0:00"
             style="@style/TrackTextStyle"
-            android:layout_width="100dp"
+            android:layout_width="40dp"
             android:layout_height="16dp"
             android:textFontWeight="500"
             android:textSize="@dimen/text_size_button"
             android:gravity="center"
             android:layout_marginTop="132dp"
             android:text="@string/current_track_time_placeholder"
-            app:layout_constraintStart_toEndOf="@id/second_left_border"
-            app:layout_constraintEnd_toStartOf="@id/second_right_border"
-            app:layout_constraintTop_toBottomOf="@id/artist_name" />
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/secondLeftBorder"
+            app:layout_constraintEnd_toStartOf="@id/dot"
+            app:layout_constraintTop_toBottomOf="@id/artistName" />
+
+        <ImageView
+            android:src="@drawable/ic_dot"
+            android:id="@+id/dot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/currentTrackTime"
+            app:layout_constraintEnd_toStartOf="@id/totalTrackTime"
+            app:layout_constraintTop_toTopOf="@id/currentTrackTime"
+            app:layout_constraintBottom_toBottomOf="@id/currentTrackTime"/>
+
+        <TextView
+            android:id="@+id/totalTrackTime"
+            tools:text="0:00"
+            style="@style/TrackTextStyle"
+            android:layout_width="40dp"
+            android:layout_height="16dp"
+            android:textFontWeight="500"
+            android:textSize="@dimen/text_size_button"
+            android:gravity="center"
+            android:layout_marginTop="132dp"
+            android:text="@string/current_track_time_placeholder"
+            app:layout_constraintStart_toEndOf="@id/dot"
+            app:layout_constraintEnd_toStartOf="@id/secondRightBorder"
+            app:layout_constraintTop_toBottomOf="@id/artistName" />
+
+        <ProgressBar
+            android:id="@+id/trackProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:indeterminate="false"
+            android:min="0"
+            android:max="100"
+            android:minWidth="280dp"
+            android:minHeight="10dp"
+            android:progress="0"
+            app:layout_constraintStart_toEndOf="@id/secondLeftBorder"
+            app:layout_constraintEnd_toStartOf="@id/secondRightBorder"
+            app:layout_constraintTop_toBottomOf="@id/currentTrackTime"
+            android:progressBackgroundTint="@color/icon"
+            android:progressTint="?attr/colorOnPrimary"/>
 
         <TextView
             android:id="@+id/length"
@@ -148,12 +199,12 @@
             android:text="@string/length"
             android:textColor="@color/icon"
             android:layout_marginTop="30dp"
-            app:layout_constraintStart_toStartOf="@id/first_left_border"
+            app:layout_constraintStart_toStartOf="@id/firstLeftBorder"
             app:layout_constraintBottom_toTopOf="@id/album"
-            app:layout_constraintTop_toBottomOf="@id/current_track_time" />
+            app:layout_constraintTop_toBottomOf="@id/trackProgressBar" />
 
         <TextView
-            android:id="@+id/track_length"
+            android:id="@+id/trackLength"
             style="@style/TrackTextStyleSecondary"
             tools:text="Track length"
             android:layout_width="0dp"
@@ -161,9 +212,11 @@
             android:gravity="end|center_vertical"
             android:maxLines="1"
             android:ellipsize="end"
+            android:layout_marginTop="30dp"
             app:layout_constraintStart_toEndOf="@id/length"
-            app:layout_constraintEnd_toEndOf="@id/first_right_border"
-            app:layout_constraintBottom_toTopOf="@id/album" />
+            app:layout_constraintEnd_toEndOf="@id/firstRightBorder"
+            app:layout_constraintBottom_toTopOf="@id/album"
+            app:layout_constraintTop_toBottomOf="@id/trackProgressBar" />
 
         <TextView
             android:id="@+id/album"
@@ -172,11 +225,11 @@
             android:layout_height="@dimen/track_string_height"
             android:text="@string/album"
             android:textColor="@color/icon"
-            app:layout_constraintStart_toStartOf="@id/first_left_border"
+            app:layout_constraintStart_toStartOf="@id/firstLeftBorder"
             app:layout_constraintBottom_toTopOf="@id/year" />
 
         <TextView
-            android:id="@+id/track_album"
+            android:id="@+id/trackAlbum"
             style="@style/TrackTextStyleSecondary"
             tools:text="Track album"
             android:layout_width="0dp"
@@ -185,7 +238,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintStart_toEndOf="@id/album"
-            app:layout_constraintEnd_toEndOf="@id/first_right_border"
+            app:layout_constraintEnd_toEndOf="@id/firstRightBorder"
             app:layout_constraintBottom_toTopOf="@id/year" />
 
         <TextView
@@ -195,11 +248,11 @@
             android:layout_height="@dimen/track_string_height"
             android:text="@string/year"
             android:textColor="@color/icon"
-            app:layout_constraintStart_toStartOf="@id/first_left_border"
+            app:layout_constraintStart_toStartOf="@id/firstLeftBorder"
             app:layout_constraintBottom_toTopOf="@id/genre" />
 
         <TextView
-            android:id="@+id/track_year"
+            android:id="@+id/trackYear"
             style="@style/TrackTextStyleSecondary"
             tools:text="Track year"
             android:layout_width="0dp"
@@ -208,7 +261,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintStart_toEndOf="@id/year"
-            app:layout_constraintEnd_toEndOf="@id/first_right_border"
+            app:layout_constraintEnd_toEndOf="@id/firstRightBorder"
             app:layout_constraintBottom_toTopOf="@id/genre" />
 
         <TextView
@@ -218,11 +271,11 @@
             android:layout_height="@dimen/track_string_height"
             android:text="@string/genre"
             android:textColor="@color/icon"
-            app:layout_constraintStart_toStartOf="@id/first_left_border"
+            app:layout_constraintStart_toStartOf="@id/firstLeftBorder"
             app:layout_constraintBottom_toTopOf="@id/country" />
 
         <TextView
-            android:id="@+id/track_genre"
+            android:id="@+id/trackGenre"
             style="@style/TrackTextStyleSecondary"
             tools:text="Track genre"
             android:layout_width="0dp"
@@ -231,7 +284,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintStart_toEndOf="@id/genre"
-            app:layout_constraintEnd_toEndOf="@id/first_right_border"
+            app:layout_constraintEnd_toEndOf="@id/firstRightBorder"
             app:layout_constraintBottom_toTopOf="@id/country" />
 
         <TextView
@@ -242,11 +295,11 @@
             android:text="@string/country"
             android:layout_marginBottom="20dp"
             android:textColor="@color/icon"
-            app:layout_constraintStart_toStartOf="@id/first_left_border"
+            app:layout_constraintStart_toStartOf="@id/firstLeftBorder"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
-            android:id="@+id/artist_country"
+            android:id="@+id/artistCountry"
             style="@style/TrackTextStyleSecondary"
             tools:text="Artist country"
             android:layout_width="0dp"
@@ -256,7 +309,7 @@
             android:ellipsize="end"
             android:layout_marginBottom="20dp"
             app:layout_constraintStart_toEndOf="@id/country"
-            app:layout_constraintEnd_toEndOf="@id/first_right_border"
+            app:layout_constraintEnd_toEndOf="@id/firstRightBorder"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
