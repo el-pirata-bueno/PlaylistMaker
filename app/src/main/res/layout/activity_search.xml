@@ -4,19 +4,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/searchTracks"
-    android:orientation="vertical"
-    style="@style/LayoutStyle">
+    style="@style/LayoutStyle"
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
-        android:paddingStart="@dimen/standard_padding"
         android:layout_marginBottom="12dp"
+        android:paddingStart="@dimen/standard_padding"
         tools:ignore="RtlSymmetry">
 
         <Button
-            style="@style/ArrowBackStyle"
             android:id="@+id/arrowBackButton"
+            style="@style/ArrowBackStyle"
             app:icon="@drawable/arrow_back"
             app:iconGravity="textStart"
             app:iconTint="?attr/colorOnSecondary" />
@@ -31,18 +31,18 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/input_height"
-        android:paddingStart="@dimen/standard_padding"
         android:layout_marginBottom="24dp"
+        android:paddingStart="@dimen/standard_padding"
         android:paddingEnd="@dimen/standard_padding">
 
         <EditText
-            style="@style/InputText"
             android:id="@+id/inputSearch"
+            style="@style/InputText"
             android:drawableStart="@drawable/ic_search_16"
             android:drawablePadding="8dp"
-            android:textCursorDrawable="@drawable/color_cursor"
             android:hint="@string/input_hint"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textCursorDrawable="@drawable/color_cursor" />
 
         <ImageView
             android:id="@+id/clearSearchTextButton"
@@ -60,8 +60,8 @@
         android:id="@+id/progressBar"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        android:layout_marginTop="124dp"
         android:layout_gravity="center"
+        android:layout_marginTop="124dp"
         android:indeterminateTint="@color/background_blue"
         android:visibility="gone" />
 
@@ -77,9 +77,9 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/searchHistoryViewGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/searchHistoryViewGroup"
         android:visibility="gone">
 
         <LinearLayout
@@ -92,33 +92,33 @@
                 style="@style/ErrorTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:textFontWeight="500"
-                android:gravity="center"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/search_history_text" />
+                android:gravity="center"
+                android:text="@string/search_history_text"
+                android:textFontWeight="500" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/search_history_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="122dp" />
+                android:layout_height="183dp" />
 
             <Button
-                style="@style/SimpleButtonStyle"
                 android:id="@+id/clearHistoryButton"
-                android:text="@string/delete_history"
-                android:padding="0dp"
+                style="@style/SimpleButtonStyle"
+                android:layout_gravity="center"
                 android:layout_marginTop="24dp"
-                android:layout_gravity="center" />
+                android:padding="0dp"
+                android:text="@string/delete_history" />
 
         </LinearLayout>
 
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/placeholder"
         android:layout_marginTop="86dp"
         android:visibility="gone">
 
@@ -135,20 +135,20 @@
                 android:layout_marginBottom="16dp" />
 
             <TextView
-                style="@style/ErrorTextStyle"
                 android:id="@+id/placeholderMessage"
+                style="@style/ErrorTextStyle"
                 android:layout_width="312dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:layout_gravity="center"
+                android:layout_marginBottom="24dp"
                 android:textAlignment="center" />
 
             <Button
-                style="@style/SimpleButtonStyle"
                 android:id="@+id/updateSearchButton"
-                android:text="@string/update"
+                style="@style/SimpleButtonStyle"
+                android:layout_gravity="center"
                 android:padding="0dp"
-                android:layout_gravity="center" />
+                android:text="@string/update" />
 
         </LinearLayout>
 

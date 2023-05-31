@@ -43,7 +43,6 @@ object Creator {
         return TrackPlayerInteractor(getPlayerRepository(context))
     }
 
-    //Это идея с вебинара, можно откатить
     fun provideApi(): ITunesApiService {
         val logging = HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -66,7 +65,12 @@ object Creator {
 
     private fun getSearchHistory(context: Context): TracksSearchHistory {
         return TracksSearchHistory(
-            HistoryLocalStorage(context.getSharedPreferences("HISTORY_TRACKS", Context.MODE_PRIVATE))
+            HistoryLocalStorage(
+                context.getSharedPreferences(
+                    "HISTORY_TRACKS",
+                    Context.MODE_PRIVATE
+                )
+            )
         )
     }
 
@@ -84,7 +88,6 @@ object Creator {
 
     private fun getSettingsRepository(context: Context): SettingsRepository {
         return PlayerSettingsRepository(
-            context,
             SettingsLocalStorage(context.getSharedPreferences("APP_SETTINGS", Context.MODE_PRIVATE))
         )
     }
@@ -92,8 +95,4 @@ object Creator {
     fun provideSettingsInteractor(context: Context): SettingsInteractor {
         return PlayerSettingsInteractor(getSettingsRepository(context))
     }
-
-    //fun provideTrackPlayer(context: Context): TrackPlayer {
-    //    return TrackPlayer
-    //}
 }

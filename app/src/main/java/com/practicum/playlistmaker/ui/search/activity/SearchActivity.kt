@@ -24,61 +24,38 @@ class SearchActivity : AppCompatActivity() {
     private val trackAdapter = TrackAdapter()
     private var historyAdapter = TrackAdapter()
     private lateinit var searchText: String
-
+    private var message = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val errorText: String = getString(R.string.something_went_wrong)
-        val messageText: String = getString(R.string.nothing_found)
+        message = getString(R.string.nothing_found)
 
         router = NavigationRouter(this)
 
-        viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory(errorText, messageText))[SearchViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            SearchViewModel.getViewModelFactory()
+        )[SearchViewModel::class.java]
 
         viewModel.getSearchStateLiveData().observe(this) { screenState ->
             when (screenState) {
                 is SearchState.Content -> showContent(screenState.tracks)
-                is SearchState.History -> showHistory(screenState.historyTracks, screenState.clearSearchState)
-                is SearchState.Empty -> showEmpty(screenState.message)
+                is SearchState.History -> showHistory(screenState.historyTracks, screenState.clearSearch)
+                is SearchState.Empty -> showEmpty()
                 is SearchState.Error -> showError(screenState.errorMessage)
                 is SearchState.Loading -> showLoading()
-                is SearchState.PreLoading -> {
-                    binding.clearSearchTextButton.visibility = if (screenState.buttonVisible) View.VISIBLE else View.GONE
-                    showPreLoading()
-                }
+                is SearchState.PreLoading -> showPreLoading(screenState.buttonVisible)
                 else -> {}
             }
         }
-
-        viewModel.getClearSearchLiveData().observe(this) {
-            if (it) {
-                clearSearchText()
-                hideKeyboard()
-            }
-        }
-
-        viewModel.getClearSearchTextButtonLiveData().observe(this) { isVisible ->
-            if (isVisible) {
-                binding.clearSearchTextButton.visibility = View.VISIBLE
-            }
-            else {
-                binding.clearSearchTextButton.visibility = View.GONE
-                binding.inputSearch.setText("")
-            }
-        }
+        viewModel.changeText(binding.inputSearch.text.toString())
 
         initTrackAdapter()
         initHistoryAdapter()
         initListeners()
-
-        /* Тост на перспективу
-        viewModel.observeToastState().observe(this) { toast ->
-            showToast(toast)
-        }
-         */
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -93,7 +70,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initHistoryAdapter() {
         historyAdapter.itemClickListener = { track ->
-            router.openPlayer(track)
+            router.openPlayer(track.trackId)
         }
 
         binding.searchHistoryRecycler.adapter = historyAdapter
@@ -103,7 +80,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initTrackAdapter() {
         trackAdapter.itemClickListener = { track ->
-            router.openPlayer(track)
+            router.openPlayer(track.trackId)
             viewModel.addTrackToHistory(track)
         }
 
@@ -114,18 +91,21 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initListeners() {
         binding.inputSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 viewModel.changeText(s.toString())
+                viewModel.searchDebounce(changedText = s?.toString() ?: "")
+                searchText = s.toString()
 
                 if (binding.inputSearch.text.toString() != "") {
-                    viewModel.searchDebounce(changedText = s?.toString() ?: "")
-                    searchText = s.toString()
+
+                //    viewModel.searchDebounce(changedText = s?.toString() ?: "")
+                //    searchText = s.toString()
                 }
             }
 
-            override fun afterTextChanged(s: Editable?) { }
+            override fun afterTextChanged(s: Editable?) {}
         }
         )
 
@@ -160,11 +140,15 @@ class SearchActivity : AppCompatActivity() {
         binding.inputSearch.removeTextChangedListener(null)
     }
 
-    private fun showPreLoading() {
-        //if (screenState.isTextEmpty) { binding.inputSearch.setText("") }
+    private fun showPreLoading(clearSearchTextButtonVisible: Boolean) {
+        if (clearSearchTextButtonVisible) {
+            binding.clearSearchTextButton.visibility = View.VISIBLE
+        } else {
+            binding.clearSearchTextButton.visibility = View.GONE
+            binding.inputSearch.setText("")
+        }
         binding.progressBar.visibility = View.GONE
         binding.placeholder.visibility = View.GONE
-        binding.searchHistoryViewGroup.visibility = View.VISIBLE
         binding.updateSearchButton.visibility = View.GONE
     }
 
@@ -187,11 +171,11 @@ class SearchActivity : AppCompatActivity() {
         binding.placeholderImage.visibility = View.VISIBLE
         binding.placeholderMessage.visibility = View.VISIBLE
         binding.placeholderImage.setImageResource(R.drawable.something_went_wrong)
-        binding.placeholderMessage.text = getString(R.string.something_went_wrong)
+        binding.placeholderMessage.text = errorMessage
         hideKeyboard()
     }
 
-    private fun showEmpty(message: String) {
+    private fun showEmpty() {
         binding.progressBar.visibility = View.GONE
         binding.tracklistRecycler.visibility = View.GONE
         binding.searchHistoryViewGroup.visibility = View.GONE
@@ -200,7 +184,7 @@ class SearchActivity : AppCompatActivity() {
         binding.placeholderImage.visibility = View.VISIBLE
         binding.placeholderMessage.visibility = View.VISIBLE
         binding.placeholderImage.setImageResource(R.drawable.nothing_found)
-        binding.placeholderMessage.text = getString(R.string.nothing_found)
+        binding.placeholderMessage.text = message
         hideKeyboard()
     }
 
@@ -225,8 +209,8 @@ class SearchActivity : AppCompatActivity() {
             clearSearchText()
             hideKeyboard()
         }
+        binding.searchHistoryViewGroup.visibility = if (tracksHistory.isNotEmpty()) View.VISIBLE else View.GONE
 
-        binding.searchHistoryViewGroup.visibility = View.VISIBLE
         binding.clearSearchTextButton.visibility = View.GONE
         binding.placeholderMessage.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
@@ -251,10 +235,4 @@ class SearchActivity : AppCompatActivity() {
             getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(binding.inputSearch.windowToken, 0)
     }
-
-    /* Тост на будущее
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-    */
 }

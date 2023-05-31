@@ -49,9 +49,14 @@ class PlayerSearchInteractor(
 
     override fun getOneTrack(trackId: Int, consumer: SearchInteractor.GetOneTrackConsumer) {
         executor.execute {
-            when(val resource = repository.getTrack(trackId)) {
-                is Resource.Success -> { consumer.consume(resource.data, null) }
-                is Resource.Error -> { consumer.consume(null, resource.message) }
+            when (val resource = repository.getTrack(trackId)) {
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
+
+                is Resource.Error -> {
+                    consumer.consume(null, resource.message)
+                }
             }
         }
     }

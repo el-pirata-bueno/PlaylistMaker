@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.domain.settings.model
 
-data class ThemeSettings (
+data class ThemeSettings(
     var isActive: Boolean,
     var isDarkTheme: Boolean
 )

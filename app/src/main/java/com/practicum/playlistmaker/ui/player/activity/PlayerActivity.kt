@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.ui.player.activity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -17,79 +18,45 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var viewModel: PlayerViewModel
     private lateinit var router: NavigationRouter
     private lateinit var binding: ActivityPlayerBinding
+    private var errorText = ""
 
-    private var currentTrack: TrackUi? = null
-    private var previewUrl: String? = null
+    private var trackId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        router = NavigationRouter(this)
+        errorText = getString(R.string.track_error)
 
-        currentTrack = intent.getParcelableExtra<TrackUi>("track")
+        router = NavigationRouter(this)
+        trackId = intent.getIntExtra("trackId", 0)
 
         viewModel = ViewModelProvider(
             this,
-            PlayerViewModel.getViewModelFactory(currentTrack!!)
+            PlayerViewModel.getViewModelFactory(trackId)
         )[PlayerViewModel::class.java]
 
-        viewModel.getScreenStateLiveData().observe(this) { screenState ->
+        viewModel.getPlayerStateLiveData().observe(this) { screenState ->
             when (screenState) {
-                is PlayerState.Loading -> showContent(loading = true)
+                is PlayerState.Error -> showError(errorText)
                 is PlayerState.Content -> {
-                    showContent(loading = false)
-                    drawTrack(currentTrack!!)
+                    showContent()
+                    drawTrack(screenState.track, screenState.isPlaying, screenState.currentTrackTime)
                 }
-
                 else -> {}
             }
         }
 
-        viewModel.getPlayButtonLiveData().observe(this) { isPlaying ->
-            drawPlayButton(isPlaying)
-        }
+        initListeners()
 
-        viewModel.getAddToPlaylistButtonLiveData().observe(this) { isInPlaylist ->
-            drawPlaylistButton(isInPlaylist)
-        }
-
-        viewModel.getLikeButtonLiveData().observe(this) { active ->
-            drawLikeButton(active)
-        }
-
+        /* Для реализации расширенного функционала - фактическая длительность трека + прогерсс-бар
         viewModel.getTrackProgressLiveData().observe(this) { trackProgress ->
             binding.trackProgressBar.progress = trackProgress.toInt()
         }
 
-        viewModel.getTimerLiveData().observe(this) { timer ->
-            binding.currentTrackTime.text = timer
-        }
-
         viewModel.getTrackDurationLiveData().observe(this) { timer ->
             binding.totalTrackTime.text = timer
-        }
-
-        if (currentTrack != null) {
-            previewUrl = currentTrack!!.previewUrl
-            if (!previewUrl.equals(null)) {
-                viewModel.preparePlayer(previewUrl!!)
-            }
-            drawTrack(currentTrack!!)
-        }
-
-        initListeners()
-
-        /* На перспективу - PlayStatus для сикбара и т.п.
-        viewModel.getPlayStatusLiveData().observe(this) { playStatus ->
-            binding.trackProgressBar.progress = playStatus.progress.toInt()
-        }
-        */
-
-        /* На перспективу - сообщения об ошибках
-        viewModel.observeToastState().observe(this) { toast ->
-            showToast(toast)
         }
         */
     }
@@ -104,70 +71,35 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.releasePlayer()
     }
 
-    private fun showContent(loading: Boolean) {
-        binding.progressBar.isVisible = loading
-        binding.arrowBackButton.isVisible = !loading
-        binding.trackCoverBig.isVisible = !loading
-        binding.trackName.isVisible = !loading
-        binding.artistName.isVisible = !loading
-        binding.addToPlaylistButton.isVisible = !loading
-        binding.playButton.isVisible = !loading
-        binding.likeButton.isVisible = !loading
-        binding.currentTrackTime.isVisible = !loading
-        binding.trackProgressBar.isVisible = !loading
-        binding.length.isVisible = !loading
-        binding.trackLength.isVisible = !loading
-        binding.album.isVisible = !loading
-        binding.trackAlbum.isVisible = !loading
-        binding.year.isVisible = !loading
-        binding.trackYear.isVisible = !loading
-        binding.genre.isVisible = !loading
-        binding.trackGenre.isVisible = !loading
-        binding.country.isVisible = !loading
-        binding.artistCountry.isVisible = !loading
+    private fun showContent() {
+        binding.arrowBackButton.isVisible = true
+        binding.progressBar.isVisible = false
+        binding.trackCoverBig.isVisible = true
+        binding.trackName.isVisible = true
+        binding.artistName.isVisible = true
+        binding.addToPlaylistButton.isVisible = true
+        binding.playButton.isVisible = true
+        binding.likeButton.isVisible = true
+        binding.currentTrackTime.isVisible = true
+        binding.length.isVisible = true
+        binding.trackLength.isVisible = true
+        binding.album.isVisible = true
+        binding.trackAlbum.isVisible = true
+        binding.year.isVisible = true
+        binding.trackYear.isVisible = true
+        binding.genre.isVisible = true
+        binding.trackGenre.isVisible = true
+        binding.country.isVisible = true
+        binding.artistCountry.isVisible = true
     }
 
-    private fun drawPlayButton(isPlaying: Boolean) {
-        if (isPlaying) {
-            binding.playButton.setImageResource(R.drawable.button_pause)
-        } else {
-            binding.playButton.setImageResource(R.drawable.button_play)
-        }
+    private fun showError(errorMessage: String) {
+        binding.arrowBackButton.isVisible = true
+        binding.progressBar.isVisible = true
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
     }
 
-    private fun drawLikeButton(isLiked: Boolean) {
-        if (isLiked) {
-            binding.likeButton.setImageResource(R.drawable.button_liked)
-        } else {
-            binding.likeButton.setImageResource(R.drawable.button_like)
-        }
-    }
-
-    private fun drawPlaylistButton(isInPlaylist: Boolean) {
-        if (isInPlaylist) {
-            binding.addToPlaylistButton.setImageResource(R.drawable.button_added_to_playlist)
-        } else {
-            binding.addToPlaylistButton.setImageResource(R.drawable.button_add_to_playlist)
-        }
-    }
-
-    private fun drawTrack(track: TrackUi) {
-        binding.trackLength.text = track.trackTime
-
-        if (track.collectionName != null) {
-            binding.trackAlbum.text = track.collectionName
-        } else {
-            binding.trackAlbum.text = ""
-        }
-
-        binding.trackName.text = track.trackName
-        binding.artistName.text = track.artistName
-        binding.trackYear.text = track.releaseDate.substring(0, 4)
-        binding.trackGenre.text = track.primaryGenreName
-        binding.artistCountry.text = track.country
-
-        drawLikeButton(track.isLiked)
-        drawPlaylistButton(track.isInPlaylist)
+    private fun drawTrack(track: TrackUi, isPlaying: Boolean, currentTrackTime: String) {
 
         Glide.with(applicationContext)
             .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
@@ -175,6 +107,20 @@ class PlayerActivity : AppCompatActivity() {
             .centerCrop()
             .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_cover_rounded_corners)))
             .into(binding.trackCoverBig)
+
+        binding.playButton.setImageResource(if (isPlaying) R.drawable.button_pause else R.drawable.button_play)
+        binding.likeButton.setImageResource(if (track.isLiked) R.drawable.button_liked else R.drawable.button_like)
+        binding.addToPlaylistButton.setImageResource(if (track.isInPlaylist) R.drawable.button_added_to_playlist else R.drawable.button_add_to_playlist)
+
+        binding.currentTrackTime.text = currentTrackTime
+
+        binding.trackLength.text = track.trackTime
+        binding.trackAlbum.text = track.collectionName ?: ""
+        binding.trackName.text = track.trackName
+        binding.artistName.text = track.artistName
+        binding.trackYear.text = track.releaseDate.substring(0, 4)
+        binding.trackGenre.text = track.primaryGenreName
+        binding.artistCountry.text = track.country
     }
 
     private fun initListeners() {
@@ -194,9 +140,4 @@ class PlayerActivity : AppCompatActivity() {
             viewModel.likeTrack()
         }
     }
-
-    // На перспективу - сообщения об ошибках
-    //private fun showToast(message: String) {
-    //    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    //}
 }

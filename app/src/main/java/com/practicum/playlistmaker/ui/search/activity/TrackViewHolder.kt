@@ -7,7 +7,8 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.TracksViewBinding
 import com.practicum.playlistmaker.ui.models.TrackUi
 
-class TrackViewHolder(private val binding: TracksViewBinding) : RecyclerView.ViewHolder(binding.root) {
+class TrackViewHolder(private val binding: TracksViewBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
     fun bind(model: TrackUi) {
         binding.trackName.text = model.trackName

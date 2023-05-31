@@ -2,18 +2,17 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/LayoutStyle">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
-        android:paddingStart="@dimen/standard_padding"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="24dp"
+        android:paddingStart="@dimen/standard_padding">
 
         <Button
-            style="@style/ArrowBackStyle"
             android:id="@+id/arrowBackButton"
+            style="@style/ArrowBackStyle"
             app:icon="@drawable/arrow_back"
             app:iconGravity="textStart"
             app:iconTint="?attr/colorOnSecondary" />
@@ -27,7 +26,6 @@
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/themeSystemSwitcher"
-        android:theme="@style/Switch"
         android:layout_width="match_parent"
         android:layout_height="@dimen/string_height"
         android:layout_gravity="start"
@@ -37,11 +35,11 @@
         android:text="@string/system_theme"
         android:textColor="?attr/colorOnPrimary"
         android:textFontWeight="400"
-        android:textSize="@dimen/small_text_size" />
+        android:textSize="@dimen/small_text_size"
+        android:theme="@style/Switch" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/themeAppSwitcher"
-        android:theme="@style/Switch"
         android:layout_width="match_parent"
         android:layout_height="@dimen/string_height"
         android:layout_gravity="start"
@@ -51,23 +49,24 @@
         android:text="@string/dark_theme"
         android:textColor="?attr/colorOnPrimary"
         android:textFontWeight="400"
-        android:textSize="@dimen/small_text_size" />
+        android:textSize="@dimen/small_text_size"
+        android:theme="@style/Switch" />
 
     <Button
-        style="@style/ButtonStyle"
         android:id="@+id/shareButton"
+        style="@style/ButtonStyle"
         android:text="@string/share"
         app:icon="@drawable/ic_share" />
 
     <Button
-        style="@style/ButtonStyle"
         android:id="@+id/helpButton"
+        style="@style/ButtonStyle"
         android:text="@string/help"
         app:icon="@drawable/ic_support" />
 
     <Button
-        style="@style/ButtonStyle"
         android:id="@+id/agreementButton"
+        style="@style/ButtonStyle"
         android:text="@string/agreement"
         app:icon="@drawable/arrow_forward" />
 

@@ -9,12 +9,11 @@ class SettingsLocalStorage(private val sharedPreferences: SharedPreferences) {
         const val SYSTEM_THEME_ACTIVE = "SYSTEM_THEME_ACTIVE"
     }
 
-    fun getThemeAppSettings(): ThemeSettings {
-        return ThemeSettings(false, sharedPreferences.getBoolean(APP_DARK_THEME, false))
-    }
+    fun getThemeAppSettings(): ThemeSettings = ThemeSettings(false, sharedPreferences.getBoolean(APP_DARK_THEME, false))
 
     fun getThemeSystemSettings(): ThemeSettings {
-        val themeSystemActive = ThemeSettings(sharedPreferences.getBoolean(SYSTEM_THEME_ACTIVE, false), false)
+        val themeSystemActive =
+            ThemeSettings(sharedPreferences.getBoolean(SYSTEM_THEME_ACTIVE, false), false)
         if (themeSystemActive.isActive) {
             sharedPreferences.edit().putBoolean(APP_DARK_THEME, false).apply()
         }

@@ -24,10 +24,10 @@ class HandlerRouter(looper: Looper) {
         return current
     }
 
-    fun searchDebounce(r: Runnable) {
-        stopRunnable(null)
-        handler.postDelayed(r, SEARCH_DEBOUNCE_DELAY)
-    }
+    //fun searchDebounce(r: Runnable) {
+    //    handler.removeCallbacks(r)
+    //    handler.postDelayed(r, SEARCH_DEBOUNCE_DELAY)
+    //}
 
     fun startPlaying(r: Runnable) {
         handler.postDelayed(r, PLAYTIME_UPDATE_DELAY)
@@ -38,6 +38,6 @@ class HandlerRouter(looper: Looper) {
     }
 
     fun postAtTime(r: Runnable, token: Any, time: Long) {
-        handler.postAtTime (r, token, time)
+        handler.postAtTime(r, token, time)
     }
 }

@@ -10,20 +10,20 @@ class PlayerExternalNavigator(private val context: Context) : ExternalNavigator 
 
     override fun shareApp(shareUrl: String, typeText: String) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                type = typeText
-                putExtra(Intent.EXTRA_TEXT, shareUrl)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
+            type = typeText
+            putExtra(Intent.EXTRA_TEXT, shareUrl)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         context.startActivity(shareIntent)
     }
 
     override fun openSupport(email: EmailData) {
         val helpIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse(email.data)
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(email.emailAddress))
-                putExtra(Intent.EXTRA_SUBJECT, email.emailSubject)
-                putExtra(Intent.EXTRA_TEXT, email.emailText)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            data = Uri.parse(email.data)
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(email.emailAddress))
+            putExtra(Intent.EXTRA_SUBJECT, email.emailSubject)
+            putExtra(Intent.EXTRA_TEXT, email.emailText)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context.startActivity(helpIntent)
     }

@@ -20,67 +20,67 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(
-    private val track: TrackUi,
+    private val trackId: Int,
     private val playerInteractor: PlayerInteractor,
-    //private val trackPlayer: TrackPlayer,
     private val handlerRouter: HandlerRouter
 ) : ViewModel() {
 
+    private lateinit var track: TrackUi
     private var trackDuration: Int = 0
-    private var screenStateLiveData = MutableLiveData<PlayerState>()
-    fun getScreenStateLiveData(): LiveData<PlayerState> = screenStateLiveData
+    private var currentTrackTime: String = "0:00"
+    private var isPlaying: Boolean = false
 
-    private val trackProgressLiveData = MutableLiveData<Float>()
-    fun getTrackProgressLiveData(): LiveData<Float> = trackProgressLiveData
+    private var playerStateLiveData = MutableLiveData<PlayerState>()
+    fun getPlayerStateLiveData(): LiveData<PlayerState> = playerStateLiveData
 
-    private val playButtonLiveData = MutableLiveData<Boolean>()
-    fun getPlayButtonLiveData(): LiveData<Boolean> = playButtonLiveData
+    init {
+        playerStateLiveData.postValue(PlayerState.Loading)
 
-    private val addToPlaylistButtonLiveData = MutableLiveData<Boolean>()
-    fun getAddToPlaylistButtonLiveData(): LiveData<Boolean> = addToPlaylistButtonLiveData
-
-    private val likeButtonLiveData = MutableLiveData<Boolean>()
-    fun getLikeButtonLiveData(): LiveData<Boolean> = likeButtonLiveData
-
-    private val timerLiveData = MutableLiveData<String>()
-    fun getTimerLiveData(): LiveData<String> = timerLiveData
-
-    private val trackDurationLiveData = MutableLiveData<String>()
-    fun getTrackDurationLiveData(): LiveData<String> = trackDurationLiveData
+        if (trackId != 0) {
+            playerInteractor.getTrackFromId(trackId,
+                object : PlayerInteractor.GetTrackFromIdConsumer {
+                    override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
+                        if (foundTracks != null) {
+                            var tracks = foundTracks.toMutableList()
+                            track = mapTrackToUi(tracks[0])
+                            if (track.previewUrl != "") {
+                                preparePlayer(track.previewUrl!!)
+                            }
+                            playerStateLiveData.postValue(
+                                PlayerState.Content(
+                                    track, isPlaying, currentTrackTime
+                                )
+                            )
+                        } else {
+                            if (errorMessage != null) playerStateLiveData.postValue(
+                                PlayerState.Error(
+                                    errorMessage
+                                )
+                            )
+                        }
+                    }
+                })
+        }
+    }
 
     fun preparePlayer(previewUrl: String) {
         playerInteractor.preparePlayer(previewUrl)
     }
 
-
     fun startPlayer() {
         playerInteractor.startPlayer()
         trackDuration = getTrackDuration()
-        trackDurationLiveData.postValue(SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackDuration))
-        playButtonLiveData.postValue(true)
-
+        isPlaying = true
+        playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
         handlerRouter.startPlaying(updateTimer())
 
-        /* На перспективу - для PlayStatus
-        val statusObserver = object : TrackPlayer.StatusObserver {
-            override fun onProgress(progress: Float) {
-                playStatusLiveData.value = getCurrentPlayStatus().copy(progress = progress)
-            }
-
-            override fun onStop() {
-                playStatusLiveData.value = getCurrentPlayStatus().copy(isPlaying = false)
-            }
-
-            override fun onPlay() {
-                playStatusLiveData.value = getCurrentPlayStatus().copy(isPlaying = true)
-            }
-        }
-        */
+        //trackDurationLiveData.postValue(SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackDuration))
     }
 
     fun pausePlayer() {
         playerInteractor.pausePlayer()
-        playButtonLiveData.postValue(false)
+        isPlaying = false
+        playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
         handlerRouter.stopRunnable(updateTimer())
     }
 
@@ -90,17 +90,28 @@ class PlayerViewModel(
                 var state = getPlayerState()
                 if (state == MediaPlayerState.STATE_PLAYING) {
                     val currentPosition = getPlayerCurrentPosition()
-                    val progress = (currentPosition.toFloat() / trackDuration.toFloat()) * 100.0f
-                    timerLiveData.postValue(SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPosition))
+                    //val progress = (currentPosition.toFloat() / trackDuration.toFloat()) * 100.0f
+                    currentTrackTime =
+                        SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPosition)
+                    playerStateLiveData.postValue(
+                        PlayerState.Content(track, isPlaying, currentTrackTime)
+                    )
                     handlerRouter.startPlaying(this)
-                    trackProgressLiveData.postValue(progress)
+
+                    //trackProgressLiveData.postValue(progress)
                 }
 
                 if (state == MediaPlayerState.STATE_PREPARED) {
-                    timerLiveData.postValue("0:00")
-                    playButtonLiveData.postValue(false)
+                    isPlaying = false
+                    currentTrackTime = "0:00"
+                    playerStateLiveData.postValue(
+                        PlayerState.Content(
+                            track, isPlaying, currentTrackTime
+                        )
+                    )
                     handlerRouter.stopRunnable(updateTimer())
-                    trackProgressLiveData.postValue(0.0F)
+
+                    //trackProgressLiveData.postValue(0.0F)
                 }
             }
         }
@@ -110,12 +121,11 @@ class PlayerViewModel(
         if (track.isLiked) {
             playerInteractor.unlikeTrack(track.trackId)
             track.isLiked = false
-            likeButtonLiveData.postValue(false)
-
+            playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
         } else {
             playerInteractor.likeTrack(track.trackId)
             track.isLiked = true
-            likeButtonLiveData.postValue(true)
+            playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
         }
     }
 
@@ -123,12 +133,12 @@ class PlayerViewModel(
         if (track.isInPlaylist) {
             playerInteractor.removeTrackFromPlaylist(track.trackId)
             track.isInPlaylist = false
-            addToPlaylistButtonLiveData.postValue(false)
+            playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
 
         } else {
             playerInteractor.addTrackToPlaylist(track.trackId)
             track.isInPlaylist = true
-            addToPlaylistButtonLiveData.postValue(true)
+            playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
         }
     }
 
@@ -156,32 +166,9 @@ class PlayerViewModel(
         }
     }
 
-    fun getPlayerState(): MediaPlayerState {
-        return playerInteractor.getPlayerState()
-    }
-
-    fun getPlayerCurrentPosition(): Int {
-        return playerInteractor.getCurrentPosition()
-    }
-
-    fun getTrackDuration(): Int {
-        return playerInteractor.getTrackDuration()
-    }
-
-    companion object {
-        fun getViewModelFactory(track: TrackUi): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = this[APPLICATION_KEY] as App
-                PlayerViewModel(
-                    track,
-                    playerInteractor = Creator.providePlayerInteractor(context = application),
-                    //trackPlayer = Creator.provideTrackPlayer(context = application),
-                    handlerRouter = HandlerRouter(Looper.getMainLooper())
-                )
-            }
-        }
-    }
-
+    fun getPlayerState(): MediaPlayerState = playerInteractor.getPlayerState()
+    fun getPlayerCurrentPosition(): Int = playerInteractor.getCurrentPosition()
+    fun getTrackDuration(): Int = playerInteractor.getTrackDuration()
     private fun mapTrackToUi(track: Track): TrackUi {
         return TrackUi(
             track.trackName,
@@ -199,45 +186,18 @@ class PlayerViewModel(
         )
     }
 
-    /* На перспективу - Playstatus и т.п.
-    init {
-    playerInteractor.getTrackForId(track.trackId, playerConsumer)
 
-    playerInteractor.loadTrackData(
-        trackId = track.trackId,
-        onComplete = { trackUi ->
-            screenStateLiveData.postValue(
-                PlayerState.Content(trackUi)
-            )
-        }
-    )
-
-    }
-
-    private val playStatusLiveData = MutableLiveData<PlayStatus>()
-    fun getPlayStatusLiveData(): LiveData<PlayStatus> = playStatusLiveData
-
-
-    private fun getCurrentPlayStatus(): PlayStatus {
-        return playStatusLiveData.value ?: PlayStatus(progress = 0f, isPlaying = false)
-    }
-    */
-
-
-    /* За милых дам, за милых дам. Тост на перспективу
-    private val showToast = SingleLiveEvent<String>()
-    fun observeToastState(): LiveData<String> = showToast
-
-     */
-
-    /* Ещё какая-то штука на перспективу. Разобраться
-    private val playerConsumer: PlayerInteractor.PlayerInfoConsumer =
-        object : PlayerInteractor.PlayerInfoConsumer {
-            override fun consume(track: Track) {
-                //view?.drawTrack(mapTrackToUi(track))
+    companion object {
+        fun getViewModelFactory(trackId: Int): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = this[APPLICATION_KEY] as App
+                PlayerViewModel(
+                    trackId,
+                    playerInteractor = Creator.providePlayerInteractor(context = application),
+                    handlerRouter = HandlerRouter(Looper.getMainLooper())
+                )
             }
         }
-
-     */
+    }
 }
 

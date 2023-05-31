@@ -6,7 +6,6 @@ interface SearchInteractor {
     fun clearHistory()
     fun getHistoryTracks(): List<Track>
     fun addTrackToHistory(trackId: Int)
-    //fun addTrack(track: Track)
 
     fun getTracks(term: String, consumer: GetTracksConsumer)
     interface GetTracksConsumer {

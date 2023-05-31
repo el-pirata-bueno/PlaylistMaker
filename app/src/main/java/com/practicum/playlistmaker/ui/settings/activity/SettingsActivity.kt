@@ -25,7 +25,10 @@ class SettingsActivity : AppCompatActivity() {
 
         router = NavigationRouter(this)
 
-        viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory())[SettingsViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            SettingsViewModel.getViewModelFactory()
+        )[SettingsViewModel::class.java]
 
         binding.arrowBackButton.setOnClickListener {
             router.goBack()
@@ -35,26 +38,9 @@ class SettingsActivity : AppCompatActivity() {
         if (binding.themeSystemSwitcher.isChecked) {
             binding.themeAppSwitcher.isChecked = false
             binding.themeAppSwitcher.isClickable = false
-        }
-        else {
+        } else {
             binding.themeAppSwitcher.isChecked = viewModel.getThemeAppSettings()
         }
-
-
-        /*
-        viewModel.getSystemActiveThemeLiveData().observe(this) {isDarkTheme ->
-            binding.themeSystemSwitcher.isChecked = !isDarkTheme
-            if (binding.themeSystemSwitcher.isChecked) {
-                binding.themeAppSwitcher.isClickable = false
-            }
-        }
-
-        viewModel.getAppDarkThemeLiveData().observe(this) {isActive ->
-            if (binding.themeSystemSwitcher.isChecked == false) {
-                binding.themeAppSwitcher.isChecked = isActive
-            }
-        }
-        */
 
         initListeners()
     }
@@ -67,8 +53,7 @@ class SettingsActivity : AppCompatActivity() {
             if (checked) {
                 binding.themeAppSwitcher.isChecked = false
                 binding.themeAppSwitcher.isClickable = false
-            }
-            else {
+            } else {
                 binding.themeAppSwitcher.isClickable = true
             }
         }

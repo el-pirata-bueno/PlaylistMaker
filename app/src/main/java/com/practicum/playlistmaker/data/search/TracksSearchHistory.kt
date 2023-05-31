@@ -11,24 +11,21 @@ class TracksSearchHistory(private val localStorage: HistoryLocalStorage) : Searc
         const val MAX_HISTORY_SIZE = 10
     }
 
-    // чтение истории
     override fun getHistory(): List<Track> {
         val json = localStorage.getHistory()
-        return Gson().fromJson(json, object : TypeToken<ArrayList<Track?>?>() {}.type) ?: emptyList()
+        return Gson().fromJson(json, object : TypeToken<ArrayList<Track?>?>() {}.type)
+            ?: emptyList()
     }
 
-    // запись в историю
     override fun saveHistory(tracks: List<Track>) {
         val json = Gson().toJson(tracks)
         localStorage.saveHistory(json)
     }
 
-    // очистка истории
     override fun clearHistory() {
         localStorage.clearHistory()
     }
 
-    // добавление трека
     override fun addTrackToHistory(track: Track) {
         var history = getHistory().toMutableList()
         for (i in history.indices) {

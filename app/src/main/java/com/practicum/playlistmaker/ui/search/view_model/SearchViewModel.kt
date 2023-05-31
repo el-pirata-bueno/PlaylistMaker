@@ -19,45 +19,47 @@ import com.practicum.playlistmaker.util.Creator
 
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
-    private val handlerRouter: HandlerRouter,
-    private val errorText: String,
-    private val messageText: String
+    private val handlerRouter: HandlerRouter
 ) : ViewModel() {
 
-    private lateinit var historyTracks: List<Track>
+    private val historyTracks = ArrayList<TrackUi>()
 
     private val searchStateLiveData = MutableLiveData<SearchState>()
     fun getSearchStateLiveData(): LiveData<SearchState> = searchStateLiveData
+
+    init {
+        historyTracks.addAll(searchInteractor.getHistoryTracks().map { mapTrackToUi(it) })
+    }
 
     override fun onCleared() {
         super.onCleared()
         handlerRouter.stopRunnable(null)
     }
 
-    private val clearSearchTextButtonLiveData = MutableLiveData<Boolean>()
-    fun getClearSearchTextButtonLiveData(): LiveData<Boolean> = clearSearchTextButtonLiveData
-
-    private val clearSearchLiveData = MutableLiveData<Boolean>()
-    fun getClearSearchLiveData(): LiveData<Boolean> = clearSearchLiveData
-
     fun clearSearchText() {
-        val historyTracks = searchInteractor.getHistoryTracks()
-        clearSearchTextButtonLiveData.postValue(false)
-        searchStateLiveData.postValue(SearchState.History(historyTracks.map { mapTrackToUi(it) }, clearSearchState = true))
+        if (historyTracks.isNotEmpty()) {
+            searchStateLiveData.postValue(
+                SearchState.History(
+                    historyTracks = historyTracks,
+                    clearSearch = true
+                )
+            )
+        }
+        else {
+            searchStateLiveData.postValue(SearchState.PreLoading(false))
+        }
     }
-
-    private var latestSearchText: String? = null
 
     fun loadTracks(query: String) {
         if (query.isEmpty()) {
-            searchStateLiveData.postValue(SearchState.History(historyTracks.map { mapTrackToUi(it) }))
+            searchStateLiveData.postValue(SearchState.History(historyTracks))
             return
         }
         searchStateLiveData.postValue(SearchState.Loading)
 
         searchInteractor.getTracks(query, object : SearchInteractor.GetTracksConsumer {
             override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                val tracks = mutableListOf<TrackUi>()
+                val tracks = ArrayList<TrackUi>()
                 if (foundTracks != null) {
                     val sortedTracks = foundTracks.map { mapTrackToUi(it) }
                         .sortedWith(compareBy { !it.isLiked })
@@ -67,18 +69,13 @@ class SearchViewModel(
                 when {
                     errorMessage != null -> {
                         renderState(
-                            SearchState.Error(
-                                errorMessage = errorText
-                            )
+                            SearchState.Error(errorMessage = errorMessage)
                         )
-                        //showToast.postValue(errorMessage!!)
                     }
 
                     tracks.isEmpty() -> {
                         renderState(
-                            SearchState.Empty(
-                                message = messageText
-                            )
+                            SearchState.Empty
                         )
                     }
 
@@ -96,11 +93,6 @@ class SearchViewModel(
     }
 
     fun searchDebounce(changedText: String) {
-        if (latestSearchText == changedText) {
-            return
-        }
-
-        latestSearchText = changedText
         handlerRouter.stopRunnable(null)
 
         val searchRunnable = Runnable { loadTracks(changedText) }
@@ -109,12 +101,28 @@ class SearchViewModel(
         handlerRouter.postAtTime(searchRunnable, SEARCH_REQUEST_TOKEN, postTime)
     }
 
-    private fun renderState(state: SearchState) {
-        searchStateLiveData.postValue(state)
-    }
-
     fun addTrackToHistory(track: TrackUi) {
         searchInteractor.addTrackToHistory(track.trackId)
+    }
+
+    fun clearHistory() {
+        historyTracks.clear()
+        searchInteractor.clearHistory()
+        searchStateLiveData.postValue(SearchState.History(historyTracks))
+    }
+
+    fun searchFocusChanged(hasFocus: Boolean, text: String) {
+        if (hasFocus && text.isEmpty()) {
+            searchStateLiveData.postValue(SearchState.History(historyTracks))
+        }
+    }
+
+    fun changeText(text: String) {
+        searchStateLiveData.postValue(SearchState.PreLoading(text.isNotEmpty()))
+    }
+
+    private fun renderState(state: SearchState) {
+        searchStateLiveData.postValue(state)
     }
 
     private fun mapTrackToUi(track: Track): TrackUi {
@@ -134,45 +142,19 @@ class SearchViewModel(
         )
     }
 
-    fun clearHistory() {
-        //val historyTracks = searchInteractor.getHistoryTracks()
-        searchInteractor.clearHistory()
-        searchStateLiveData.postValue(SearchState.PreLoading(false))
-        //searchStateLiveData.postValue(SearchState.History(historyTracks.map { mapTrackToUi(it) }))
-    }
-
-    fun searchFocusChanged(hasFocus: Boolean, text: String) {
-        val historyTracks = searchInteractor.getHistoryTracks()
-        if (hasFocus && text.isEmpty()) {
-            searchStateLiveData.postValue(SearchState.History(historyTracks.map { mapTrackToUi(it) }))
-        }
-    }
-
-    fun changeText(text: String) {
-        searchStateLiveData.postValue(SearchState.PreLoading(text.isNotEmpty()))
-        clearSearchTextButtonLiveData.postValue(true)
-    }
-
     companion object {
         val SEARCH_REQUEST_TOKEN = Any()
 
-        fun getViewModelFactory(errorText: String, messageText: String): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = this[APPLICATION_KEY] as App
-                SearchViewModel(
-                    searchInteractor = Creator.provideSearchInteractor(context = application),
-                    handlerRouter = HandlerRouter(Looper.getMainLooper()),
-                    errorText,
-                    messageText
-                )
+        fun getViewModelFactory(): ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    val application = this[APPLICATION_KEY] as App
+                    SearchViewModel(
+                        searchInteractor = Creator.provideSearchInteractor(context = application),
+                        handlerRouter = HandlerRouter(Looper.getMainLooper())
+                    )
+                }
             }
-        }
     }
-
-    /* Тост на будущее
-    private val showToast = SingleLiveEvent<String>()
-    fun observeToastState(): LiveData<String> = showToast
-
-     */
 }
 

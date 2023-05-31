@@ -14,18 +14,18 @@ class NavigationRouter(
         activity.finish()
     }
 
-    inline fun <reified T: Activity> openActivity (context: Context) {
-        val intent = Intent(activity, T:: class.java)
+    inline fun <reified T : Activity> openActivity(context: Context) {
+        val intent = Intent(activity, T::class.java)
         context.startActivity(intent)
     }
 
-    fun openPlayer(track: TrackUi) {
+    fun openPlayer(trackId: Int) {
         val intent = Intent(activity, PlayerActivity::class.java)
-        passDataToNextScreen(intent, track);
+        passDataToNextScreen(intent, trackId);
         activity.startActivity(intent)
     }
 
-    fun passDataToNextScreen(intent: Intent, track: TrackUi) {
-        intent.putExtra("track", track)
+    fun passDataToNextScreen(intent: Intent, trackId: Int) {
+        intent.putExtra("trackId", trackId)
     }
 }

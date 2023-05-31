@@ -21,7 +21,8 @@ class LikesLocalStorage(private val sharedPreferences: SharedPreferences) {
 
     private fun changeLiked(trackId: Int, remove: Boolean) {
         val mutableSet = getLiked().toMutableSet()
-        val modified = if (remove) mutableSet.remove(trackId.toString()) else mutableSet.add(trackId.toString())
+        val modified =
+            if (remove) mutableSet.remove(trackId.toString()) else mutableSet.add(trackId.toString())
         if (modified) sharedPreferences.edit().putStringSet(LIKED_KEY, mutableSet).apply()
     }
 }

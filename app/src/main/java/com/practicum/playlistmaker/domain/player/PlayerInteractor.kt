@@ -14,13 +14,12 @@ interface PlayerInteractor {
     fun addTrackToPlaylist(trackId: Int)
     fun removeTrackFromPlaylist(trackId: Int)
 
-    fun getTrackForId(trackId: Int)
-
-    interface PlayerInfoConsumer {
-        fun consume(track: Track)
-    }
-
     fun getPlayerState(): MediaPlayerState
     fun getCurrentPosition(): Int
     fun getTrackDuration(): Int
+
+    fun getTrackFromId(trackId: Int, consumer: GetTrackFromIdConsumer)
+    interface GetTrackFromIdConsumer {
+        fun consume(foundTrack: List<Track>?, errorMessage: String?)
+    }
 }

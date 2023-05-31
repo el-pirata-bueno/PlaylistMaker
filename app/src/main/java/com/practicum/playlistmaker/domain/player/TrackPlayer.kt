@@ -1,6 +1,8 @@
 package com.practicum.playlistmaker.domain.player
 
 import com.practicum.playlistmaker.data.player.MediaPlayerState
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.util.Resource
 
 interface TrackPlayer {
     var playerState: MediaPlayerState
@@ -10,22 +12,13 @@ interface TrackPlayer {
     fun pausePlayer()
     fun releasePlayer()
 
-    // Поиск по сикбару в плеере
-    // fun seek(trackId: Int, position: Float)
-
     fun likeTrack(trackId: Int)
     fun unlikeTrack(trackId: Int)
     fun addTrackToPlaylist(trackId: Int)
     fun removeTrackFromPlaylist(trackId: Int)
 
-    fun getTrackForId(trackId: Int)
     fun getCurrentPosition(): Int
     fun getTrackDuration(): Int
 
-    // Для сикбара в плеере
-    interface StatusObserver {
-        fun onProgress(progress: Float)
-        fun onStop()
-        fun onPlay()
-    }
+    fun getTrackFromId(trackId: Int): Resource<List<Track>>
 }

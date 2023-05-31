@@ -10,10 +10,7 @@ import com.practicum.playlistmaker.util.Creator.provideApi
 
 class RetrofitNetworkClient(private val context: Context) : NetworkClient {
 
-    //можно заменить на http, чтобы работало бодрее
     private val api = provideApi()
-
-    //private val iTunesService = retrofit.create(ITunesApiService::class.java)
 
     override fun doRequest(dto: Any): Response {
         if (isConnected() == false) {

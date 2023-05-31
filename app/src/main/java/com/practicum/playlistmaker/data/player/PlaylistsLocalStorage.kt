@@ -21,7 +21,8 @@ class PlaylistsLocalStorage(private val sharedPreferences: SharedPreferences) {
 
     private fun changePlaylists(trackId: Int, remove: Boolean) {
         val mutableSet = getPlaylists().toMutableSet()
-        val modified = if (remove) mutableSet.remove(trackId.toString()) else mutableSet.add(trackId.toString())
+        val modified =
+            if (remove) mutableSet.remove(trackId.toString()) else mutableSet.add(trackId.toString())
         if (modified) sharedPreferences.edit().putStringSet(PLAYLISTS_KEY, mutableSet).apply()
     }
 }

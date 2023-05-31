@@ -18,19 +18,4 @@ class PlayerSharingInteractor(
     override fun openTerms(termsUrl: String) {
         externalNavigator.openTerms(termsUrl)
     }
-
-    /* Эти методы видимо для случая, когда url и прочие вещи хранятся в БД, а не в ресурсах
-    private fun getShareAppLink(): String {
-        return R.string.share_button_link.toString()
-    }
-
-    private fun getSupportEmailData(): EmailData {
-        val email = EmailData()
-        return email
-    }
-
-    private fun getTermsLink(): String {
-        return getString(R.string.agreement_link)
-    }
-    */
 }

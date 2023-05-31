@@ -23,9 +23,7 @@ class App : Application() {
                 themeSystemSettings.isDarkTheme = true
             }
             switchTheme(themeSystemSettings.isDarkTheme)
-        }
-
-        else {
+        } else {
             themeAppSettings.isActive = true
             switchTheme(themeAppSettings.isDarkTheme)
         }

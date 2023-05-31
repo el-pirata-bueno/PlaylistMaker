@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.data.network
 
-import com.practicum.playlistmaker.data.dto.TrackGetResponse
 import com.practicum.playlistmaker.data.dto.TracksSearchResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -11,5 +10,5 @@ interface ITunesApiService {
     fun searchTracks(@Query("term") term: String): Call<TracksSearchResponse>
 
     @GET("/lookup")
-    fun searchTrackById(@Query("id") term: Int): Call<TrackGetResponse>
+    fun searchTrackById(@Query("id") term: Int): Call<TracksSearchResponse>
 }
