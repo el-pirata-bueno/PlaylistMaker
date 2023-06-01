@@ -6,6 +6,7 @@
     <string name="media">Медиатека</string>
     <string name="settings">Настройки</string>
     <string name="dark_theme">Темная тема</string>
+    <string name="system_theme">Системная тема</string>
     <string name="share">Поделиться приложением</string>
     <string name="help">Написать в поддержку</string>
     <string name="update">Обновить</string>
@@ -21,6 +22,8 @@
     <string name="mailto">mailto:</string>
     <string name="nothing_found">Ничего не нашлось</string>
     <string name="something_went_wrong">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
+    <string name="track_error">Информация о треке не может быть загружена</string>
+    <string name="server_error">Ошибка сервера</string>
     <string name="search_history_text">Вы искали</string>
     <string name="delete_history">Очистить историю</string>
     <string name="length">Длительность</string>

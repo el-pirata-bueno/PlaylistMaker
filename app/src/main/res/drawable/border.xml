@@ -5,8 +5,8 @@
         android:color="@color/input"
         android:padding="0dp" />
     <padding
+        android:bottom="8.5dp"
         android:left="14dp"
-        android:top="8.5dp"
         android:right="14dp"
-        android:bottom="8.5dp" />
+        android:top="8.5dp" />
 </shape>

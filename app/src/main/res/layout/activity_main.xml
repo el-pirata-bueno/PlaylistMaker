@@ -4,21 +4,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/MainLayoutStyle">
 
+    <TextView
+        style="@style/MainToolbarTextStyle"
+        android:text="@string/app_name" />
+
     <Button
+        android:id="@+id/openSearchScreenButton"
         style="@style/MainButtonStyle"
-        android:id="@+id/search"
         android:text="@string/search"
         app:icon="@drawable/ic_search_24" />
 
     <Button
+        android:id="@+id/openMediaScreenButton"
         style="@style/MainButtonStyle"
-        android:id="@+id/media"
         android:text="@string/media"
         app:icon="@drawable/ic_media" />
 
     <Button
+        android:id="@+id/openSettingsScreenButton"
         style="@style/MainButtonStyle"
-        android:id="@+id/settings"
         android:text="@string/settings"
         app:icon="@drawable/ic_settings" />
 

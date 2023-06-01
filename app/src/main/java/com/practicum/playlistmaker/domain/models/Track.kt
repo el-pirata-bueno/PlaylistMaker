@@ -5,26 +5,17 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Track(
-    val trackName: String?,
+    val trackName: String,
     val artistName: String,
     val trackId: Int,
-    val trackTimeMillis: Int,
+    val trackTime: String,
     val artworkUrl100: String,
-    val collectionName: String?,
+    val collectionName: String,
     val releaseDate: String,
     val primaryGenreName: String,
     val country: String,
-    val previewUrl: String?,
+    val previewUrl: String,
     val isLiked: Boolean,
-    val isFavourite: Boolean
+    val isInPlaylist: Boolean
 ) : Parcelable
 
-// trackName - название композиции
-// artistName - имя исполнителя
-// trackId - уникальный id трека
-// trackTime - продолжительность трека
-// artworkUrl100 - ссылка на изображение обложки
-// collectionName - название альбома
-// releaseDate - год релиза трека
-// primaryGenreName - жанр трека
-// country - страна исполнителя

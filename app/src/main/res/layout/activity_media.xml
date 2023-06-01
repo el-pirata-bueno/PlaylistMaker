@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/LayoutStyle">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
+        android:layout_marginBottom="24dp"
         android:paddingStart="@dimen/standard_padding"
-        android:layout_marginBottom="24dp">
+        tools:ignore="RtlSymmetry">
 
         <Button
+            android:id="@+id/arrowBackButton"
             style="@style/ArrowBackStyle"
-            android:id="@+id/arrow_back_media"
             app:icon="@drawable/arrow_back"
             app:iconGravity="textStart"
             app:iconTint="?attr/colorOnSecondary" />
@@ -23,15 +26,14 @@
 
     </FrameLayout>
 
-
     <TextView
-        android:id="@+id/media_unfinished"
+        android:id="@+id/mediaUnfinished"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="?attr/colorOnSecondary"
         android:text="@string/media_unfinished"
+        android:textColor="?attr/colorOnSecondary"
         android:textSize="@dimen/text_size"
         app:fontFamily="@font/ys_display_regular" />
 
