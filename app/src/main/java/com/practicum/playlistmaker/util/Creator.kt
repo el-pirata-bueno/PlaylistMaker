@@ -4,12 +4,12 @@ import android.content.Context
 import com.practicum.playlistmaker.data.network.ITunesApiService
 import com.practicum.playlistmaker.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.data.player.AudioTrackPlayer
-import com.practicum.playlistmaker.data.player.LikesLocalStorage
-import com.practicum.playlistmaker.data.player.PlaylistsLocalStorage
-import com.practicum.playlistmaker.data.search.HistoryLocalStorage
+import com.practicum.playlistmaker.data.storage.LikesLocalStorage
+import com.practicum.playlistmaker.data.storage.PlaylistsLocalStorage
+import com.practicum.playlistmaker.data.storage.HistoryLocalStorage
 import com.practicum.playlistmaker.data.search.PlayerSearchRepository
 import com.practicum.playlistmaker.data.search.TracksSearchHistory
-import com.practicum.playlistmaker.data.settings.SettingsLocalStorage
+import com.practicum.playlistmaker.data.storage.SettingsLocalStorage
 import com.practicum.playlistmaker.data.settings.SettingsRepository
 import com.practicum.playlistmaker.data.settings.impl.PlayerSettingsRepository
 import com.practicum.playlistmaker.data.sharing.ExternalNavigator

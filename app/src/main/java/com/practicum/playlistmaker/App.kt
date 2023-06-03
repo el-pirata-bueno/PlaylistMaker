@@ -3,7 +3,7 @@ package com.practicum.playlistmaker
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.playlistmaker.data.settings.SettingsLocalStorage
+import com.practicum.playlistmaker.data.storage.SettingsLocalStorage
 import com.practicum.playlistmaker.domain.settings.model.ThemeSettings
 
 class App : Application() {
@@ -13,6 +13,12 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        //startKoin {
+        //    androidContext(this@MoviesApplication)
+        //    modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+        //}
+
         val localStorage = SettingsLocalStorage(getSharedPreferences("APP_SETTINGS", MODE_PRIVATE))
 
         themeAppSettings = localStorage.getThemeAppSettings()

@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.data.settings
+package com.practicum.playlistmaker.data.storage
 
 import android.content.SharedPreferences
 import com.practicum.playlistmaker.domain.settings.model.ThemeSettings
@@ -9,7 +9,8 @@ class SettingsLocalStorage(private val sharedPreferences: SharedPreferences) {
         const val SYSTEM_THEME_ACTIVE = "SYSTEM_THEME_ACTIVE"
     }
 
-    fun getThemeAppSettings(): ThemeSettings = ThemeSettings(false, sharedPreferences.getBoolean(APP_DARK_THEME, false))
+    fun getThemeAppSettings(): ThemeSettings = ThemeSettings(false, sharedPreferences.getBoolean(
+        APP_DARK_THEME, false))
 
     fun getThemeSystemSettings(): ThemeSettings {
         val themeSystemActive =

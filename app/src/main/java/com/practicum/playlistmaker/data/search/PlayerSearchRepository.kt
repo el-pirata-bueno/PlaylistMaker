@@ -6,8 +6,8 @@ import com.practicum.playlistmaker.data.dto.TracksSearchRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchResponse
 import com.practicum.playlistmaker.data.models.TrackDto
 import com.practicum.playlistmaker.data.network.NetworkClient
-import com.practicum.playlistmaker.data.player.LikesLocalStorage
-import com.practicum.playlistmaker.data.player.PlaylistsLocalStorage
+import com.practicum.playlistmaker.data.storage.LikesLocalStorage
+import com.practicum.playlistmaker.data.storage.PlaylistsLocalStorage
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.search.SearchRepository
 import com.practicum.playlistmaker.util.Resource
