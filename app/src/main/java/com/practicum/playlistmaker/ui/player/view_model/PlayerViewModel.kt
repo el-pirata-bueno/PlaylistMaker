@@ -1,21 +1,14 @@
 package com.practicum.playlistmaker.ui.player.view_model
 
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.data.player.MediaPlayerState
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.player.PlayerInteractor
 import com.practicum.playlistmaker.ui.models.HandlerRouter
 import com.practicum.playlistmaker.ui.models.PlayerState
 import com.practicum.playlistmaker.ui.models.TrackUi
-import com.practicum.playlistmaker.util.Creator
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -188,16 +181,16 @@ class PlayerViewModel(
 
 
     companion object {
-        fun getViewModelFactory(trackId: Int): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = this[APPLICATION_KEY] as App
-                PlayerViewModel(
-                    trackId,
-                    playerInteractor = Creator.providePlayerInteractor(context = application),
-                    handlerRouter = HandlerRouter(Looper.getMainLooper())
-                )
-            }
-        }
+        //fun getViewModelFactory(trackId: Int): ViewModelProvider.Factory = viewModelFactory {
+        //    initializer {
+        //        val application = this[APPLICATION_KEY] as App
+        //        PlayerViewModel(
+        //            trackId,
+        //            playerInteractor = Creator.providePlayerInteractor(context = application),
+        //            handlerRouter = HandlerRouter(Looper.getMainLooper())
+        //        )
+        //    }
+        //}
     }
 }
 

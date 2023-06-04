@@ -1,21 +1,22 @@
-package com.practicum.playlistmaker.data.storage
+package com.practicum.playlistmaker.data.storage.impl
 
 import android.content.SharedPreferences
+import com.practicum.playlistmaker.data.storage.LikesStorage
 
-class LikesLocalStorage(private val sharedPreferences: SharedPreferences) {
+class LikesLocalStorage(private val sharedPreferences: SharedPreferences): LikesStorage {
     private companion object {
         const val LIKED_KEY = "LIKED_KEY"
     }
 
-    fun likeTrack(trackId: Int) {
+    override fun likeTrack(trackId: Int) {
         changeLiked(trackId = trackId, remove = false)
     }
 
-    fun unlikeTrack(trackId: Int) {
+    override fun unlikeTrack(trackId: Int) {
         changeLiked(trackId = trackId, remove = true)
     }
 
-    fun getLiked(): Set<String> {
+    override fun getLiked(): Set<String> {
         return sharedPreferences.getStringSet(LIKED_KEY, emptySet()) ?: emptySet()
     }
 

@@ -6,11 +6,8 @@ import android.net.NetworkCapabilities
 import com.practicum.playlistmaker.data.dto.Response
 import com.practicum.playlistmaker.data.dto.TrackGetRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchRequest
-import com.practicum.playlistmaker.util.Creator.provideApi
 
-class RetrofitNetworkClient(private val context: Context) : NetworkClient {
-
-    private val api = provideApi()
+class RetrofitNetworkClient(private val context: Context, private val api: ITunesApiService) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         if (isConnected() == false) {

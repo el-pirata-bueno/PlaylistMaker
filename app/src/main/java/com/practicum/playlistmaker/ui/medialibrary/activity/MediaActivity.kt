@@ -8,7 +8,6 @@ import com.practicum.playlistmaker.ui.models.NavigationRouter
 class MediaActivity : AppCompatActivity() {
     private lateinit var router: NavigationRouter
     private lateinit var binding: ActivityMediaBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMediaBinding.inflate(layoutInflater)

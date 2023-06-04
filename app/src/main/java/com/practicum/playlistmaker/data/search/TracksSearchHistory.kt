@@ -2,7 +2,7 @@ package com.practicum.playlistmaker.data.search
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.practicum.playlistmaker.data.storage.HistoryLocalStorage
+import com.practicum.playlistmaker.data.storage.impl.HistoryLocalStorage
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.search.SearchHistory
 

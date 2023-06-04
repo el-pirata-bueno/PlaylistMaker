@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
@@ -15,9 +14,11 @@ import com.practicum.playlistmaker.ui.models.NavigationRouter
 import com.practicum.playlistmaker.ui.models.SearchState
 import com.practicum.playlistmaker.ui.models.TrackUi
 import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
+    //private lateinit var viewModel: SearchViewModel
     private lateinit var router: NavigationRouter
     private lateinit var binding: ActivitySearchBinding
 
@@ -35,10 +36,10 @@ class SearchActivity : AppCompatActivity() {
 
         router = NavigationRouter(this)
 
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.getViewModelFactory()
-        )[SearchViewModel::class.java]
+        //viewModel = ViewModelProvider(
+        //    this,
+        //    SearchViewModel.getViewModelFactory()
+        //)[SearchViewModel::class.java]
 
         viewModel.getSearchStateLiveData().observe(this) { screenState ->
             when (screenState) {
