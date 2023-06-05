@@ -9,16 +9,12 @@ import com.practicum.playlistmaker.ui.search.activity.SearchActivity
 import com.practicum.playlistmaker.ui.settings.activity.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var router: NavigationRouter
-    private lateinit var binding: ActivityMainBinding
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val router: NavigationRouter by lazy { NavigationRouter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        router = NavigationRouter(this)
 
         binding.openSearchScreenButton.setOnClickListener {
             router.openActivity<SearchActivity>(this)

@@ -2,11 +2,18 @@ package com.practicum.playlistmaker.data.storage.impl
 
 import android.content.SharedPreferences
 import com.practicum.playlistmaker.data.storage.PlaylistsStorage
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
-class PlaylistsLocalStorage(private val sharedPreferences: SharedPreferences): PlaylistsStorage {
+class PlaylistsLocalStorage(
+    //private val sharedPreferences: SharedPreferences
+    ): PlaylistsStorage, KoinComponent {
+
     private companion object {
         const val PLAYLISTS_KEY = "PLAYLISTS_KEY"
     }
+    val sharedPreferences: SharedPreferences by inject(qualifier = named("playlistsPrefs"))
 
     override fun addTrackToPlaylist(trackId: Int) {
         changePlaylists(trackId = trackId, remove = false)

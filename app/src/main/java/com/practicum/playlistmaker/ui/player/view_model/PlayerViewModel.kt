@@ -36,7 +36,7 @@ class PlayerViewModel(
                         if (foundTracks != null) {
                             var tracks = foundTracks.toMutableList()
                             track = mapTrackToUi(tracks[0])
-                            if (track.previewUrl != "") {
+                            if (track.previewUrl != null) {
                                 preparePlayer(track.previewUrl!!)
                             }
                             playerStateLiveData.postValue(
@@ -179,18 +179,5 @@ class PlayerViewModel(
         )
     }
 
-
-    companion object {
-        //fun getViewModelFactory(trackId: Int): ViewModelProvider.Factory = viewModelFactory {
-        //    initializer {
-        //        val application = this[APPLICATION_KEY] as App
-        //        PlayerViewModel(
-        //            trackId,
-        //            playerInteractor = Creator.providePlayerInteractor(context = application),
-        //            handlerRouter = HandlerRouter(Looper.getMainLooper())
-        //        )
-        //    }
-        //}
-    }
 }
 

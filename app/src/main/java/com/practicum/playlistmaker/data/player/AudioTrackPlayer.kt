@@ -48,7 +48,7 @@ class AudioTrackPlayer(
     }
 
     override fun releasePlayer() {
-        mediaPlayer.release()
+        mediaPlayer.reset()
     }
 
     override fun likeTrack(trackId: Int) {

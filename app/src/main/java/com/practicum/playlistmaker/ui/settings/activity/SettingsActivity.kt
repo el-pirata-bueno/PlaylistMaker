@@ -13,23 +13,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
     private val viewModel: SettingsViewModel by viewModel()
-    //private lateinit var viewModel: SettingsViewModel
-    private lateinit var binding: ActivitySettingsBinding
-    private lateinit var router: NavigationRouter
+    private val binding by lazy { ActivitySettingsBinding.inflate(layoutInflater) }
+    private val router: NavigationRouter by lazy { NavigationRouter(this) }
     private lateinit var systemTheme: ThemeSettings
-    //private lateinit var appTheme: ThemeSettings
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        router = NavigationRouter(this)
-
-        //viewModel = ViewModelProvider(
-        //    this,
-        //    SettingsViewModel.getViewModelFactory()
-        //)[SettingsViewModel::class.java]
 
         binding.arrowBackButton.setOnClickListener {
             router.goBack()

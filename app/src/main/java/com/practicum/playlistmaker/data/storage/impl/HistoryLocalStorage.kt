@@ -2,11 +2,18 @@ package com.practicum.playlistmaker.data.storage.impl
 
 import android.content.SharedPreferences
 import com.practicum.playlistmaker.data.storage.HistoryStorage
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
-class HistoryLocalStorage(private val sharedPreferences: SharedPreferences) : HistoryStorage {
+class HistoryLocalStorage(
+    //private val sharedPreferences: SharedPreferences
+    ) : HistoryStorage, KoinComponent {
+
     private companion object {
         const val SEARCH_HISTORY = "SEARCH_HISTORY"
     }
+    val sharedPreferences: SharedPreferences by inject(qualifier = named("historyPrefs"))
 
     override fun getHistory(): String = sharedPreferences.getString(SEARCH_HISTORY, "") ?: ""
 

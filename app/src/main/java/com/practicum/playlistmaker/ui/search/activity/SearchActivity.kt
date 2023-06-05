@@ -18,9 +18,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
     private val viewModel: SearchViewModel by viewModel()
-    //private lateinit var viewModel: SearchViewModel
-    private lateinit var router: NavigationRouter
-    private lateinit var binding: ActivitySearchBinding
+    private val binding by lazy { ActivitySearchBinding.inflate(layoutInflater) }
+    private val router: NavigationRouter by lazy { NavigationRouter(this) }
 
     private val trackAdapter = TrackAdapter()
     private var historyAdapter = TrackAdapter()
@@ -29,17 +28,9 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         message = getString(R.string.nothing_found)
-
-        router = NavigationRouter(this)
-
-        //viewModel = ViewModelProvider(
-        //    this,
-        //    SearchViewModel.getViewModelFactory()
-        //)[SearchViewModel::class.java]
 
         viewModel.getSearchStateLiveData().observe(this) { screenState ->
             when (screenState) {

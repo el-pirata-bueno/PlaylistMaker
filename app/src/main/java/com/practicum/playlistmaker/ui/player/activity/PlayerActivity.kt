@@ -19,27 +19,20 @@ class PlayerActivity : AppCompatActivity() {
     private val viewModel: PlayerViewModel by viewModel {
         parametersOf(trackId)
     }
-    //private lateinit var viewModel: PlayerViewModel
-    private lateinit var router: NavigationRouter
-    private lateinit var binding: ActivityPlayerBinding
+    private val binding by lazy { ActivityPlayerBinding.inflate(layoutInflater) }
+    private val router: NavigationRouter by lazy { NavigationRouter(this) }
+
     private var errorText = ""
 
     private var trackId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         errorText = getString(R.string.track_error)
 
-        router = NavigationRouter(this)
         trackId = intent.getIntExtra("trackId", 0)
-
-        //viewModel = ViewModelProvider(
-        //    this,
-        //    PlayerViewModel.getViewModelFactory(trackId)
-        //)[PlayerViewModel::class.java]
 
         viewModel.getPlayerStateLiveData().observe(this) { screenState ->
             when (screenState) {

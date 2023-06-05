@@ -20,16 +20,4 @@ class SettingsViewModel(
     fun openSupport(email: EmailData) = sharingInteractor.openSupport(email)
     fun openTerms(termsUrl: String) = sharingInteractor.openTerms(termsUrl)
 
-    companion object {
-        private val SEARCH_REQUEST_TOKEN = Any()
-        //fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-        //    initializer {
-        //        val application = this[APPLICATION_KEY] as App
-        //        SettingsViewModel(
-        //            settingsInteractor = Creator.provideSettingsInteractor(application),
-        //            sharingInteractor = Creator.provideSharingInteractor(application)
-        //        )
-        //    }
-        //}
-    }
 }

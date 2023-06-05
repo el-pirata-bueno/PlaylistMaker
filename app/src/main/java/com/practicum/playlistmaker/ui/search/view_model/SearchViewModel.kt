@@ -136,17 +136,6 @@ class SearchViewModel(
 
     companion object {
         val SEARCH_REQUEST_TOKEN = Any()
-
-        //fun getViewModelFactory(): ViewModelProvider.Factory =
-        //    viewModelFactory {
-        //        initializer {
-        //            val application = this[APPLICATION_KEY] as App
-        //            SearchViewModel(
-        //                searchInteractor = Creator.provideSearchInteractor(context = application),
-        //                handlerRouter = HandlerRouter(Looper.getMainLooper())
-        //            )
-        //        }
-        //    }
     }
 }
 
