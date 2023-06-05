@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.ui.player.view_model
+package com.practicum.playlistmaker.ui.player.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -60,7 +60,7 @@ class PlayerViewModel(
         playerInteractor.preparePlayer(previewUrl)
     }
 
-    fun startPlayer() {
+    private fun startPlayer() {
         playerInteractor.startPlayer()
         trackDuration = getTrackDuration()
         isPlaying = true

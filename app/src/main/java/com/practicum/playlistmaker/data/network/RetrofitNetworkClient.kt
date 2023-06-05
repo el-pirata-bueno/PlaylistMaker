@@ -10,23 +10,23 @@ import com.practicum.playlistmaker.data.dto.TracksSearchRequest
 class RetrofitNetworkClient(private val context: Context, private val api: ITunesApiService) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
-        if (isConnected() == false) {
+        if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
-        when (dto) {
+        return when (dto) {
             is TracksSearchRequest -> {
                 val tracksSearchResponse = api.searchTracks(dto.term).execute()
                 val body = tracksSearchResponse.body() ?: Response()
-                return body.apply { resultCode = tracksSearchResponse.code() }
+                body.apply { resultCode = tracksSearchResponse.code() }
             }
 
             is TrackGetRequest -> {
                 val trackGetResponse = api.searchTrackById(dto.trackId).execute()
                 val body = trackGetResponse.body() ?: Response()
-                return body.apply { resultCode = trackGetResponse.code() }
+                body.apply { resultCode = trackGetResponse.code() }
             }
 
-            else -> return Response().apply { resultCode = 400 }
+            else -> Response().apply { resultCode = 400 }
         }
     }
 

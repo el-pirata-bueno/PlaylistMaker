@@ -15,20 +15,6 @@ class HandlerRouter(looper: Looper) {
     private val handler = Handler(looper)
     private var isClickAllowed = true
 
-    fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
-    //fun searchDebounce(r: Runnable) {
-    //    handler.removeCallbacks(r)
-    //    handler.postDelayed(r, SEARCH_DEBOUNCE_DELAY)
-    //}
-
     fun startPlaying(r: Runnable) {
         handler.postDelayed(r, PLAYTIME_UPDATE_DELAY)
     }

@@ -7,7 +7,6 @@ import com.practicum.playlistmaker.di.dataModule
 import com.practicum.playlistmaker.di.interactorModule
 import com.practicum.playlistmaker.di.repositoryModule
 import com.practicum.playlistmaker.di.routerModule
-import com.practicum.playlistmaker.di.sharedPreferencesModule
 import com.practicum.playlistmaker.di.viewModelModule
 import com.practicum.playlistmaker.domain.settings.SettingsInteractor
 import com.practicum.playlistmaker.domain.settings.model.ThemeSettings
@@ -25,7 +24,7 @@ class App : Application(), KoinComponent {
 
         startKoin {
             androidContext(this@App)
-            modules(dataModule, repositoryModule, interactorModule,  routerModule, viewModelModule, sharedPreferencesModule)
+            modules(dataModule, repositoryModule, interactorModule, routerModule, viewModelModule)
         }
 
         themeAppSettings = getKoin().get<SettingsInteractor>().getThemeAppSettings()

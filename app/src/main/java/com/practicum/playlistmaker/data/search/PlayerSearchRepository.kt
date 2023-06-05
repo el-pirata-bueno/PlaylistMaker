@@ -20,8 +20,8 @@ class PlayerSearchRepository(
     playlistsLocalStorage: PlaylistsLocalStorage
 ) : SearchRepository {
 
-    val tracksLiked = likeLocalStorage.getLiked()
-    val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
+    private val tracksLiked = likeLocalStorage.getLiked()
+    private val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
 
     override fun searchTracks(term: String): Resource<List<Track>> {
         val tracksSearchResponse = networkClient.doRequest(TracksSearchRequest(term))

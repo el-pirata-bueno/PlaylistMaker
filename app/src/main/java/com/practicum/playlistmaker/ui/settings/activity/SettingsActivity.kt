@@ -8,7 +8,7 @@ import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 import com.practicum.playlistmaker.domain.settings.model.ThemeSettings
 import com.practicum.playlistmaker.domain.sharing.model.EmailData
 import com.practicum.playlistmaker.ui.models.NavigationRouter
-import com.practicum.playlistmaker.ui.settings.view_model.SettingsViewModel
+import com.practicum.playlistmaker.ui.settings.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {

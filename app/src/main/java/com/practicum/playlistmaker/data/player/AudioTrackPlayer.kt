@@ -18,12 +18,12 @@ class AudioTrackPlayer(
     private val networkClient: NetworkClient,
     private val likeLocalStorage: LikesLocalStorage,
     private val playlistsLocalStorage: PlaylistsLocalStorage,
+    private val mediaPlayer: MediaPlayer
 ) : TrackPlayer {
 
-    private val mediaPlayer = MediaPlayer()
     override var playerState = MediaPlayerState.STATE_DEFAULT
 
-    val tracksLiked = likeLocalStorage.getLiked()
+    private val tracksLiked = likeLocalStorage.getLiked()
     val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
 
     override fun preparePlayer(previewUrl: String) {

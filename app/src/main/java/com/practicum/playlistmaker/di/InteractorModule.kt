@@ -8,13 +8,13 @@ import com.practicum.playlistmaker.domain.settings.SettingsInteractor
 import com.practicum.playlistmaker.domain.settings.impl.PlayerSettingsInteractor
 import com.practicum.playlistmaker.domain.sharing.SharingInteractor
 import com.practicum.playlistmaker.domain.sharing.impl.PlayerSharingInteractor
-import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val interactorModule = module {
-    singleOf(::TrackPlayerInteractor).bind<PlayerInteractor>()
-    singleOf(::PlayerSearchInteractor).bind<SearchInteractor>()
-    singleOf(::PlayerSharingInteractor).bind<SharingInteractor>()
-    singleOf(::PlayerSettingsInteractor).bind<SettingsInteractor>()
+    factoryOf(::TrackPlayerInteractor).bind<PlayerInteractor>()
+    factoryOf(::PlayerSearchInteractor).bind<SearchInteractor>()
+    factoryOf(::PlayerSharingInteractor).bind<SharingInteractor>()
+    factoryOf(::PlayerSettingsInteractor).bind<SettingsInteractor>()
 }

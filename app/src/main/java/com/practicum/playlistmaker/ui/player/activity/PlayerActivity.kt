@@ -11,7 +11,7 @@ import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.ui.models.NavigationRouter
 import com.practicum.playlistmaker.ui.models.PlayerState
 import com.practicum.playlistmaker.ui.models.TrackUi
-import com.practicum.playlistmaker.ui.player.view_model.PlayerViewModel
+import com.practicum.playlistmaker.ui.player.viewmodel.PlayerViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

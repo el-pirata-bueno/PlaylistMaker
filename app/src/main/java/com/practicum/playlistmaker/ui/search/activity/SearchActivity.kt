@@ -13,7 +13,7 @@ import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.ui.models.NavigationRouter
 import com.practicum.playlistmaker.ui.models.SearchState
 import com.practicum.playlistmaker.ui.models.TrackUi
-import com.practicum.playlistmaker.ui.search.view_model.SearchViewModel
+import com.practicum.playlistmaker.ui.search.viewmodel.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {

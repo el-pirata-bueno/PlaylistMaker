@@ -28,7 +28,7 @@ class TracksSearchHistory(private val localStorage: HistoryLocalStorage) : Searc
     }
 
     override fun addTrackToHistory(track: Track) {
-        var history = getHistory().toMutableList()
+        val history = getHistory().toMutableList()
         for (i in history.indices) {
             if (track.trackId == history[i].trackId) {
                 history.removeAt(i)

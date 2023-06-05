@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.ui.search.view_model
+package com.practicum.playlistmaker.ui.search.viewmodel
 
 import android.os.SystemClock
 import androidx.lifecycle.LiveData

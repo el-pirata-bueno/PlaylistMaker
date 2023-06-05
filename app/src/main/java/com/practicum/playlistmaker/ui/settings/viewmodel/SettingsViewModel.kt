@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.ui.settings.view_model
+package com.practicum.playlistmaker.ui.settings.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.domain.settings.SettingsInteractor
