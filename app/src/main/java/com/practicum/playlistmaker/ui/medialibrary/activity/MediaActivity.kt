@@ -6,15 +6,11 @@ import com.practicum.playlistmaker.databinding.ActivityMediaBinding
 import com.practicum.playlistmaker.ui.models.NavigationRouter
 
 class MediaActivity : AppCompatActivity() {
-    private lateinit var router: NavigationRouter
-    private lateinit var binding: ActivityMediaBinding
-
+    private val binding by lazy { ActivityMediaBinding.inflate(layoutInflater) }
+    private val router: NavigationRouter by lazy { NavigationRouter(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMediaBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        router = NavigationRouter(this)
 
         binding.arrowBackButton.setOnClickListener {
             router.goBack()

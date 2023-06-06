@@ -1,16 +1,10 @@
-package com.practicum.playlistmaker.ui.settings.view_model
+package com.practicum.playlistmaker.ui.settings.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.domain.settings.SettingsInteractor
 import com.practicum.playlistmaker.domain.settings.model.ThemeSettings
 import com.practicum.playlistmaker.domain.sharing.SharingInteractor
 import com.practicum.playlistmaker.domain.sharing.model.EmailData
-import com.practicum.playlistmaker.util.Creator
 
 class SettingsViewModel(
     private val settingsInteractor: SettingsInteractor,
@@ -26,16 +20,4 @@ class SettingsViewModel(
     fun openSupport(email: EmailData) = sharingInteractor.openSupport(email)
     fun openTerms(termsUrl: String) = sharingInteractor.openTerms(termsUrl)
 
-    companion object {
-        private val SEARCH_REQUEST_TOKEN = Any()
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = this[APPLICATION_KEY] as App
-                SettingsViewModel(
-                    settingsInteractor = Creator.provideSettingsInteractor(application),
-                    sharingInteractor = Creator.provideSharingInteractor(application)
-                )
-            }
-        }
-    }
 }

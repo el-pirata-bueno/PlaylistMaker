@@ -6,6 +6,8 @@ import com.practicum.playlistmaker.data.dto.TrackGetRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchResponse
 import com.practicum.playlistmaker.data.models.TrackDto
 import com.practicum.playlistmaker.data.network.NetworkClient
+import com.practicum.playlistmaker.data.storage.impl.LikesLocalStorage
+import com.practicum.playlistmaker.data.storage.impl.PlaylistsLocalStorage
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.player.TrackPlayer
 import com.practicum.playlistmaker.util.Resource
@@ -16,12 +18,12 @@ class AudioTrackPlayer(
     private val networkClient: NetworkClient,
     private val likeLocalStorage: LikesLocalStorage,
     private val playlistsLocalStorage: PlaylistsLocalStorage,
+    private val mediaPlayer: MediaPlayer
 ) : TrackPlayer {
 
-    private val mediaPlayer = MediaPlayer()
     override var playerState = MediaPlayerState.STATE_DEFAULT
 
-    val tracksLiked = likeLocalStorage.getLiked()
+    private val tracksLiked = likeLocalStorage.getLiked()
     val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
 
     override fun preparePlayer(previewUrl: String) {
@@ -46,7 +48,7 @@ class AudioTrackPlayer(
     }
 
     override fun releasePlayer() {
-        mediaPlayer.release()
+        mediaPlayer.reset()
     }
 
     override fun likeTrack(trackId: Int) {

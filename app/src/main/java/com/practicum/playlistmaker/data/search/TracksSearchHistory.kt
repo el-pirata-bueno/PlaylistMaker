@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.data.search
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.data.storage.impl.HistoryLocalStorage
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.search.SearchHistory
 
@@ -27,7 +28,7 @@ class TracksSearchHistory(private val localStorage: HistoryLocalStorage) : Searc
     }
 
     override fun addTrackToHistory(track: Track) {
-        var history = getHistory().toMutableList()
+        val history = getHistory().toMutableList()
         for (i in history.indices) {
             if (track.trackId == history[i].trackId) {
                 history.removeAt(i)

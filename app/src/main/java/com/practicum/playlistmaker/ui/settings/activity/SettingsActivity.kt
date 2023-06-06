@@ -2,33 +2,24 @@ package com.practicum.playlistmaker.ui.settings.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 import com.practicum.playlistmaker.domain.settings.model.ThemeSettings
 import com.practicum.playlistmaker.domain.sharing.model.EmailData
 import com.practicum.playlistmaker.ui.models.NavigationRouter
-import com.practicum.playlistmaker.ui.settings.view_model.SettingsViewModel
+import com.practicum.playlistmaker.ui.settings.viewmodel.SettingsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
-    private lateinit var viewModel: SettingsViewModel
-    private lateinit var binding: ActivitySettingsBinding
-    private lateinit var router: NavigationRouter
+    private val viewModel: SettingsViewModel by viewModel()
+    private val binding by lazy { ActivitySettingsBinding.inflate(layoutInflater) }
+    private val router: NavigationRouter by lazy { NavigationRouter(this) }
     private lateinit var systemTheme: ThemeSettings
-    private lateinit var appTheme: ThemeSettings
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        router = NavigationRouter(this)
-
-        viewModel = ViewModelProvider(
-            this,
-            SettingsViewModel.getViewModelFactory()
-        )[SettingsViewModel::class.java]
 
         binding.arrowBackButton.setOnClickListener {
             router.goBack()

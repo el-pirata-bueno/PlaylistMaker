@@ -3,20 +3,32 @@ package com.practicum.playlistmaker
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.playlistmaker.data.settings.SettingsLocalStorage
+import com.practicum.playlistmaker.di.dataModule
+import com.practicum.playlistmaker.di.interactorModule
+import com.practicum.playlistmaker.di.repositoryModule
+import com.practicum.playlistmaker.di.routerModule
+import com.practicum.playlistmaker.di.viewModelModule
+import com.practicum.playlistmaker.domain.settings.SettingsInteractor
 import com.practicum.playlistmaker.domain.settings.model.ThemeSettings
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.context.startKoin
 
-class App : Application() {
+class App : Application(), KoinComponent {
 
     private lateinit var themeAppSettings: ThemeSettings
     private lateinit var themeSystemSettings: ThemeSettings
 
     override fun onCreate() {
         super.onCreate()
-        val localStorage = SettingsLocalStorage(getSharedPreferences("APP_SETTINGS", MODE_PRIVATE))
 
-        themeAppSettings = localStorage.getThemeAppSettings()
-        themeSystemSettings = localStorage.getThemeSystemSettings()
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, repositoryModule, interactorModule, routerModule, viewModelModule)
+        }
+
+        themeAppSettings = getKoin().get<SettingsInteractor>().getThemeAppSettings()
+        themeSystemSettings = getKoin().get<SettingsInteractor>().getThemeSystemSettings()
 
         if (themeSystemSettings.isActive) {
             if (isSystemDarkTheme()) {
@@ -42,4 +54,5 @@ class App : Application() {
             }
         )
     }
+
 }

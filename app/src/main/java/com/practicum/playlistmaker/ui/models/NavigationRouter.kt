@@ -25,7 +25,7 @@ class NavigationRouter(
         activity.startActivity(intent)
     }
 
-    fun passDataToNextScreen(intent: Intent, trackId: Int) {
+    private fun passDataToNextScreen(intent: Intent, trackId: Int) {
         intent.putExtra("trackId", trackId)
     }
 }

@@ -1,21 +1,23 @@
-package com.practicum.playlistmaker.data.player
+package com.practicum.playlistmaker.data.storage.impl
 
 import android.content.SharedPreferences
+import com.practicum.playlistmaker.data.storage.PlaylistsStorage
 
-class PlaylistsLocalStorage(private val sharedPreferences: SharedPreferences) {
+class PlaylistsLocalStorage(private val sharedPreferences: SharedPreferences): PlaylistsStorage {
+
     private companion object {
         const val PLAYLISTS_KEY = "PLAYLISTS_KEY"
     }
 
-    fun addTrackToPlaylist(trackId: Int) {
+    override fun addTrackToPlaylist(trackId: Int) {
         changePlaylists(trackId = trackId, remove = false)
     }
 
-    fun removeTrackFromPlaylist(trackId: Int) {
+    override fun removeTrackFromPlaylist(trackId: Int) {
         changePlaylists(trackId = trackId, remove = true)
     }
 
-    fun getPlaylists(): Set<String> {
+    override fun getPlaylists(): Set<String> {
         return sharedPreferences.getStringSet(PLAYLISTS_KEY, emptySet()) ?: emptySet()
     }
 

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
@@ -12,30 +11,28 @@ import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.ui.models.NavigationRouter
 import com.practicum.playlistmaker.ui.models.PlayerState
 import com.practicum.playlistmaker.ui.models.TrackUi
-import com.practicum.playlistmaker.ui.player.view_model.PlayerViewModel
+import com.practicum.playlistmaker.ui.player.viewmodel.PlayerViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class PlayerActivity : AppCompatActivity() {
-    private lateinit var viewModel: PlayerViewModel
-    private lateinit var router: NavigationRouter
-    private lateinit var binding: ActivityPlayerBinding
+    private val viewModel: PlayerViewModel by viewModel {
+        parametersOf(trackId)
+    }
+    private val binding by lazy { ActivityPlayerBinding.inflate(layoutInflater) }
+    private val router: NavigationRouter by lazy { NavigationRouter(this) }
+
     private var errorText = ""
 
     private var trackId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         errorText = getString(R.string.track_error)
 
-        router = NavigationRouter(this)
         trackId = intent.getIntExtra("trackId", 0)
-
-        viewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory(trackId)
-        )[PlayerViewModel::class.java]
 
         viewModel.getPlayerStateLiveData().observe(this) { screenState ->
             when (screenState) {

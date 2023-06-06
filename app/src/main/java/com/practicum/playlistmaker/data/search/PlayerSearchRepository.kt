@@ -6,8 +6,8 @@ import com.practicum.playlistmaker.data.dto.TracksSearchRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchResponse
 import com.practicum.playlistmaker.data.models.TrackDto
 import com.practicum.playlistmaker.data.network.NetworkClient
-import com.practicum.playlistmaker.data.player.LikesLocalStorage
-import com.practicum.playlistmaker.data.player.PlaylistsLocalStorage
+import com.practicum.playlistmaker.data.storage.impl.LikesLocalStorage
+import com.practicum.playlistmaker.data.storage.impl.PlaylistsLocalStorage
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.search.SearchRepository
 import com.practicum.playlistmaker.util.Resource
@@ -20,8 +20,8 @@ class PlayerSearchRepository(
     playlistsLocalStorage: PlaylistsLocalStorage
 ) : SearchRepository {
 
-    val tracksLiked = likeLocalStorage.getLiked()
-    val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
+    private val tracksLiked = likeLocalStorage.getLiked()
+    private val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
 
     override fun searchTracks(term: String): Resource<List<Track>> {
         val tracksSearchResponse = networkClient.doRequest(TracksSearchRequest(term))
