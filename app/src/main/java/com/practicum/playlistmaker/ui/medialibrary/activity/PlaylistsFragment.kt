@@ -11,6 +11,10 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistsFragment: Fragment()  {
 
+    companion object {
+        fun newInstance() = PlaylistsFragment().apply { }
+    }
+
     val hostViewModel by activityViewModel<TrackCollectionsVIewModel>()
 
     private var _binding: FragmentPlaylistsBinding? = null
@@ -23,5 +27,10 @@ class PlaylistsFragment: Fragment()  {
         _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

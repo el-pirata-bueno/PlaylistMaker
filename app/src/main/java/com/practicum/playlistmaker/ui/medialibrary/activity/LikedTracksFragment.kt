@@ -11,6 +11,10 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class LikedTracksFragment: Fragment() {
 
+    companion object {
+        fun newInstance() = LikedTracksFragment().apply { }
+    }
+
     val hostViewModel by activityViewModel<TrackCollectionsVIewModel>()
 
     private var _binding: FragmentLikedTracksBinding? = null
@@ -23,6 +27,11 @@ class LikedTracksFragment: Fragment() {
         _binding = FragmentLikedTracksBinding.inflate(inflater, container, false)
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }
