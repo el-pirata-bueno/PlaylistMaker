@@ -26,15 +26,32 @@
 
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/mediaUnfinished"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/media_unfinished"
-        android:textColor="?attr/colorOnSecondary"
-        android:textSize="@dimen/text_size"
-        app:fontFamily="@font/ys_display_regular" />
+        android:layout_marginTop="56dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:tabBackground="?attr/colorSecondary"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="?attr/colorOnSecondary"
+            app:tabIndicatorFullWidth="true"
+            app:tabIndicatorHeight="2dp"
+            app:tabMode="fixed"
+            app:tabTextAppearance="@style/TabLayoutTextStyle"
+            app:tabTextColor="?attr/colorOnSecondary">
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
 
 </FrameLayout>
