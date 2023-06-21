@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/searchTracks"
+    style="@style/LayoutStyle"
+    android:orientation="vertical"
+    tools:context="com.practicum.playlistmaker.ui.search.SearchFragment">
+
+    <TextView
+        style="@style/ToolbarTextStyle"
+        android:paddingStart="@dimen/standard_padding"
+        android:layout_marginBottom="8dp"
+        android:text="@string/search" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/input_height"
+        android:layout_marginBottom="24dp"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding">
+
+        <EditText
+            android:id="@+id/inputSearch"
+            style="@style/InputText"
+            android:drawableStart="@drawable/ic_search_16"
+            android:drawablePadding="8dp"
+            android:hint="@string/input_hint"
+            android:singleLine="true"
+            android:textCursorDrawable="@drawable/color_cursor" />
+
+        <ImageView
+            android:id="@+id/clearSearchTextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:paddingEnd="10dp"
+            android:src="@drawable/ic_baseline_close_24"
+            android:visibility="gone"
+            tools:ignore="RtlSymmetry" />
+
+    </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="124dp"
+        android:indeterminateTint="@color/background_blue"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            tools:listitem="@layout/tracks_view"
+            android:id="@+id/tracklistRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/searchHistoryViewGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/searchHistoryTitle"
+                style="@style/ErrorTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:text="@string/search_history_text"
+                android:textFontWeight="500" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_history_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="183dp" />
+
+            <Button
+                android:id="@+id/clearHistoryButton"
+                style="@style/SimpleButtonStyle"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:padding="0dp"
+                android:text="@string/delete_history" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="86dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/placeholderImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/placeholderMessage"
+                style="@style/ErrorTextStyle"
+                android:layout_width="312dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="24dp"
+                android:textAlignment="center" />
+
+            <Button
+                android:id="@+id/updateSearchButton"
+                style="@style/SimpleButtonStyle"
+                android:layout_gravity="center"
+                android:padding="0dp"
+                android:text="@string/update" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
+
+

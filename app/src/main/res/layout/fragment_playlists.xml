@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:gravity="center"
     android:layout_height="match_parent"
-    style="@style/LayoutStyle">
+    style="@style/LayoutStyle"
+    tools:context="com.practicum.playlistmaker.ui.media.PlaylistsFragment">
 
     <Button
         android:id="@+id/addNewPlaylist"
