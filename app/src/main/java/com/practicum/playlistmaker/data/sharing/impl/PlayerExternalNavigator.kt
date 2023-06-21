@@ -18,8 +18,8 @@ class PlayerExternalNavigator(private val context: Context) : ExternalNavigator 
     }
 
     override fun openSupport(email: EmailData) {
-        val helpIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse(email.data)
+        val helpIntent = Intent(Intent.ACTION_SEND).apply {
+            type = email.typeText
             putExtra(Intent.EXTRA_EMAIL, arrayOf(email.emailAddress))
             putExtra(Intent.EXTRA_SUBJECT, email.emailSubject)
             putExtra(Intent.EXTRA_TEXT, email.emailText)
