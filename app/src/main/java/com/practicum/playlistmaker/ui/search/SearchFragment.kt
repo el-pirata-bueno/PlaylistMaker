@@ -29,8 +29,11 @@ class SearchFragment: Fragment() {
     private lateinit var searchText: String
     private var message = ""
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentSearchBinding.inflate(inflater, container, false)
+        binding.inputSearch.setText(savedInstanceState?.getString("SEARCH_TEXT", ""))
         return binding.root
     }
 
@@ -57,15 +60,10 @@ class SearchFragment: Fragment() {
         initListeners()
     }
 
-    //override fun onSaveInstanceState(outState: Bundle) {
-    //    super.onSaveInstanceState(outState)
-    //    outState.putString("SEARCH_TEXT", binding.inputSearch.text.toString())
-    //}
-
-    //override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-    //    super.onRestoreInstanceState(savedInstanceState)
-    //    binding.inputSearch.setText(savedInstanceState.getString("SEARCH_TEXT", ""))
-    //}
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("SEARCH_TEXT", binding.inputSearch.text.toString())
+    }
 
     private fun initHistoryAdapter() {
         historyAdapter.itemClickListener = { track ->
