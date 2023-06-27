@@ -3,24 +3,26 @@ package com.practicum.playlistmaker.presentation.player
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.data.player.MediaPlayerState
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.player.PlayerInteractor
-import com.practicum.playlistmaker.ui.models.HandlerRouter
 import com.practicum.playlistmaker.ui.models.TrackUi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(
-    private val trackId: Int,
-    private val playerInteractor: PlayerInteractor,
-    private val handlerRouter: HandlerRouter
+    trackId: Int,
+    private val playerInteractor: PlayerInteractor
 ) : ViewModel() {
 
     private lateinit var track: TrackUi
-    private var trackDuration: Int = 0
-    private var currentTrackTime: String = "0:00"
+    private var currentTrackTime: String = "00:00"
     private var isPlaying: Boolean = false
+    private var timerJob: Job? = null
 
     private var playerStateLiveData = MutableLiveData<PlayerState>()
     fun getPlayerStateLiveData(): LiveData<PlayerState> = playerStateLiveData
@@ -29,84 +31,27 @@ class PlayerViewModel(
         playerStateLiveData.postValue(PlayerState.Loading)
 
         if (trackId != 0) {
-            playerInteractor.getTrackFromId(trackId,
-                object : PlayerInteractor.GetTrackFromIdConsumer {
-                    override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                        if (foundTracks != null) {
-                            var tracks = foundTracks.toMutableList()
-                            track = mapTrackToUi(tracks[0])
-                            if (track.previewUrl != null) {
-                                preparePlayer(track.previewUrl!!)
-                            }
-                            playerStateLiveData.postValue(
-                                PlayerState.Content(
-                                    track, isPlaying, currentTrackTime
-                                )
-                            )
-                        } else {
-                            if (errorMessage != null) playerStateLiveData.postValue(
-                                PlayerState.Error(
-                                    errorMessage
-                                )
-                            )
-                        }
+
+            viewModelScope.launch {
+                playerInteractor
+                    .getTrackFromId(trackId)
+                    .collect { pair ->
+                        getTrackResult(pair.first, pair.second)
                     }
-                })
+            }
         }
     }
 
-    fun preparePlayer(previewUrl: String) {
-        playerInteractor.preparePlayer(previewUrl)
-    }
-
-    private fun startPlayer() {
-        playerInteractor.startPlayer()
-        trackDuration = getTrackDuration()
-        isPlaying = true
-        playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
-        handlerRouter.startPlaying(updateTimer())
-
-        //trackDurationLiveData.postValue(SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackDuration))
+    override fun onCleared() {
+        super.onCleared()
+        playerInteractor.releasePlayer()
     }
 
     fun pausePlayer() {
         playerInteractor.pausePlayer()
         isPlaying = false
+        timerJob?.cancel()
         playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
-        handlerRouter.stopRunnable(updateTimer())
-    }
-
-    fun updateTimer(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                var state = getPlayerState()
-                if (state == MediaPlayerState.STATE_PLAYING) {
-                    val currentPosition = getPlayerCurrentPosition()
-                    //val progress = (currentPosition.toFloat() / trackDuration.toFloat()) * 100.0f
-                    currentTrackTime =
-                        SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPosition)
-                    playerStateLiveData.postValue(
-                        PlayerState.Content(track, isPlaying, currentTrackTime)
-                    )
-                    handlerRouter.startPlaying(this)
-
-                    //trackProgressLiveData.postValue(progress)
-                }
-
-                if (state == MediaPlayerState.STATE_PREPARED) {
-                    isPlaying = false
-                    currentTrackTime = "0:00"
-                    playerStateLiveData.postValue(
-                        PlayerState.Content(
-                            track, isPlaying, currentTrackTime
-                        )
-                    )
-                    handlerRouter.stopRunnable(updateTimer())
-
-                    //trackProgressLiveData.postValue(0.0F)
-                }
-            }
-        }
     }
 
     fun likeTrack() {
@@ -134,12 +79,6 @@ class PlayerViewModel(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        playerInteractor.releasePlayer()
-        handlerRouter.stopRunnable(null)
-    }
-
     fun releasePlayer() {
         playerInteractor.releasePlayer()
     }
@@ -158,9 +97,76 @@ class PlayerViewModel(
         }
     }
 
-    fun getPlayerState(): MediaPlayerState = playerInteractor.getPlayerState()
-    fun getPlayerCurrentPosition(): Int = playerInteractor.getCurrentPosition()
-    fun getTrackDuration(): Int = playerInteractor.getTrackDuration()
+    private fun getTrackResult(foundTracks: List<Track>?, errorMessage: String?) {
+        if (foundTracks != null) {
+            var tracks = foundTracks.toMutableList()
+            track = mapTrackToUi(tracks[0])
+            if (track.previewUrl != null) {
+                preparePlayer(track.previewUrl!!)
+            }
+            playerStateLiveData.postValue(
+                PlayerState.Content(
+                    track, isPlaying, currentTrackTime
+                )
+            )
+        } else {
+            if (errorMessage != null) playerStateLiveData.postValue(
+                PlayerState.Error(
+                    errorMessage
+                )
+            )
+        }
+    }
+
+    private fun preparePlayer(previewUrl: String) {
+        playerInteractor.preparePlayer(previewUrl)
+    }
+
+    private fun startPlayer() {
+        playerInteractor.startPlayer()
+
+        isPlaying = true
+        currentTrackTime = getPlayerCurrentPosition()
+        playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
+        startTimer()
+    }
+
+    private fun startTimer() {
+        timerJob = viewModelScope.launch {
+            while (getPlayerState() == MediaPlayerState.STATE_PLAYING) {
+                delay(300L)
+                currentTrackTime = getPlayerCurrentPosition()
+                playerStateLiveData.postValue(
+                    PlayerState.Content(
+                        track,
+                        isPlaying,
+                        currentTrackTime
+                    )
+                )
+            }
+            if (getPlayerState() == MediaPlayerState.STATE_PREPARED) {
+                pausePlayer()
+                currentTrackTime = "00:00"
+                playerStateLiveData.postValue(
+                    PlayerState.Content(
+                        track,
+                        isPlaying,
+                        currentTrackTime
+                    )
+                )
+            }
+        }
+    }
+
+    private fun getPlayerState(): MediaPlayerState = playerInteractor.getPlayerState()
+
+    private fun getPlayerCurrentPosition(): String {
+        return SimpleDateFormat(
+            "mm:ss",
+            Locale.getDefault()
+        ).format(playerInteractor.getCurrentPosition()) ?: "00:00"
+    }
+
     private fun mapTrackToUi(track: Track): TrackUi {
         return TrackUi(
             track.trackName,

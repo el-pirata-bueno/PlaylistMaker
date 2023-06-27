@@ -12,5 +12,5 @@ val viewModelModule = module {
     viewModelOf(::SearchViewModel)
     viewModelOf(::SettingsViewModel)
     viewModel { TrackCollectionsVIewModel() }
-    viewModel { (trackId: Int) -> PlayerViewModel(trackId, get(), get()) }
+    viewModel { (trackId: Int) -> PlayerViewModel(trackId, get()) }
 }

@@ -1,9 +1,12 @@
 package com.practicum.playlistmaker.domain.player.impl
 
 import com.practicum.playlistmaker.data.player.MediaPlayerState
+import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.player.PlayerInteractor
 import com.practicum.playlistmaker.domain.player.TrackPlayer
 import com.practicum.playlistmaker.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.util.concurrent.Executors
 
 class TrackPlayerInteractor(
@@ -26,19 +29,17 @@ class TrackPlayerInteractor(
     override fun getCurrentPosition(): Int = repository.getCurrentPosition()
     override fun getTrackDuration(): Int = repository.getTrackDuration()
 
-    override fun getTrackFromId(trackId: Int, consumer: PlayerInteractor.GetTrackFromIdConsumer) {
-        executor.execute {
-            when (val resource = repository.getTrackFromId(trackId)) {
+    override fun getTrackFromId(trackId: Int): Flow<Pair<List<Track>?, String?>> {
+        return repository.getTrackFromId(trackId).map { result ->
+            when (result) {
                 is Resource.Success -> {
-                    consumer.consume(resource.data, null)
+                    Pair(result.data, null)
                 }
 
                 is Resource.Error -> {
-                    consumer.consume(null, resource.message)
+                    Pair(null, result.message)
                 }
             }
         }
     }
-
-
 }
