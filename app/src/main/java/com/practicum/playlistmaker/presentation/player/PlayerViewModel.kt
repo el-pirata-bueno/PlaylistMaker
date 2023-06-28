@@ -30,8 +30,9 @@ class PlayerViewModel(
     init {
         playerStateLiveData.postValue(PlayerState.Loading)
 
-        if (trackId != 0) {
+        //if (trackId != 0) {
 
+        trackId.let {
             viewModelScope.launch {
                 playerInteractor
                     .getTrackFromId(trackId)

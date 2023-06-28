@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+const val ERROR = R.string.something_went_wrong.toString()
+const val SERVER_ERROR = R.string.server_error.toString()
+
 class AudioTrackPlayer(
     private val networkClient: NetworkClient,
     private val likeLocalStorage: LikesLocalStorage,
@@ -77,7 +80,7 @@ class AudioTrackPlayer(
 
         when (trackGetResponse.resultCode) {
             -1 -> {
-                emit(Resource.Error(R.string.something_went_wrong.toString()))
+                emit(Resource.Error(ERROR))
             }
 
             200 -> {
@@ -87,7 +90,7 @@ class AudioTrackPlayer(
             }
 
             else -> {
-                emit(Resource.Error(R.string.server_error.toString()))
+                emit(Resource.Error(SERVER_ERROR))
             }
         }
     }
