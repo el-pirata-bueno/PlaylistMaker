@@ -5,14 +5,13 @@ import com.practicum.playlistmaker.domain.search.SearchHistory
 import com.practicum.playlistmaker.domain.search.SearchInteractor
 import com.practicum.playlistmaker.domain.search.SearchRepository
 import com.practicum.playlistmaker.util.Resource
-import java.util.concurrent.Executors
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class PlayerSearchInteractor(
     private val repository: SearchRepository,
     private val searchHistory: SearchHistory
 ) : SearchInteractor {
-
-    private val executor = Executors.newCachedThreadPool()
 
     override fun clearHistory() {
         searchHistory.clearHistory()
@@ -22,40 +21,33 @@ class PlayerSearchInteractor(
         return searchHistory.getHistory()
     }
 
-    override fun addTrackToHistory(trackId: Int) {
-        getOneTrack(trackId, object : SearchInteractor.GetOneTrackConsumer {
-            override fun consume(foundTrack: List<Track>?, errorMessage: String?) {
-                if (foundTrack != null) {
-                    searchHistory.addTrackToHistory(foundTrack[0])
-                }
-            }
-        }
-        )
+    override fun addTrackToHistory(track: Track) {
+        searchHistory.addTrackToHistory(track)
     }
 
-    override fun getTracks(term: String, consumer: SearchInteractor.GetTracksConsumer) {
-        executor.execute {
-            when (val resource = repository.searchTracks(term)) {
+    override fun getTracks(term: String): Flow<Pair<List<Track>?, String?>> {
+        return repository.searchTracks(term).map { result ->
+            when (result) {
                 is Resource.Success -> {
-                    consumer.consume(resource.data, null)
+                    Pair(result.data, null)
                 }
 
                 is Resource.Error -> {
-                    consumer.consume(null, resource.message)
+                    Pair(null, result.message)
                 }
             }
         }
     }
 
-    override fun getOneTrack(trackId: Int, consumer: SearchInteractor.GetOneTrackConsumer) {
-        executor.execute {
-            when (val resource = repository.getTrack(trackId)) {
+    override fun getOneTrack(trackId: Int): Flow<Pair<List<Track>?, String?>> {
+        return repository.getTrack(trackId).map { result ->
+            when (result) {
                 is Resource.Success -> {
-                    consumer.consume(resource.data, null)
+                    Pair(result.data, null)
                 }
 
                 is Resource.Error -> {
-                    consumer.consume(null, resource.message)
+                    Pair(null, result.message)
                 }
             }
         }

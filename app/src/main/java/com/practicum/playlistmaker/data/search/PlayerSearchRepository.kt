@@ -11,9 +11,13 @@ import com.practicum.playlistmaker.data.storage.impl.PlaylistsLocalStorage
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.search.SearchRepository
 import com.practicum.playlistmaker.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+const val ERROR = R.string.something_went_wrong.toString()
+const val SERVER_ERROR = R.string.server_error.toString()
 class PlayerSearchRepository(
     private val networkClient: NetworkClient,
     likeLocalStorage: LikesLocalStorage,
@@ -23,41 +27,41 @@ class PlayerSearchRepository(
     private val tracksLiked = likeLocalStorage.getLiked()
     private val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
 
-    override fun searchTracks(term: String): Resource<List<Track>> {
+    override fun searchTracks(term: String): Flow<Resource<List<Track>>> = flow {
         val tracksSearchResponse = networkClient.doRequest(TracksSearchRequest(term))
-        return when (tracksSearchResponse.resultCode) {
+        when (tracksSearchResponse.resultCode) {
             -1 -> {
-                Resource.Error(R.string.something_went_wrong.toString())
+                emit(Resource.Error(ERROR))
             }
 
             200 -> {
-                Resource.Success((tracksSearchResponse as TracksSearchResponse).results.map {
+                emit(Resource.Success((tracksSearchResponse as TracksSearchResponse).results.map {
                     mapTrack(tracksLiked, tracksInPlaylists, it)
-                })
+                }))
             }
 
             else -> {
-                Resource.Error(R.string.server_error.toString())
+                emit(Resource.Error(SERVER_ERROR))
             }
         }
     }
 
-    override fun getTrack(trackId: Int): Resource<List<Track>> {
+    override fun getTrack(trackId: Int): Flow<Resource<List<Track>>> = flow {
         val trackGetResponse = networkClient.doRequest(TrackGetRequest(trackId))
 
-        return when (trackGetResponse.resultCode) {
+        when (trackGetResponse.resultCode) {
             -1 -> {
-                Resource.Error(R.string.something_went_wrong.toString())
+                emit(Resource.Error(ERROR))
             }
 
             200 -> {
-                Resource.Success((trackGetResponse as TracksSearchResponse).results.map {
+                emit(Resource.Success((trackGetResponse as TracksSearchResponse).results.map {
                     mapTrack(tracksLiked, tracksInPlaylists, it)
-                })
+                }))
             }
 
             else -> {
-                Resource.Error(R.string.server_error.toString())
+                emit(Resource.Error(SERVER_ERROR))
             }
         }
     }

@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.domain.player
 import com.practicum.playlistmaker.data.player.MediaPlayerState
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.util.Resource
+import kotlinx.coroutines.flow.Flow
 
 interface TrackPlayer {
     var playerState: MediaPlayerState
@@ -20,5 +21,5 @@ interface TrackPlayer {
     fun getCurrentPosition(): Int
     fun getTrackDuration(): Int
 
-    fun getTrackFromId(trackId: Int): Resource<List<Track>>
+    fun getTrackFromId(trackId: Int): Flow<Resource<List<Track>>>
 }

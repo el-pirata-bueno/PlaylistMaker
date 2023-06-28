@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
@@ -17,9 +18,14 @@ import com.practicum.playlistmaker.presentation.search.SearchState
 import com.practicum.playlistmaker.presentation.search.SearchViewModel
 import com.practicum.playlistmaker.ui.models.TrackUi
 import com.practicum.playlistmaker.ui.player.PlayerFragment
+import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+    }
 
     private lateinit var binding: FragmentSearchBinding
     private val viewModel: SearchViewModel by viewModel()
@@ -29,6 +35,7 @@ class SearchFragment: Fragment() {
     private lateinit var searchText: String
     private var message = ""
 
+    private lateinit var onTrackClickDebounce: (TrackUi) -> Unit
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -40,9 +47,15 @@ class SearchFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        onTrackClickDebounce = debounce<TrackUi>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+                findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track.trackId))
+        }
+
+
+
         message = getString(R.string.nothing_found)
 
-        viewModel.getSearchStateLiveData().observe(this) { screenState ->
+        viewModel.getSearchStateLiveData().observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
                 is SearchState.Content -> showContent(screenState.tracks)
                 is SearchState.History -> showHistory(screenState.historyTracks, screenState.clearSearch)
@@ -67,8 +80,7 @@ class SearchFragment: Fragment() {
 
     private fun initHistoryAdapter() {
         historyAdapter.itemClickListener = { track ->
-            //router.openPlayer(track.trackId)
-            findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track.trackId))
+            onTrackClickDebounce(track)
         }
 
         binding.searchHistoryRecycler.adapter = historyAdapter
@@ -78,8 +90,7 @@ class SearchFragment: Fragment() {
 
     private fun initTrackAdapter() {
         trackAdapter.itemClickListener = { track ->
-            //router.openPlayer(track.trackId)
-            findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track.trackId))
+            onTrackClickDebounce(track)
             viewModel.addTrackToHistory(track)
         }
 
@@ -96,12 +107,6 @@ class SearchFragment: Fragment() {
                 viewModel.changeText(s.toString())
                 viewModel.searchDebounce(changedText = s?.toString() ?: "")
                 searchText = s.toString()
-
-                if (binding.inputSearch.text.toString() != "") {
-
-                    //    viewModel.searchDebounce(changedText = s?.toString() ?: "")
-                    //    searchText = s.toString()
-                }
             }
 
             override fun afterTextChanged(s: Editable?) {}

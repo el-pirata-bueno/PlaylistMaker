@@ -1,30 +1,31 @@
 package com.practicum.playlistmaker.presentation.search
 
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.search.SearchInteractor
-import com.practicum.playlistmaker.ui.models.HandlerRouter
 import com.practicum.playlistmaker.ui.models.TrackUi
+import com.practicum.playlistmaker.util.debounce
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val searchInteractor: SearchInteractor,
-    private val handlerRouter: HandlerRouter
+    private val searchInteractor: SearchInteractor
 ) : ViewModel() {
 
     private val historyTracks = ArrayList<TrackUi>()
     private val searchStateLiveData = MutableLiveData<SearchState>()
+
+    private var latestSearchText: String? = null
     fun getSearchStateLiveData(): LiveData<SearchState> = searchStateLiveData
+
+    private val trackSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) { changedText ->
+        loadTracks(changedText)
+    }
 
     init {
         historyTracks.addAll(searchInteractor.getHistoryTracks().map { mapTrackToUi(it) })
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        handlerRouter.stopRunnable(null)
     }
 
     fun clearSearchText() {
@@ -48,52 +49,32 @@ class SearchViewModel(
         }
         searchStateLiveData.postValue(SearchState.Loading)
 
-        searchInteractor.getTracks(query, object : SearchInteractor.GetTracksConsumer {
-            override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                val tracks = ArrayList<TrackUi>()
-                if (foundTracks != null) {
-                    val sortedTracks = foundTracks.map { mapTrackToUi(it) }
-                        .sortedWith(compareBy { !it.isLiked })
-                    tracks.addAll(sortedTracks)
+        viewModelScope.launch {
+            searchInteractor
+                .getTracks(query)
+                .collect { pair ->
+                    loadTracksResult(pair.first, pair.second)
                 }
-
-                when {
-                    errorMessage != null -> {
-                        renderState(
-                            SearchState.Error(errorMessage = errorMessage)
-                        )
-                    }
-
-                    tracks.isEmpty() -> {
-                        renderState(
-                            SearchState.Empty
-                        )
-                    }
-
-                    else -> {
-                        renderState(
-                            SearchState.Content(
-                                tracks = tracks,
-                            )
-                        )
-                    }
-                }
-            }
         }
-        )
     }
 
     fun searchDebounce(changedText: String) {
-        handlerRouter.stopRunnable(null)
-
-        val searchRunnable = Runnable { loadTracks(changedText) }
-
-        val postTime = SystemClock.uptimeMillis() + handlerRouter.SEARCH_DEBOUNCE_DELAY
-        handlerRouter.postAtTime(searchRunnable, SEARCH_REQUEST_TOKEN, postTime)
+        if (latestSearchText != changedText) {
+            latestSearchText = changedText
+            trackSearchDebounce(changedText)
+        }
     }
 
     fun addTrackToHistory(track: TrackUi) {
-        searchInteractor.addTrackToHistory(track.trackId)
+        viewModelScope.launch {
+            searchInteractor
+                .getOneTrack(track.trackId)
+                .collect { pair ->
+                    getTrackResult(pair.first, pair.second)
+                }
+        }
+
+        //TODO searchInteractor.addTrackToHistory(track.trackId)
     }
 
     fun clearHistory() {
@@ -116,6 +97,46 @@ class SearchViewModel(
         searchStateLiveData.postValue(state)
     }
 
+    private fun loadTracksResult(foundTracks: List<Track>?, errorMessage: String?) {
+        val tracks = ArrayList<TrackUi>()
+        if (foundTracks != null) {
+            val sortedTracks = foundTracks.map { mapTrackToUi(it) }
+                .sortedWith(compareBy { !it.isLiked })
+            tracks.addAll(sortedTracks)
+        }
+
+        when {
+            errorMessage != null -> {
+                renderState(
+                    SearchState.Error(errorMessage = errorMessage)
+                )
+            }
+
+            tracks.isEmpty() -> {
+                renderState(
+                    SearchState.Empty
+                )
+            }
+
+            else -> {
+                renderState(
+                    SearchState.Content(
+                        tracks = tracks,
+                    )
+                )
+            }
+        }
+    }
+
+    private fun getTrackResult(foundTracks: List<Track>?, errorMessage: String?) {
+        var track: Track
+        if (foundTracks != null) {
+            track = foundTracks[0]
+            searchInteractor.addTrackToHistory(track)
+        }
+    }
+
+
     private fun mapTrackToUi(track: Track): TrackUi {
         return TrackUi(
             track.trackName,
@@ -134,7 +155,7 @@ class SearchViewModel(
     }
 
     companion object {
-        val SEARCH_REQUEST_TOKEN = Any()
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
 

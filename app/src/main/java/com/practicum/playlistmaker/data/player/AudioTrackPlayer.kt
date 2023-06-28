@@ -11,8 +11,13 @@ import com.practicum.playlistmaker.data.storage.impl.PlaylistsLocalStorage
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.player.TrackPlayer
 import com.practicum.playlistmaker.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
 import java.util.Locale
+
+const val ERROR = R.string.something_went_wrong.toString()
+const val SERVER_ERROR = R.string.server_error.toString()
 
 class AudioTrackPlayer(
     private val networkClient: NetworkClient,
@@ -70,22 +75,22 @@ class AudioTrackPlayer(
     override fun getCurrentPosition(): Int = mediaPlayer.currentPosition
     override fun getTrackDuration(): Int = mediaPlayer.duration
 
-    override fun getTrackFromId(trackId: Int): Resource<List<Track>> {
+    override fun getTrackFromId(trackId: Int): Flow<Resource<List<Track>>> = flow {
         val trackGetResponse = networkClient.doRequest(TrackGetRequest(trackId))
 
-        return when (trackGetResponse.resultCode) {
+        when (trackGetResponse.resultCode) {
             -1 -> {
-                Resource.Error(R.string.something_went_wrong.toString())
+                emit(Resource.Error(ERROR))
             }
 
             200 -> {
-                Resource.Success((trackGetResponse as TracksSearchResponse).results.map {
+                emit(Resource.Success((trackGetResponse as TracksSearchResponse).results.map {
                     mapTrack(tracksLiked, tracksInPlaylists, it)
-                })
+                }))
             }
 
             else -> {
-                Resource.Error(R.string.server_error.toString())
+                emit(Resource.Error(SERVER_ERROR))
             }
         }
     }
