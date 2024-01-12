@@ -5,12 +5,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.TracksViewBinding
-import com.practicum.playlistmaker.ui.models.TrackUi
+import com.practicum.playlistmaker.domain.model.Track
 
 class TrackViewHolder(private val binding: TracksViewBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(model: TrackUi) {
+    fun bind(model: Track) {
         binding.trackName.text = model.trackName
         binding.artistName.text = model.artistName
         binding.trackTime.text = model.trackTime

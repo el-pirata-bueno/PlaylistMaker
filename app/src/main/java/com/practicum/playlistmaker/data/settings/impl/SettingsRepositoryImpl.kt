@@ -4,7 +4,7 @@ import com.practicum.playlistmaker.data.settings.SettingsRepository
 import com.practicum.playlistmaker.data.storage.impl.SettingsLocalStorage
 import com.practicum.playlistmaker.domain.settings.model.ThemeSettings
 
-class PlayerSettingsRepository(private val localStorage: SettingsLocalStorage) : SettingsRepository {
+class SettingsRepositoryImpl(private val localStorage: SettingsLocalStorage) : SettingsRepository {
 
     override fun getThemeAppSettings(): ThemeSettings = localStorage.getThemeAppSettings()
     override fun getThemeSystemSettings(): ThemeSettings = localStorage.getThemeSystemSettings()

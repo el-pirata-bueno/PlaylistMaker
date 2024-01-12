@@ -2,13 +2,15 @@ package com.practicum.playlistmaker.data.player
 
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.data.converters.TrackDbConvertor
+import com.practicum.playlistmaker.data.db.LikedTracksDatabase
 import com.practicum.playlistmaker.data.dto.TrackGetRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchResponse
-import com.practicum.playlistmaker.data.models.TrackDto
+import com.practicum.playlistmaker.data.model.TrackDto
+import com.practicum.playlistmaker.data.model.TrackEntity
 import com.practicum.playlistmaker.data.network.NetworkClient
-import com.practicum.playlistmaker.data.storage.impl.LikesLocalStorage
 import com.practicum.playlistmaker.data.storage.impl.PlaylistsLocalStorage
-import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.player.TrackPlayer
 import com.practicum.playlistmaker.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -19,16 +21,16 @@ import java.util.Locale
 const val ERROR = R.string.something_went_wrong.toString()
 const val SERVER_ERROR = R.string.server_error.toString()
 
-class AudioTrackPlayer(
+class TrackPlayerImpl (
     private val networkClient: NetworkClient,
-    private val likeLocalStorage: LikesLocalStorage,
+    private val appDatabase: LikedTracksDatabase,
+    private val trackDbConvertor: TrackDbConvertor,
     private val playlistsLocalStorage: PlaylistsLocalStorage,
     private val mediaPlayer: MediaPlayer
 ) : TrackPlayer {
 
     override var playerState = MediaPlayerState.STATE_DEFAULT
 
-    private val tracksLiked = likeLocalStorage.getLiked()
     val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
 
     override fun preparePlayer(previewUrl: String) {
@@ -56,26 +58,26 @@ class AudioTrackPlayer(
         mediaPlayer.reset()
     }
 
-    override fun likeTrack(trackId: Int) {
-        likeLocalStorage.likeTrack(trackId)
+    override fun likeTrack(track: Track) {
+        appDatabase.trackDao().insertLikedTrack(mapTrackToEntity(track))
     }
 
-    override fun unlikeTrack(trackId: Int) {
-        likeLocalStorage.unlikeTrack(trackId)
+    override fun unlikeTrack(track: Track) {
+        appDatabase.trackDao().deleteLikedTrack(mapTrackToEntity(track))
     }
 
-    override fun addTrackToPlaylist(trackId: Int) {
+    override fun addTrackToPlaylist(trackId: Long) {
         playlistsLocalStorage.addTrackToPlaylist(trackId)
     }
 
-    override fun removeTrackFromPlaylist(trackId: Int) {
+    override fun removeTrackFromPlaylist(trackId: Long) {
         playlistsLocalStorage.removeTrackFromPlaylist(trackId)
     }
 
     override fun getCurrentPosition(): Int = mediaPlayer.currentPosition
     override fun getTrackDuration(): Int = mediaPlayer.duration
 
-    override fun getTrackFromId(trackId: Int): Flow<Resource<List<Track>>> = flow {
+    override fun getTrackFromId(trackId: Long): Flow<Resource<List<Track>>> = flow {
         val trackGetResponse = networkClient.doRequest(TrackGetRequest(trackId))
 
         when (trackGetResponse.resultCode) {
@@ -84,8 +86,11 @@ class AudioTrackPlayer(
             }
 
             200 -> {
-                emit(Resource.Success((trackGetResponse as TracksSearchResponse).results.map {
-                    mapTrack(tracksLiked, tracksInPlaylists, it)
+                val result = (trackGetResponse as TracksSearchResponse).results
+                val isFavorite = appDatabase.trackDao().getTrackById(result[0].trackId) != null
+
+                emit(Resource.Success(result.map {
+                    mapTrack(isFavorite, tracksInPlaylists, it)
                 }))
             }
 
@@ -96,7 +101,7 @@ class AudioTrackPlayer(
     }
 
     private fun mapTrack(
-        tracksLiked: Set<String>,
+        isFavorite: Boolean,
         tracksInPlaylists: Set<String>,
         trackDto: TrackDto
     ): Track {
@@ -112,8 +117,29 @@ class AudioTrackPlayer(
             primaryGenreName = trackDto.primaryGenreName ?: "",
             country = trackDto.country ?: "",
             previewUrl = trackDto.previewUrl ?: "",
-            isLiked = tracksLiked.contains(trackDto.trackId.toString()),
+            isFavorite = isFavorite,
             isInPlaylist = tracksInPlaylists.contains(trackDto.trackId.toString())
+        )
+    }
+
+    private fun mapTrackToEntity(
+        track: Track
+    ): TrackEntity {
+        return TrackEntity(
+            id = 0,
+            trackName = track.trackName ?: "",
+            artistName = track.artistName ?: "",
+            trackId = track.trackId ?: 0,
+            trackTime = if (track.trackTime != null)
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime) else "",
+            artworkUrl100 = track.artworkUrl100 ?: "",
+            collectionName = track.collectionName ?: "",
+            releaseDate = track.releaseDate ?: "",
+            primaryGenreName = track.primaryGenreName ?: "",
+            country = track.country ?: "",
+            previewUrl = track.previewUrl ?: "",
+            isFavorite = track.isFavorite,
+            isInPlaylist = track.isInPlaylist
         )
     }
 }

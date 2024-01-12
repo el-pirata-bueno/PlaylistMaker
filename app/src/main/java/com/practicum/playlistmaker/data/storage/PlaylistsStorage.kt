@@ -2,8 +2,8 @@ package com.practicum.playlistmaker.data.storage
 
 interface PlaylistsStorage {
 
-    fun addTrackToPlaylist(trackId: Int)
-    fun removeTrackFromPlaylist(trackId: Int)
+    fun addTrackToPlaylist(trackId: Long)
+    fun removeTrackFromPlaylist(trackId: Long)
     fun getPlaylists(): Set<String>
 
 }

@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.databinding.TracksViewBinding
-import com.practicum.playlistmaker.ui.models.TrackUi
+import com.practicum.playlistmaker.domain.model.Track
 
 class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder>() {
 
-    var itemClickListener: ((TrackUi) -> Unit)? = null
-    val tracks = ArrayList<TrackUi>()
+    var itemClickListener: ((Track) -> Unit)? = null
+    val tracks = ArrayList<Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val layoutInspector = LayoutInflater.from(parent.context)

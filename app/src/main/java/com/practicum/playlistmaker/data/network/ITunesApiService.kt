@@ -9,5 +9,5 @@ interface ITunesApiService {
     suspend fun searchTracks(@Query("term") term: String): TracksSearchResponse
 
     @GET("/lookup")
-    suspend fun searchTrackById(@Query("id") term: Int): TracksSearchResponse
+    suspend fun searchTrackById(@Query("id") term: Long): TracksSearchResponse
 }

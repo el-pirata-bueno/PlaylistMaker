@@ -4,9 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.search.SearchInteractor
-import com.practicum.playlistmaker.ui.models.TrackUi
 import com.practicum.playlistmaker.util.debounce
 import kotlinx.coroutines.launch
 
@@ -14,7 +13,7 @@ class SearchViewModel(
     private val searchInteractor: SearchInteractor
 ) : ViewModel() {
 
-    private val historyTracks = ArrayList<TrackUi>()
+    private val historyTracks = ArrayList<Track>()
     private val searchStateLiveData = MutableLiveData<SearchState>()
 
     private var latestSearchText: String? = null
@@ -25,7 +24,7 @@ class SearchViewModel(
     }
 
     init {
-        historyTracks.addAll(searchInteractor.getHistoryTracks().map { mapTrackToUi(it) })
+        historyTracks.addAll(searchInteractor.getHistoryTracks())
     }
 
     fun clearSearchText() {
@@ -65,7 +64,7 @@ class SearchViewModel(
         }
     }
 
-    fun addTrackToHistory(track: TrackUi) {
+    fun addTrackToHistory(track: Track) {
         viewModelScope.launch {
             searchInteractor
                 .getOneTrack(track.trackId)
@@ -98,10 +97,9 @@ class SearchViewModel(
     }
 
     private fun loadTracksResult(foundTracks: List<Track>?, errorMessage: String?) {
-        val tracks = ArrayList<TrackUi>()
+        val tracks = ArrayList<Track>()
         if (foundTracks != null) {
-            val sortedTracks = foundTracks.map { mapTrackToUi(it) }
-                .sortedWith(compareBy { !it.isLiked })
+            val sortedTracks = foundTracks.sortedWith(compareBy { !it.isFavorite })
             tracks.addAll(sortedTracks)
         }
 
@@ -134,24 +132,6 @@ class SearchViewModel(
             track = foundTracks[0]
             searchInteractor.addTrackToHistory(track)
         }
-    }
-
-
-    private fun mapTrackToUi(track: Track): TrackUi {
-        return TrackUi(
-            track.trackName,
-            track.artistName,
-            track.trackId,
-            track.trackTime,
-            track.artworkUrl100,
-            track.collectionName,
-            track.releaseDate,
-            track.primaryGenreName,
-            track.country,
-            track.previewUrl,
-            track.isLiked,
-            track.isInPlaylist
-        )
     }
 
     companion object {

@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.presentation.search
 
-import com.practicum.playlistmaker.ui.models.TrackUi
+import com.practicum.playlistmaker.domain.model.Track
 
 sealed interface SearchState {
 
@@ -9,9 +9,9 @@ sealed interface SearchState {
 
     data class Error(val errorMessage: String): SearchState
     data class PreLoading(val buttonVisible: Boolean): SearchState
-    data class Content(val tracks: ArrayList<TrackUi>): SearchState
+    data class Content(val tracks: ArrayList<Track>): SearchState
     //clearSearch - факт очистки истории для того, чтобы убрать клавиатуру и очистить текст поиска
-    data class History(val historyTracks: ArrayList<TrackUi>, val clearSearch: Boolean = false) :
+    data class History(val historyTracks: ArrayList<Track>, val clearSearch: Boolean = false) :
         SearchState
 
 }

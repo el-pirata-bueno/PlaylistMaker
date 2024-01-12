@@ -6,7 +6,7 @@ import android.net.Uri
 import com.practicum.playlistmaker.data.sharing.ExternalNavigator
 import com.practicum.playlistmaker.domain.sharing.model.EmailData
 
-class PlayerExternalNavigator(private val context: Context) : ExternalNavigator {
+class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
 
     override fun shareApp(shareUrl: String, typeText: String) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {

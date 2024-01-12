@@ -9,11 +9,11 @@ class PlaylistsLocalStorage(private val sharedPreferences: SharedPreferences): P
         const val PLAYLISTS_KEY = "PLAYLISTS_KEY"
     }
 
-    override fun addTrackToPlaylist(trackId: Int) {
+    override fun addTrackToPlaylist(trackId: Long) {
         changePlaylists(trackId = trackId, remove = false)
     }
 
-    override fun removeTrackFromPlaylist(trackId: Int) {
+    override fun removeTrackFromPlaylist(trackId: Long) {
         changePlaylists(trackId = trackId, remove = true)
     }
 
@@ -21,7 +21,7 @@ class PlaylistsLocalStorage(private val sharedPreferences: SharedPreferences): P
         return sharedPreferences.getStringSet(PLAYLISTS_KEY, emptySet()) ?: emptySet()
     }
 
-    private fun changePlaylists(trackId: Int, remove: Boolean) {
+    private fun changePlaylists(trackId: Long, remove: Boolean) {
         val mutableSet = getPlaylists().toMutableSet()
         val modified =
             if (remove) mutableSet.remove(trackId.toString()) else mutableSet.add(trackId.toString())

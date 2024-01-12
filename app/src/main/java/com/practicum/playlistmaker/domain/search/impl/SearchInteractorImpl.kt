@@ -1,6 +1,8 @@
 package com.practicum.playlistmaker.domain.search.impl
 
-import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.data.converters.TrackDbConvertor
+import com.practicum.playlistmaker.data.db.LikedTracksDatabase
+import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.search.SearchHistory
 import com.practicum.playlistmaker.domain.search.SearchInteractor
 import com.practicum.playlistmaker.domain.search.SearchRepository
@@ -8,9 +10,11 @@ import com.practicum.playlistmaker.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class PlayerSearchInteractor(
+class SearchInteractorImpl(
     private val repository: SearchRepository,
-    private val searchHistory: SearchHistory
+    private val searchHistory: SearchHistory,
+    private val appDatabase: LikedTracksDatabase,
+    private val movieDbConvertor: TrackDbConvertor
 ) : SearchInteractor {
 
     override fun clearHistory() {
@@ -39,7 +43,7 @@ class PlayerSearchInteractor(
         }
     }
 
-    override fun getOneTrack(trackId: Int): Flow<Pair<List<Track>?, String?>> {
+    override fun getOneTrack(trackId: Long): Flow<Pair<List<Track>?, String?>> {
         return repository.getTrack(trackId).map { result ->
             when (result) {
                 is Resource.Success -> {

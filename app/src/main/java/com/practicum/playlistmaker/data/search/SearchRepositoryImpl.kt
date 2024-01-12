@@ -1,14 +1,15 @@
 package com.practicum.playlistmaker.data.search
 
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.data.converters.TrackDbConvertor
+import com.practicum.playlistmaker.data.db.LikedTracksDatabase
 import com.practicum.playlistmaker.data.dto.TrackGetRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchResponse
-import com.practicum.playlistmaker.data.models.TrackDto
+import com.practicum.playlistmaker.data.model.TrackDto
 import com.practicum.playlistmaker.data.network.NetworkClient
-import com.practicum.playlistmaker.data.storage.impl.LikesLocalStorage
 import com.practicum.playlistmaker.data.storage.impl.PlaylistsLocalStorage
-import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.search.SearchRepository
 import com.practicum.playlistmaker.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -18,13 +19,13 @@ import java.util.Locale
 
 const val ERROR = R.string.something_went_wrong.toString()
 const val SERVER_ERROR = R.string.server_error.toString()
-class PlayerSearchRepository(
+class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
-    likeLocalStorage: LikesLocalStorage,
+    private val appDatabase: LikedTracksDatabase,
+    private val trackDbConvertor: TrackDbConvertor,
     playlistsLocalStorage: PlaylistsLocalStorage
 ) : SearchRepository {
 
-    private val tracksLiked = likeLocalStorage.getLiked()
     private val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
 
     override fun searchTracks(term: String): Flow<Resource<List<Track>>> = flow {
@@ -35,9 +36,28 @@ class PlayerSearchRepository(
             }
 
             200 -> {
+                with(tracksSearchResponse as TracksSearchResponse) {
+                    val data = results.map {
+                        val trackTime = if (it.trackTimeMillis != null) SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.trackTimeMillis) else ""
+                        Track(it.trackId, it.trackName, it.artistName, it.collectionName, it.releaseDate, trackTime, it.artworkUrl100, it.primaryGenreName, it.country, it.previewUrl)
+                    }
+                    // "Перепроверить работу при возврате назад к списку найденных треков")
+                    val likedTracks = appDatabase.trackDao().getTrackIds()
+                    for (track in data) {
+                        for (likedTrack in likedTracks) {
+                            if (track.trackId == likedTrack) {
+                                track.isFavorite = true
+                                break
+                            }
+                        }
+                    }
+                    emit(Resource.Success(data))
+                }
+                /*
                 emit(Resource.Success((tracksSearchResponse as TracksSearchResponse).results.map {
                     mapTrack(tracksLiked, tracksInPlaylists, it)
                 }))
+                */
             }
 
             else -> {
@@ -46,7 +66,8 @@ class PlayerSearchRepository(
         }
     }
 
-    override fun getTrack(trackId: Int): Flow<Resource<List<Track>>> = flow {
+    //возможно, удалить это полностью
+    override fun getTrack(trackId: Long): Flow<Resource<List<Track>>> = flow {
         val trackGetResponse = networkClient.doRequest(TrackGetRequest(trackId))
 
         when (trackGetResponse.resultCode) {
@@ -55,8 +76,11 @@ class PlayerSearchRepository(
             }
 
             200 -> {
-                emit(Resource.Success((trackGetResponse as TracksSearchResponse).results.map {
-                    mapTrack(tracksLiked, tracksInPlaylists, it)
+                val result = (trackGetResponse as TracksSearchResponse).results
+                val isFavorite = appDatabase.trackDao().getTrackById(result[0].trackId) != null
+
+                emit(Resource.Success(result.map {
+                    mapTrack(isFavorite, tracksInPlaylists, it)
                 }))
             }
 
@@ -67,7 +91,7 @@ class PlayerSearchRepository(
     }
 
     private fun mapTrack(
-        tracksLiked: Set<String>,
+        isFavorite: Boolean,
         tracksInPlaylists: Set<String>,
         trackDto: TrackDto
     ): Track {
@@ -83,7 +107,7 @@ class PlayerSearchRepository(
             primaryGenreName = trackDto.primaryGenreName ?: "",
             country = trackDto.country ?: "",
             previewUrl = trackDto.previewUrl ?: "",
-            isLiked = tracksLiked.contains(trackDto.trackId.toString()),
+            isFavorite = isFavorite,
             isInPlaylist = tracksInPlaylists.contains(trackDto.trackId.toString())
         )
     }

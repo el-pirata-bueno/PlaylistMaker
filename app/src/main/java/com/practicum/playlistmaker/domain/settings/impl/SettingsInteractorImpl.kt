@@ -4,7 +4,7 @@ import com.practicum.playlistmaker.data.settings.SettingsRepository
 import com.practicum.playlistmaker.domain.settings.SettingsInteractor
 import com.practicum.playlistmaker.domain.settings.model.ThemeSettings
 
-class PlayerSettingsInteractor(
+class SettingsInteractorImpl(
     private val repository: SettingsRepository
 ) : SettingsInteractor {
     override fun getThemeAppSettings(): ThemeSettings = repository.getThemeAppSettings()

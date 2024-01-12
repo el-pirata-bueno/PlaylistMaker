@@ -13,9 +13,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlayerBinding
+import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.presentation.player.PlayerState
 import com.practicum.playlistmaker.presentation.player.PlayerViewModel
-import com.practicum.playlistmaker.ui.models.TrackUi
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -24,7 +24,7 @@ class PlayerFragment: Fragment() {
     companion object {
         const val TRACK_ID = "track_id"
 
-        fun createArgs(track_id: Int): Bundle =
+        fun createArgs(track_id: Long): Bundle =
             bundleOf(TRACK_ID to track_id)
     }
 
@@ -100,17 +100,17 @@ class PlayerFragment: Fragment() {
         Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
     }
 
-    private fun drawTrack(track: TrackUi, isPlaying: Boolean, currentTrackTime: String) {
+    private fun drawTrack(track: Track, isPlaying: Boolean, currentTrackTime: String) {
 
         Glide.with(requireContext())
-            .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
+            .load(track.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg"))
             .placeholder(R.drawable.cover_placeholder_big)
             .centerCrop()
             .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_cover_rounded_corners)))
             .into(binding.trackCoverBig)
 
         binding.playButton.setImageResource(if (isPlaying) R.drawable.button_pause else R.drawable.button_play)
-        binding.likeButton.setImageResource(if (track.isLiked) R.drawable.button_liked else R.drawable.button_like)
+        binding.likeButton.setImageResource(if (track.isFavorite) R.drawable.button_liked else R.drawable.button_like)
         binding.addToPlaylistButton.setImageResource(if (track.isInPlaylist) R.drawable.button_added_to_playlist else R.drawable.button_add_to_playlist)
 
         binding.currentTrackTime.text = currentTrackTime
@@ -119,7 +119,7 @@ class PlayerFragment: Fragment() {
         binding.trackAlbum.text = track.collectionName ?: ""
         binding.trackName.text = track.trackName
         binding.artistName.text = track.artistName
-        binding.trackYear.text = track.releaseDate.substring(0, 4)
+        binding.trackYear.text = track.releaseDate?.substring(0, 4) ?: ""
         binding.trackGenre.text = track.primaryGenreName
         binding.artistCountry.text = track.country
     }
@@ -139,7 +139,7 @@ class PlayerFragment: Fragment() {
         }
 
         binding.likeButton.setOnClickListener {
-            viewModel.likeTrack()
+            viewModel.onFavoriteClicked()
         }
     }
 }

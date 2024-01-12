@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
-import com.practicum.playlistmaker.presentation.media.TrackCollectionsVIewModel
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import com.practicum.playlistmaker.presentation.media.MediaPlaylistsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment: Fragment()  {
 
@@ -15,7 +15,7 @@ class PlaylistsFragment: Fragment()  {
         fun newInstance() = PlaylistsFragment().apply { }
     }
 
-    val hostViewModel by activityViewModel<TrackCollectionsVIewModel>()
+    private val viewModel by viewModel<MediaPlaylistsViewModel>()
 
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!

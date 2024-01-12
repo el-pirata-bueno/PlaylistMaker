@@ -14,9 +14,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
+import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.presentation.search.SearchState
 import com.practicum.playlistmaker.presentation.search.SearchViewModel
-import com.practicum.playlistmaker.ui.models.TrackUi
 import com.practicum.playlistmaker.ui.player.PlayerFragment
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -35,7 +35,7 @@ class SearchFragment: Fragment() {
     private lateinit var searchText: String
     private var message = ""
 
-    private lateinit var onTrackClickDebounce: (TrackUi) -> Unit
+    private lateinit var onTrackClickDebounce: (Track) -> Unit
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -47,7 +47,7 @@ class SearchFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onTrackClickDebounce = debounce<TrackUi>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+        onTrackClickDebounce = debounce<Track>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
                 findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track.trackId))
         }
 
@@ -188,7 +188,7 @@ class SearchFragment: Fragment() {
         hideKeyboard()
     }
 
-    private fun showContent(tracks: List<TrackUi>) {
+    private fun showContent(tracks: List<Track>) {
         binding.progressBar.visibility = View.GONE
         binding.tracklistRecycler.visibility = View.VISIBLE
         binding.searchHistoryViewGroup.visibility = View.GONE
@@ -204,7 +204,7 @@ class SearchFragment: Fragment() {
         hideKeyboard()
     }
 
-    private fun showHistory(tracksHistory: List<TrackUi>, clearSearch: Boolean) {
+    private fun showHistory(tracksHistory: List<Track>, clearSearch: Boolean) {
         if (clearSearch) {
             clearSearchText()
             hideKeyboard()

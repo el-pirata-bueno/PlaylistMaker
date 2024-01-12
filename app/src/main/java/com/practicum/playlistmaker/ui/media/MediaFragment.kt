@@ -8,12 +8,12 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentMediaBinding
-import com.practicum.playlistmaker.presentation.media.MediaViewModel
+import com.practicum.playlistmaker.presentation.media.MediaPlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaFragment: Fragment()  {
     private lateinit var binding: FragmentMediaBinding
-    private val viewModel: MediaViewModel by viewModel()
+    private val viewModel: MediaPlaylistsViewModel by viewModel()
     private lateinit var tabMediator: TabLayoutMediator
 
     companion object {
