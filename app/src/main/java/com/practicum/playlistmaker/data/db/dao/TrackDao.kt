@@ -16,9 +16,10 @@ interface TrackDao {
     @Delete(entity = TrackEntity::class)
     fun deleteLikedTrack(trackEntity: TrackEntity)
 
-    @Query("SELECT * FROM track_table ORDER BY id DESC")
+    @Query("SELECT * FROM track_table ORDER BY createdAt DESC")
     fun getLikedTracks(): List<TrackEntity>
 
+    // НУЖЕН??
     @Query("SELECT * FROM track_table WHERE trackId = :id")
     fun getTrackById(id: Long): TrackEntity
 

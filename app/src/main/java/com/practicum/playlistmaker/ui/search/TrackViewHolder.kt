@@ -17,8 +17,7 @@ class TrackViewHolder(private val binding: TracksViewBinding) :
 
         val imageUrl = model.artworkUrl100
 
-        val roundedCorner =
-            binding.artwork.context.resources.getDimensionPixelSize(R.dimen.tracklist_cover_rounded_corners)
+        val roundedCorner = binding.artwork.context.resources.getDimensionPixelSize(R.dimen.tracklist_cover_rounded_corners)
 
         Glide.with(itemView)
             .load(imageUrl)

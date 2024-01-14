@@ -13,7 +13,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 
-class App : Application(), KoinComponent {
+open class App : Application(), KoinComponent {
 
     private lateinit var themeAppSettings: ThemeSettings
     private lateinit var themeSystemSettings: ThemeSettings

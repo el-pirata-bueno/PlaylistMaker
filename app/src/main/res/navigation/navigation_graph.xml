@@ -3,13 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/settingsFragment">
+    app:startDestination="@id/mediaFragment">
 
     <fragment
         android:id="@+id/mediaFragment"
         android:name="com.practicum.playlistmaker.ui.media.MediaFragment"
         android:label="fragment_media"
-        tools:layout="@layout/fragment_media" />
+        tools:layout="@layout/fragment_media" >
+    <action
+        android:id="@+id/action_mediaFragment_to_playerFragment"
+        app:destination="@id/playerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/playerFragment"
         android:name="com.practicum.playlistmaker.ui.player.PlayerFragment"
@@ -29,9 +33,6 @@
         android:name="com.practicum.playlistmaker.ui.media.LikedTracksFragment"
         android:label="fragment_liked_tracks"
         tools:layout="@layout/fragment_liked_tracks" >
-        <action
-            android:id="@+id/action_likedTracksFragment_to_playerFragment"
-            app:destination="@id/playerFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

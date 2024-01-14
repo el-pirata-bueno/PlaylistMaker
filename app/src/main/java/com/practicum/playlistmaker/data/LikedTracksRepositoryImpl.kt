@@ -22,7 +22,7 @@ class LikedTracksRepositoryImpl(
     }
 
     override suspend fun getLikedTracks(): Flow<List<Track>> = flow {
-        var likedTracks = appDatabase.trackDao().getLikedTracks()
+        val likedTracks = appDatabase.trackDao().getLikedTracks()
         emit(convertFromTrackEntity(likedTracks))
     }
 

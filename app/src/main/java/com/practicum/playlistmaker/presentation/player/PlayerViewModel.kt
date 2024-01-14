@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.data.player.MediaPlayerState
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.player.PlayerInteractor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -14,14 +15,28 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(
-    trackId: Long,
+    val trackId: Long,
+    val trackName: String?,
+    val artistName: String?,
+    val collectionName: String?,
+    val releaseDate: String?,
+    val trackTime: String?,
+    val artworkUrl100: String?,
+    val primaryGenreName: String?,
+    val country: String?,
+    val previewUrl: String?,
+    val isFavorite: Boolean,
+    val isInPlaylist: Boolean,
     private val playerInteractor: PlayerInteractor
 ) : ViewModel() {
 
-    private lateinit var track: Track
     private var currentTrackTime: String = "00:00"
     private var isPlaying: Boolean = false
     private var timerJob: Job? = null
+
+    private var currentTrack: Track = mapArgsToTrack(trackId, trackName, artistName,
+        collectionName, releaseDate, trackTime, artworkUrl100, primaryGenreName, country,
+        previewUrl, isFavorite, isInPlaylist)
 
     private var playerStateLiveData = MutableLiveData<PlayerState>()
     fun getPlayerStateLiveData(): LiveData<PlayerState> = playerStateLiveData
@@ -29,17 +44,13 @@ class PlayerViewModel(
     init {
         playerStateLiveData.postValue(PlayerState.Loading)
 
-        //if (trackId != 0) {
-
-        trackId.let {
-            viewModelScope.launch {
-                playerInteractor
-                    .getTrackFromId(trackId)
-                    .collect { pair ->
-                        getTrackResult(pair.first, pair.second)
-                    }
-            }
+        if (previewUrl != null) {
+            preparePlayer(previewUrl)
         }
+
+        playerStateLiveData.postValue(
+            PlayerState.Content(currentTrack, isPlaying, currentTrackTime)
+        )
     }
 
     override fun onCleared() {
@@ -51,38 +62,39 @@ class PlayerViewModel(
         playerInteractor.pausePlayer()
         isPlaying = false
         timerJob?.cancel()
-        playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
+        playerStateLiveData.postValue(PlayerState.Content(currentTrack, isPlaying, currentTrackTime))
     }
 
     fun onFavoriteClicked() {
-        if (track.isFavorite) {
-            viewModelScope.launch {
-                playerInteractor.unlikeTrack(track)
+        if (currentTrack.isFavorite) {
+            viewModelScope.launch(Dispatchers.IO) {
+                playerInteractor.unlikeTrack(currentTrack)
             }
-            track.isFavorite = false
-            playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
+            currentTrack.isFavorite = false
+            playerStateLiveData.postValue(PlayerState.Content(currentTrack, isPlaying, currentTrackTime))
         } else {
-
-            playerInteractor.likeTrack(track)
-            track.isFavorite = true
-            playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
+            viewModelScope.launch(Dispatchers.IO) {
+                playerInteractor.likeTrack(currentTrack)
+            }
+            currentTrack.isFavorite = true
+            playerStateLiveData.postValue(PlayerState.Content(currentTrack, isPlaying, currentTrackTime))
         }
     }
 
     fun addTrackToPlaylist() {
-        if (track.isInPlaylist) {
+        if (currentTrack.isInPlaylist) {
             viewModelScope.launch {
-                playerInteractor.removeTrackFromPlaylist(track.trackId)
+                playerInteractor.removeTrackFromPlaylist(currentTrack)
             }
-            track.isInPlaylist = false
-            playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
+            currentTrack.isInPlaylist = false
+            playerStateLiveData.postValue(PlayerState.Content(currentTrack, isPlaying, currentTrackTime))
 
         } else {
             viewModelScope.launch {
-                playerInteractor.addTrackToPlaylist(track.trackId)
+                playerInteractor.addTrackToPlaylist(currentTrack)
             }
-            track.isInPlaylist = true
-            playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
+            currentTrack.isInPlaylist = true
+            playerStateLiveData.postValue(PlayerState.Content(currentTrack, isPlaying, currentTrackTime))
         }
     }
 
@@ -104,37 +116,15 @@ class PlayerViewModel(
         }
     }
 
-    private fun getTrackResult(foundTracks: List<Track>?, errorMessage: String?) {
-        if (foundTracks != null) {
-            var tracks = foundTracks.toMutableList()
-            track = tracks[0]
-            if (track.previewUrl != null) {
-                preparePlayer(track.previewUrl!!)
-            }
-            playerStateLiveData.postValue(
-                PlayerState.Content(
-                    track, isPlaying, currentTrackTime
-                )
-            )
-        } else {
-            if (errorMessage != null) playerStateLiveData.postValue(
-                PlayerState.Error(
-                    errorMessage
-                )
-            )
-        }
-    }
-
     private fun preparePlayer(previewUrl: String) {
         playerInteractor.preparePlayer(previewUrl)
     }
 
     private fun startPlayer() {
         playerInteractor.startPlayer()
-
         isPlaying = true
         currentTrackTime = getPlayerCurrentPosition()
-        playerStateLiveData.postValue(PlayerState.Content(track, isPlaying, currentTrackTime))
+        playerStateLiveData.postValue(PlayerState.Content(currentTrack, isPlaying, currentTrackTime))
         startTimer()
     }
 
@@ -144,22 +134,14 @@ class PlayerViewModel(
                 delay(300L)
                 currentTrackTime = getPlayerCurrentPosition()
                 playerStateLiveData.postValue(
-                    PlayerState.Content(
-                        track,
-                        isPlaying,
-                        currentTrackTime
-                    )
+                    PlayerState.Content(currentTrack, isPlaying, currentTrackTime)
                 )
             }
             if (getPlayerState() == MediaPlayerState.STATE_PREPARED) {
                 pausePlayer()
                 currentTrackTime = "00:00"
                 playerStateLiveData.postValue(
-                    PlayerState.Content(
-                        track,
-                        isPlaying,
-                        currentTrackTime
-                    )
+                    PlayerState.Content(currentTrack, isPlaying, currentTrackTime)
                 )
             }
         }
@@ -172,6 +154,15 @@ class PlayerViewModel(
             "mm:ss",
             Locale.getDefault()
         ).format(playerInteractor.getCurrentPosition()) ?: "00:00"
+    }
+
+    private fun mapArgsToTrack(trackId: Long, trackName: String?, artistName: String?,
+                               collectionName: String?, releaseDate: String?, trackTime: String?,
+                               artworkUrl100: String?, primaryGenreName: String?, country: String?,
+                               previewUrl: String?, isFavorite: Boolean, isInPlaylist: Boolean):
+            Track {
+        return Track (trackId, trackName, artistName, collectionName, releaseDate, trackTime,
+            artworkUrl100, primaryGenreName, country, previewUrl, isFavorite, isInPlaylist)
     }
 }
 

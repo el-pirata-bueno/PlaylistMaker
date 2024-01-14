@@ -6,5 +6,4 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
     fun searchTracks(term: String): Flow<Resource<List<Track>>>
-    fun getTrack(trackId: Long): Flow<Resource<List<Track>>>
 }

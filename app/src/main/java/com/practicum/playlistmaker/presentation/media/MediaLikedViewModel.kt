@@ -8,11 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.domain.db.LikedTracksInteractor
 import com.practicum.playlistmaker.domain.model.Track
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MediaLikedViewModel(
     private val context: Context,
-    private val likedTracksInteractor: LikedTracksInteractor
+    private val likedTracksInteractor: LikedTracksInteractor,
 ): ViewModel() {
 
     private var mediaLikedStateLiveData = MutableLiveData<MediaLikedState>()
@@ -20,19 +21,27 @@ class MediaLikedViewModel(
 
     fun fillData() {
         renderState(MediaLikedState.Empty(""))
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             likedTracksInteractor
                 .getLikedTracks()
                 .collect {tracks ->
                     processResult(tracks)
                 }
         }
+    }
 
+    fun onResume() {
+        viewModelScope.launch(Dispatchers.IO) {
+            likedTracksInteractor
+                .getLikedTracks()
+                .collect {tracks ->
+                    processResult(tracks)
+                }
+        }
     }
 
     private fun processResult(tracks: List<Track>) {
         if (tracks.isEmpty()) {
-            //"Переделать на обычный объект с захардкоженной строкой?"
             renderState(MediaLikedState.Empty(context.getString(R.string.media_empty)))
         } else {
             renderState(MediaLikedState.Content(tracks))

@@ -79,4 +79,10 @@ class SettingsFragment: Fragment() {
         }
     }
 
+    companion object {
+        fun newInstance() = SettingsFragment().apply {
+        }
+
+    }
+
 }

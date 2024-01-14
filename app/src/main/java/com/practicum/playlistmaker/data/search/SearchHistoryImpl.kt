@@ -2,35 +2,36 @@ package com.practicum.playlistmaker.data.search
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.practicum.playlistmaker.data.converters.TrackDbConvertor
-import com.practicum.playlistmaker.data.db.LikedTracksDatabase
 import com.practicum.playlistmaker.data.storage.impl.HistoryLocalStorage
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.search.SearchHistory
 
 class SearchHistoryImpl(
     private val localStorage: HistoryLocalStorage,
-    private val appDatabase: LikedTracksDatabase,
-    private val trackDbConvertor: TrackDbConvertor
-    ) : SearchHistory {
+    private val likedTracksIdsRepositoryImpl: LikedTracksIdsRepositoryImpl,
+) : SearchHistory {
 
     companion object {
         const val MAX_HISTORY_SIZE = 10
     }
 
-    override fun getHistory(): List<Track> {
-        // Перепроверить работу при возврате назад к истории"
+    override suspend fun getHistory(): List<Track> {
         val json = localStorage.getHistory()
+        //return Gson().fromJson(json, object : TypeToken<ArrayList<Track?>?>() {}.type) ?: emptyList()
+
         val data: List<Track> = Gson().fromJson(json, object : TypeToken<ArrayList<Track?>?>() {}.type) ?: emptyList()
-        val likedTracks = appDatabase.trackDao().getTrackIds()
+        var likedTracksIds = likedTracksIdsRepositoryImpl.getLikedTracksIds()
+
         for (track in data) {
-            for (likedTrack in likedTracks) {
+            for (likedTrack in likedTracksIds) {
                 if (track.trackId == likedTrack) {
                     track.isFavorite = true
                     break
                 }
             }
         }
+        saveHistory(data)
+
         return data
     }
 
@@ -43,7 +44,7 @@ class SearchHistoryImpl(
         localStorage.clearHistory()
     }
 
-    override fun addTrackToHistory(track: Track) {
+    override suspend fun addTrackToHistory(track: Track) {
         val history = getHistory().toMutableList()
         for (i in history.indices) {
             if (track.trackId == history[i].trackId) {

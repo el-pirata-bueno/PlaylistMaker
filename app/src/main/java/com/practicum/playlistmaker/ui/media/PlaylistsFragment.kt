@@ -11,10 +11,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment: Fragment()  {
 
-    companion object {
-        fun newInstance() = PlaylistsFragment().apply { }
-    }
-
     private val viewModel by viewModel<MediaPlaylistsViewModel>()
 
     private var _binding: FragmentPlaylistsBinding? = null
@@ -32,5 +28,9 @@ class PlaylistsFragment: Fragment()  {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        fun newInstance() = PlaylistsFragment().apply { }
     }
 }

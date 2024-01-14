@@ -21,22 +21,29 @@ import org.koin.core.parameter.parametersOf
 
 class PlayerFragment: Fragment() {
 
-    companion object {
-        const val TRACK_ID = "track_id"
-
-        fun createArgs(track_id: Long): Bundle =
-            bundleOf(TRACK_ID to track_id)
+    private val viewModel: PlayerViewModel by viewModel {
+        parametersOf(
+            requireArguments().getLong(ARGS_TRACK_ID),
+            requireArguments().getString(ARGS_TRACK_NAME),
+            requireArguments().getString(ARGS_ARTIST_NAME),
+            requireArguments().getString(ARGS_COLLECTION_NAME),
+            requireArguments().getString(ARGS_RELEASE_DATE),
+            requireArguments().getString(ARGS_TRACK_TIME),
+            requireArguments().getString(ARGS_ARTWORK_URL),
+            requireArguments().getString(ARGS_GENRE_NAME),
+            requireArguments().getString(ARGS_COUNTRY),
+            requireArguments().getString(ARGS_PREVIEW_URL),
+            if (ARGS_IS_FAVORITE != null) requireArguments().getBoolean(ARGS_IS_FAVORITE) else false,
+            if (ARGS_IS_IN_PLAYLISTS != null) requireArguments().getBoolean(ARGS_IS_IN_PLAYLISTS) else false
+            )
     }
 
-    private val viewModel: PlayerViewModel by viewModel()
-    {
-        parametersOf(requireArguments().getInt(TRACK_ID))
-    }
 
     private lateinit var binding: FragmentPlayerBinding
     private var errorText = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState:
+        Bundle?): View? {
         binding = FragmentPlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -46,14 +53,13 @@ class PlayerFragment: Fragment() {
 
         errorText = getString(R.string.track_error)
 
-        val trackId = requireArguments().getInt(TRACK_ID)
-
         viewModel.getPlayerStateLiveData().observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
                 is PlayerState.Error -> showError(errorText)
                 is PlayerState.Content -> {
                     showContent()
-                    drawTrack(screenState.track, screenState.isPlaying, screenState.currentTrackTime)
+                    drawTrack(screenState.track, screenState.isPlaying,
+                        screenState.currentTrackTime)
                 }
                 else -> {}
             }
@@ -126,7 +132,6 @@ class PlayerFragment: Fragment() {
 
     private fun initListeners() {
         binding.arrowBackButton.setOnClickListener {
-            //router.goBack()
             findNavController().popBackStack()
         }
 
@@ -141,5 +146,38 @@ class PlayerFragment: Fragment() {
         binding.likeButton.setOnClickListener {
             viewModel.onFavoriteClicked()
         }
+    }
+
+    companion object {
+        private const val ARGS_TRACK_ID = "trackId"
+        private const val ARGS_TRACK_NAME = "trackName"
+        private const val ARGS_ARTIST_NAME = "artistName"
+        private const val ARGS_COLLECTION_NAME = "collectionName"
+        private const val ARGS_RELEASE_DATE = "releaseDate"
+        private const val ARGS_TRACK_TIME = "trackTime"
+        private const val ARGS_ARTWORK_URL = "artworkUrl"
+        private const val ARGS_GENRE_NAME = "genreName"
+        private const val ARGS_COUNTRY = "country"
+        private const val ARGS_PREVIEW_URL = "previewUrl"
+        private const val ARGS_IS_FAVORITE = "isFavorite"
+        private const val ARGS_IS_IN_PLAYLISTS = "isInPlaylist"
+        fun createArgs(trackId: Long, trackName: String?, artistName: String?,
+                       collectionName: String?, releaseDate: String?, trackTime: String?,
+                       artworkUrl100: String?, primaryGenreName: String?, country: String?,
+                       previewUrl: String?, isFavorite: Boolean?, isInPlaylist: Boolean?): Bundle =
+            bundleOf(
+                ARGS_TRACK_ID to trackId,
+                ARGS_TRACK_NAME to trackName,
+                ARGS_ARTIST_NAME to artistName,
+                ARGS_COLLECTION_NAME to collectionName,
+                ARGS_RELEASE_DATE to releaseDate,
+                ARGS_TRACK_TIME to trackTime,
+                ARGS_ARTWORK_URL to artworkUrl100,
+                ARGS_GENRE_NAME to primaryGenreName,
+                ARGS_COUNTRY to country,
+                ARGS_PREVIEW_URL to previewUrl,
+                ARGS_IS_FAVORITE to isFavorite,
+                ARGS_IS_IN_PLAYLISTS to isInPlaylist
+                )
     }
 }

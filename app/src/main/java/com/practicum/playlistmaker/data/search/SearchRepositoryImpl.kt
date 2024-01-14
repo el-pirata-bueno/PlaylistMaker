@@ -1,9 +1,5 @@
 package com.practicum.playlistmaker.data.search
 
-import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.data.converters.TrackDbConvertor
-import com.practicum.playlistmaker.data.db.LikedTracksDatabase
-import com.practicum.playlistmaker.data.dto.TrackGetRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchResponse
 import com.practicum.playlistmaker.data.model.TrackDto
@@ -17,14 +13,12 @@ import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-const val ERROR = R.string.something_went_wrong.toString()
-const val SERVER_ERROR = R.string.server_error.toString()
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val appDatabase: LikedTracksDatabase,
-    private val trackDbConvertor: TrackDbConvertor,
+    private val likedTracksIdsRepositoryImpl: LikedTracksIdsRepositoryImpl,
     playlistsLocalStorage: PlaylistsLocalStorage
 ) : SearchRepository {
+
 
     private val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
 
@@ -32,19 +26,18 @@ class SearchRepositoryImpl(
         val tracksSearchResponse = networkClient.doRequest(TracksSearchRequest(term))
         when (tracksSearchResponse.resultCode) {
             -1 -> {
-                emit(Resource.Error(ERROR))
+                emit(Resource.Error("connection_error"))
             }
 
             200 -> {
                 with(tracksSearchResponse as TracksSearchResponse) {
                     val data = results.map {
-                        val trackTime = if (it.trackTimeMillis != null) SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.trackTimeMillis) else ""
-                        Track(it.trackId, it.trackName, it.artistName, it.collectionName, it.releaseDate, trackTime, it.artworkUrl100, it.primaryGenreName, it.country, it.previewUrl)
+                        mapTrack(false, tracksInPlaylists, it)
                     }
-                    // "Перепроверить работу при возврате назад к списку найденных треков")
-                    val likedTracks = appDatabase.trackDao().getTrackIds()
+                    var likedTracksIds = likedTracksIdsRepositoryImpl.getLikedTracksIds()
+
                     for (track in data) {
-                        for (likedTrack in likedTracks) {
+                        for (likedTrack in likedTracksIds) {
                             if (track.trackId == likedTrack) {
                                 track.isFavorite = true
                                 break
@@ -53,39 +46,10 @@ class SearchRepositoryImpl(
                     }
                     emit(Resource.Success(data))
                 }
-                /*
-                emit(Resource.Success((tracksSearchResponse as TracksSearchResponse).results.map {
-                    mapTrack(tracksLiked, tracksInPlaylists, it)
-                }))
-                */
             }
 
             else -> {
-                emit(Resource.Error(SERVER_ERROR))
-            }
-        }
-    }
-
-    //возможно, удалить это полностью
-    override fun getTrack(trackId: Long): Flow<Resource<List<Track>>> = flow {
-        val trackGetResponse = networkClient.doRequest(TrackGetRequest(trackId))
-
-        when (trackGetResponse.resultCode) {
-            -1 -> {
-                emit(Resource.Error(ERROR))
-            }
-
-            200 -> {
-                val result = (trackGetResponse as TracksSearchResponse).results
-                val isFavorite = appDatabase.trackDao().getTrackById(result[0].trackId) != null
-
-                emit(Resource.Success(result.map {
-                    mapTrack(isFavorite, tracksInPlaylists, it)
-                }))
-            }
-
-            else -> {
-                emit(Resource.Error(SERVER_ERROR))
+                emit(Resource.Error("server_error"))
             }
         }
     }

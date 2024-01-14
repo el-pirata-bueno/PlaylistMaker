@@ -39,7 +39,7 @@ val dataModule = module {
             .build()
 
         Retrofit.Builder()
-            .baseUrl("http://itunes.apple.com/")   //можно заменить на http, чтобы работало бодрее
+            .baseUrl("http://itunes.apple.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build().create(ITunesApiService::class.java)
@@ -57,7 +57,8 @@ val dataModule = module {
     singleOf(::ExternalNavigatorImpl).bind<ExternalNavigator>()
 
     single {
-        Room.databaseBuilder(androidContext(), LikedTracksDatabase::class.java, "database.db")
+        Room.databaseBuilder(androidContext(), LikedTracksDatabase::class.java, "database_v0")
+            .fallbackToDestructiveMigration()
             .build()
     }
 

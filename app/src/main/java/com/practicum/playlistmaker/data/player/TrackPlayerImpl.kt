@@ -1,37 +1,26 @@
 package com.practicum.playlistmaker.data.player
 
 import android.media.MediaPlayer
-import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.data.converters.TrackDbConvertor
 import com.practicum.playlistmaker.data.db.LikedTracksDatabase
-import com.practicum.playlistmaker.data.dto.TrackGetRequest
-import com.practicum.playlistmaker.data.dto.TracksSearchResponse
 import com.practicum.playlistmaker.data.model.TrackDto
 import com.practicum.playlistmaker.data.model.TrackEntity
-import com.practicum.playlistmaker.data.network.NetworkClient
 import com.practicum.playlistmaker.data.storage.impl.PlaylistsLocalStorage
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.player.TrackPlayer
-import com.practicum.playlistmaker.util.Resource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.practicum.playlistmaker.domain.search.SearchHistory
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-const val ERROR = R.string.something_went_wrong.toString()
-const val SERVER_ERROR = R.string.server_error.toString()
-
 class TrackPlayerImpl (
-    private val networkClient: NetworkClient,
     private val appDatabase: LikedTracksDatabase,
-    private val trackDbConvertor: TrackDbConvertor,
+    private val searchHistory: SearchHistory,
     private val playlistsLocalStorage: PlaylistsLocalStorage,
     private val mediaPlayer: MediaPlayer
 ) : TrackPlayer {
 
     override var playerState = MediaPlayerState.STATE_DEFAULT
 
-    val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
+    //val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
 
     override fun preparePlayer(previewUrl: String) {
         mediaPlayer.setDataSource(previewUrl)
@@ -58,47 +47,26 @@ class TrackPlayerImpl (
         mediaPlayer.reset()
     }
 
-    override fun likeTrack(track: Track) {
+    override suspend fun likeTrack(track: Track) {
         appDatabase.trackDao().insertLikedTrack(mapTrackToEntity(track))
+        searchHistory.addTrackToHistory(track)
     }
 
-    override fun unlikeTrack(track: Track) {
+    override suspend fun unlikeTrack(track: Track) {
         appDatabase.trackDao().deleteLikedTrack(mapTrackToEntity(track))
+        searchHistory.addTrackToHistory(track)
     }
 
-    override fun addTrackToPlaylist(trackId: Long) {
-        playlistsLocalStorage.addTrackToPlaylist(trackId)
+    override fun addTrackToPlaylist(track: Track) {
+        playlistsLocalStorage.addTrackToPlaylist(track)
     }
 
-    override fun removeTrackFromPlaylist(trackId: Long) {
-        playlistsLocalStorage.removeTrackFromPlaylist(trackId)
+    override fun removeTrackFromPlaylist(track: Track) {
+        playlistsLocalStorage.removeTrackFromPlaylist(track)
     }
 
     override fun getCurrentPosition(): Int = mediaPlayer.currentPosition
     override fun getTrackDuration(): Int = mediaPlayer.duration
-
-    override fun getTrackFromId(trackId: Long): Flow<Resource<List<Track>>> = flow {
-        val trackGetResponse = networkClient.doRequest(TrackGetRequest(trackId))
-
-        when (trackGetResponse.resultCode) {
-            -1 -> {
-                emit(Resource.Error(ERROR))
-            }
-
-            200 -> {
-                val result = (trackGetResponse as TracksSearchResponse).results
-                val isFavorite = appDatabase.trackDao().getTrackById(result[0].trackId) != null
-
-                emit(Resource.Success(result.map {
-                    mapTrack(isFavorite, tracksInPlaylists, it)
-                }))
-            }
-
-            else -> {
-                emit(Resource.Error(SERVER_ERROR))
-            }
-        }
-    }
 
     private fun mapTrack(
         isFavorite: Boolean,
@@ -126,12 +94,10 @@ class TrackPlayerImpl (
         track: Track
     ): TrackEntity {
         return TrackEntity(
-            id = 0,
             trackName = track.trackName ?: "",
             artistName = track.artistName ?: "",
             trackId = track.trackId ?: 0,
-            trackTime = if (track.trackTime != null)
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime) else "",
+            trackTime = track.trackTime ?: "",
             artworkUrl100 = track.artworkUrl100 ?: "",
             collectionName = track.collectionName ?: "",
             releaseDate = track.releaseDate ?: "",
@@ -139,7 +105,8 @@ class TrackPlayerImpl (
             country = track.country ?: "",
             previewUrl = track.previewUrl ?: "",
             isFavorite = track.isFavorite,
-            isInPlaylist = track.isInPlaylist
+            isInPlaylist = track.isInPlaylist,
+            createdAt = System.currentTimeMillis()
         )
     }
 }
