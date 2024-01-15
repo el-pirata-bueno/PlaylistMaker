@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import com.google.gson.Gson
 import com.practicum.playlistmaker.data.db.LikedTracksDatabase
 import com.practicum.playlistmaker.data.network.ITunesApiService
 import com.practicum.playlistmaker.data.network.NetworkClient
@@ -45,6 +46,8 @@ val dataModule = module {
             .build().create(ITunesApiService::class.java)
     }
 
+    single { Gson() }
+
     single(qualifier = named("historyPrefs")) { provideHistoryPreferences(androidApplication(), HISTORY_TRACKS) }
     single(qualifier = named("playlistsPrefs")) { providePlaylistsPreferences(androidApplication(), PLAYLISTS) }
     single(qualifier = named("settingsPrefs")) { provideSettingsPreferences(androidApplication(), APP_SETTINGS) }
@@ -55,6 +58,9 @@ val dataModule = module {
 
     singleOf(::RetrofitNetworkClient).bind<NetworkClient>()
     singleOf(::ExternalNavigatorImpl).bind<ExternalNavigator>()
+
+
+
 
     single {
         Room.databaseBuilder(androidContext(), LikedTracksDatabase::class.java, "database_v0")

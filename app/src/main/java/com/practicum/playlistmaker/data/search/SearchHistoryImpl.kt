@@ -8,6 +8,7 @@ import com.practicum.playlistmaker.domain.search.SearchHistory
 
 class SearchHistoryImpl(
     private val localStorage: HistoryLocalStorage,
+    private val gson: Gson
 ) : SearchHistory {
 
     companion object {
@@ -16,13 +17,13 @@ class SearchHistoryImpl(
 
     override suspend fun getHistory(): List<Track> {
         val json = localStorage.getHistory()
-        val data: List<Track> = Gson().fromJson(json, object : TypeToken<ArrayList<Track?>?>() {}.type) ?: emptyList()
+        val data: List<Track> = gson.fromJson(json, object : TypeToken<ArrayList<Track?>?>() {}.type) ?: emptyList()
 
         return data
     }
 
     override fun saveHistory(tracks: List<Track>) {
-        val json = Gson().toJson(tracks)
+        val json = gson.toJson(tracks)
         localStorage.saveHistory(json)
     }
 

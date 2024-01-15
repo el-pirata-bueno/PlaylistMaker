@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +30,6 @@ class SearchFragment: Fragment() {
     private val trackAdapter = TrackAdapter()
     private var historyAdapter = TrackAdapter()
     private lateinit var searchText: String
-    private var message = ""
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
 
@@ -63,8 +61,6 @@ class SearchFragment: Fragment() {
                 )
         }
 
-        message = getString(R.string.nothing_found)
-
         viewModel.fillData()
 
         viewModel.getSearchStateLiveData().observe(viewLifecycleOwner) {
@@ -95,7 +91,6 @@ class SearchFragment: Fragment() {
         viewModel.getSearchStateLiveData().observe(viewLifecycleOwner) {
             render(it)
         }
-        Log.d("OnresumeFragment", "OnresumeFragment")
     }
 
     private fun initHistoryAdapter() {
@@ -221,7 +216,7 @@ class SearchFragment: Fragment() {
         binding.placeholderImage.visibility = View.VISIBLE
         binding.placeholderMessage.visibility = View.VISIBLE
         binding.placeholderImage.setImageResource(R.drawable.nothing_found)
-        binding.placeholderMessage.text = message
+        binding.placeholderMessage.text = getString(R.string.nothing_found)
         hideKeyboard()
     }
 

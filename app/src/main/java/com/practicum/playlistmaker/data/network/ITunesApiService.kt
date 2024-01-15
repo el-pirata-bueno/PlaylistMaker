@@ -6,6 +6,9 @@ import retrofit2.http.Query
 
 interface ITunesApiService {
     @GET("/search")
-    suspend fun searchTracks(@Query("term") term: String, @Query("resultEntity") entity: String = "music"): TracksSearchResponse
+    suspend fun searchTracks(
+        @Query("term") term: String,
+        @Query("resultEntity") entity: String = "music"
+    ): TracksSearchResponse
 
 }

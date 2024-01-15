@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.data
 
-import com.practicum.playlistmaker.data.converters.TrackDbConvertor
+import com.practicum.playlistmaker.data.converters.TrackMapper
 import com.practicum.playlistmaker.data.db.LikedTracksDatabase
 import com.practicum.playlistmaker.data.model.TrackEntity
 import com.practicum.playlistmaker.domain.db.LikedTracksRepository
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 
 class LikedTracksRepositoryImpl(
     private val appDatabase: LikedTracksDatabase,
-    private val trackDbConvertor: TrackDbConvertor,
+    private val trackMapper: TrackMapper,
 ) : LikedTracksRepository {
 
     override suspend fun deleteLikedTrack(trackEntity: TrackEntity) {
@@ -27,7 +27,7 @@ class LikedTracksRepositoryImpl(
     }
 
     private fun convertFromTrackEntity(movies: List<TrackEntity>): List<Track> {
-        return movies.map { movie -> trackDbConvertor.map(movie) }
+        return movies.map { movie -> trackMapper.map(movie) }
     }
 
 }

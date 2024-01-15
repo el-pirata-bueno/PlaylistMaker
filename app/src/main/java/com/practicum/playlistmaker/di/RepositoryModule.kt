@@ -3,7 +3,7 @@ package com.practicum.playlistmaker.di
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.data.search.LikedTracksIdsRepositoryImpl
 import com.practicum.playlistmaker.data.LikedTracksRepositoryImpl
-import com.practicum.playlistmaker.data.converters.TrackDbConvertor
+import com.practicum.playlistmaker.data.converters.TrackMapper
 import com.practicum.playlistmaker.data.player.TrackPlayerImpl
 import com.practicum.playlistmaker.data.search.SearchHistoryImpl
 import com.practicum.playlistmaker.data.search.SearchRepositoryImpl
@@ -26,5 +26,5 @@ val repositoryModule = module {
     factoryOf(::LikedTracksRepositoryImpl).bind<LikedTracksRepository>()
     factoryOf(::LikedTracksIdsRepositoryImpl).bind<LikedTracksIdsRepository>()
     factory { MediaPlayer() }
-    factory { TrackDbConvertor() }
+    factory { TrackMapper() }
 }

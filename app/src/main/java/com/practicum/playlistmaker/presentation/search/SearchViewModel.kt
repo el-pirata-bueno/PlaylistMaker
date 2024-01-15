@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.presentation.search
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -50,18 +49,19 @@ class SearchViewModel(
     }
 
     fun onResume() {
-        var history: ArrayList<Track> = ArrayList()
+        var history: List<Track>
         viewModelScope.launch {
-            history = searchInteractor.getHistoryTracks() as ArrayList<Track>
+            history = searchInteractor.getHistoryTracks()
+            historyTracks.clear()
+            historyTracks.addAll(history)
         }
 
         searchStateLiveData.postValue(
             SearchState.History(
-                historyTracks = history,
+                historyTracks = historyTracks,
                 clearSearch = true
             )
         )
-        Log.d("OnresumeVM", "OnresumeVM")
     }
 
     fun loadTracks(query: String) {
