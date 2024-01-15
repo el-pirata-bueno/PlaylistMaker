@@ -8,7 +8,6 @@ import com.practicum.playlistmaker.domain.search.SearchHistory
 
 class SearchHistoryImpl(
     private val localStorage: HistoryLocalStorage,
-    private val likedTracksIdsRepositoryImpl: LikedTracksIdsRepositoryImpl,
 ) : SearchHistory {
 
     companion object {
