@@ -4,7 +4,7 @@ import com.practicum.playlistmaker.domain.model.Track
 
 sealed interface PlayerState {
 
-    //TODO Попробовать переделать на класс с полями и оперировать ими, а не в конструкторе дата-классов
+    //Попробовать переделать на класс с полями и оперировать ими, а не в конструкторе дата-классов
 
     object Loading : PlayerState
     data class Error(val errorMessage: String) : PlayerState

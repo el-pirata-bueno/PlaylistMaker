@@ -1,19 +1,18 @@
 package com.practicum.playlistmaker.presentation.search
 
-import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.search.SearchInteractor
+import com.practicum.playlistmaker.util.ErrorType
 import com.practicum.playlistmaker.util.debounce
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val context: Context,
     private val searchInteractor: SearchInteractor
 ) : ViewModel() {
 
@@ -52,7 +51,7 @@ class SearchViewModel(
 
     fun onResume() {
         var history: ArrayList<Track> = ArrayList()
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             history = searchInteractor.getHistoryTracks() as ArrayList<Track>
         }
 
@@ -62,6 +61,7 @@ class SearchViewModel(
                 clearSearch = true
             )
         )
+        Log.d("OnresumeVM", "OnresumeVM")
     }
 
     fun loadTracks(query: String) {
@@ -113,7 +113,7 @@ class SearchViewModel(
         searchStateLiveData.postValue(state)
     }
 
-    private fun loadTracksResult(foundTracks: List<Track>?, errorMessage: String?) {
+    private fun loadTracksResult(foundTracks: List<Track>?, errorType: ErrorType?) {
         val tracks = ArrayList<Track>()
         if (foundTracks != null) {
             val sortedTracks = foundTracks.sortedWith(compareBy { !it.isFavorite })
@@ -121,14 +121,10 @@ class SearchViewModel(
         }
 
         when {
-            errorMessage == "connection_error" -> {
+            errorType != null -> {
                 renderState(
-                    SearchState.Error(errorMessage = context.getString(R.string.something_went_wrong)))
-            }
-
-            errorMessage == "server_error" -> {
-                renderState(
-                    SearchState.Error(errorMessage = context.getString(R.string.server_error)))
+                    SearchState.Error(errorType)
+                )
             }
 
             tracks.isEmpty() -> {

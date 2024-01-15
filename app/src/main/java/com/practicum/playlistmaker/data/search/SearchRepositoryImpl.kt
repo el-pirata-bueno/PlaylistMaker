@@ -7,6 +7,7 @@ import com.practicum.playlistmaker.data.network.NetworkClient
 import com.practicum.playlistmaker.data.storage.impl.PlaylistsLocalStorage
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.search.SearchRepository
+import com.practicum.playlistmaker.util.ErrorType
 import com.practicum.playlistmaker.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -26,7 +27,7 @@ class SearchRepositoryImpl(
         val tracksSearchResponse = networkClient.doRequest(TracksSearchRequest(term))
         when (tracksSearchResponse.resultCode) {
             -1 -> {
-                emit(Resource.Error("connection_error"))
+                emit(Resource.Error(ErrorType.ConnectionError))
             }
 
             200 -> {
@@ -49,7 +50,7 @@ class SearchRepositoryImpl(
             }
 
             else -> {
-                emit(Resource.Error("server_error"))
+                emit(Resource.Error(ErrorType.ServerError))
             }
         }
     }

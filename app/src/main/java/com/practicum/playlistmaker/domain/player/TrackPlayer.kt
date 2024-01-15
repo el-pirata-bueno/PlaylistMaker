@@ -19,5 +19,4 @@ interface TrackPlayer {
     fun getCurrentPosition(): Int
     fun getTrackDuration(): Int
 
-    //fun getTrackFromId(trackId: Long): Flow<Resource<List<Track>>>
 }

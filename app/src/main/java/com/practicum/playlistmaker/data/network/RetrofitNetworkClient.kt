@@ -25,17 +25,6 @@ class RetrofitNetworkClient(private val context: Context, private val api: ITune
                         tracksSearchResponse.apply { resultCode = 200 }
                     }
 
-                    /*
-                    is TrackGetRequest -> {
-                        val trackGetResponse = api.searchTrackById(dto.trackId)
-                        //val body = trackGetResponse.body() ?: Response()
-                        //body.apply { resultCode = trackGetResponse.code() }
-                        trackGetResponse.apply { resultCode = 200 }
-                    }
-
-                     */
-
-
                     else -> Response().apply { resultCode = 400 }
                 }
             } catch (e: Throwable) {

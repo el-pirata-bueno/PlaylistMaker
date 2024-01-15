@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.presentation.search.SearchState
 import com.practicum.playlistmaker.presentation.search.SearchViewModel
 import com.practicum.playlistmaker.ui.player.PlayerFragment
+import com.practicum.playlistmaker.util.ErrorType
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -93,6 +95,7 @@ class SearchFragment: Fragment() {
         viewModel.getSearchStateLiveData().observe(viewLifecycleOwner) {
             render(it)
         }
+        Log.d("OnresumeFragment", "OnresumeFragment")
     }
 
     private fun initHistoryAdapter() {
@@ -163,7 +166,7 @@ class SearchFragment: Fragment() {
             is SearchState.Content -> showContent(state.tracks)
             is SearchState.History -> showHistory(state.historyTracks, state.clearSearch)
             is SearchState.Empty -> showEmpty()
-            is SearchState.Error -> showError(state.errorMessage)
+            is SearchState.Error -> showError(state.errorType)
             is SearchState.Loading -> showLoading()
             is SearchState.PreLoading -> showPreLoading(state.buttonVisible)
         }
@@ -191,7 +194,7 @@ class SearchFragment: Fragment() {
         hideKeyboard()
     }
 
-    private fun showError(errorMessage: String) {
+    private fun showError(errorType: ErrorType) {
         binding.progressBar.visibility = View.GONE
         binding.tracklistRecycler.visibility = View.GONE
         binding.searchHistoryViewGroup.visibility = View.GONE
@@ -200,7 +203,12 @@ class SearchFragment: Fragment() {
         binding.placeholderImage.visibility = View.VISIBLE
         binding.placeholderMessage.visibility = View.VISIBLE
         binding.placeholderImage.setImageResource(R.drawable.something_went_wrong)
-        binding.placeholderMessage.text = errorMessage
+        when(errorType) {
+            is ErrorType.ConnectionError -> binding.placeholderMessage.text = getString(
+                R.string.something_went_wrong)
+            is ErrorType.ServerError -> binding.placeholderMessage.text = getString(
+                R.string.server_error)
+        }
         hideKeyboard()
     }
 

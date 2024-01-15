@@ -17,20 +17,7 @@ class SearchHistoryImpl(
 
     override suspend fun getHistory(): List<Track> {
         val json = localStorage.getHistory()
-        //return Gson().fromJson(json, object : TypeToken<ArrayList<Track?>?>() {}.type) ?: emptyList()
-
         val data: List<Track> = Gson().fromJson(json, object : TypeToken<ArrayList<Track?>?>() {}.type) ?: emptyList()
-        var likedTracksIds = likedTracksIdsRepositoryImpl.getLikedTracksIds()
-
-        for (track in data) {
-            for (likedTrack in likedTracksIds) {
-                if (track.trackId == likedTrack) {
-                    track.isFavorite = true
-                    break
-                }
-            }
-        }
-        saveHistory(data)
 
         return data
     }
