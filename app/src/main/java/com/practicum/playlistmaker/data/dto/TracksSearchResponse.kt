@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.data.dto
 
-import com.practicum.playlistmaker.data.models.TrackDto
+import com.practicum.playlistmaker.data.model.TrackDto
 
 data class TracksSearchResponse(
     var resultCount: Int,

@@ -4,7 +4,7 @@ import com.practicum.playlistmaker.data.sharing.ExternalNavigator
 import com.practicum.playlistmaker.domain.sharing.SharingInteractor
 import com.practicum.playlistmaker.domain.sharing.model.EmailData
 
-class PlayerSharingInteractor(
+class SharingInteractorImpl(
     private val externalNavigator: ExternalNavigator,
 ) : SharingInteractor {
     override fun shareApp(shareUrl: String, typeText: String) {

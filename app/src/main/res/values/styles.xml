@@ -179,9 +179,9 @@
     </style>
 
     <style name="Switch" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated">@color/switch_active</item>
-        <item name="colorSwitchThumbNormal">@color/switch_inactive</item>
-        <item name="android:colorForeground">@color/switch_inactive</item>
+        <item name="colorControlActivated">@color/active_element</item>
+        <item name="colorSwitchThumbNormal">@color/inactive_element</item>
+        <item name="android:colorForeground">@color/inactive_element</item>
     </style>
 
 </resources>

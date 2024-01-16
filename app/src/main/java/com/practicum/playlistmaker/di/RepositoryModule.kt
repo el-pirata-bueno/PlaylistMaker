@@ -1,11 +1,16 @@
 package com.practicum.playlistmaker.di
 
 import android.media.MediaPlayer
-import com.practicum.playlistmaker.data.player.AudioTrackPlayer
-import com.practicum.playlistmaker.data.search.PlayerSearchRepository
-import com.practicum.playlistmaker.data.search.TracksSearchHistory
+import com.practicum.playlistmaker.data.search.LikedTracksIdsRepositoryImpl
+import com.practicum.playlistmaker.data.LikedTracksRepositoryImpl
+import com.practicum.playlistmaker.data.converters.TrackMapper
+import com.practicum.playlistmaker.data.player.TrackPlayerImpl
+import com.practicum.playlistmaker.data.search.SearchHistoryImpl
+import com.practicum.playlistmaker.data.search.SearchRepositoryImpl
 import com.practicum.playlistmaker.data.settings.SettingsRepository
-import com.practicum.playlistmaker.data.settings.impl.PlayerSettingsRepository
+import com.practicum.playlistmaker.data.settings.impl.SettingsRepositoryImpl
+import com.practicum.playlistmaker.domain.db.LikedTracksIdsRepository
+import com.practicum.playlistmaker.domain.db.LikedTracksRepository
 import com.practicum.playlistmaker.domain.player.TrackPlayer
 import com.practicum.playlistmaker.domain.search.SearchHistory
 import com.practicum.playlistmaker.domain.search.SearchRepository
@@ -14,9 +19,12 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    factoryOf(::AudioTrackPlayer).bind<TrackPlayer>()
-    factoryOf(::PlayerSearchRepository).bind<SearchRepository>()
-    factoryOf(::PlayerSettingsRepository).bind<SettingsRepository>()
-    factoryOf(::TracksSearchHistory).bind<SearchHistory>()
+    factoryOf(::TrackPlayerImpl).bind<TrackPlayer>()
+    factoryOf(::SettingsRepositoryImpl).bind<SettingsRepository>()
+    factoryOf(::SearchHistoryImpl).bind<SearchHistory>()
+    factoryOf(::SearchRepositoryImpl).bind<SearchRepository>()
+    factoryOf(::LikedTracksRepositoryImpl).bind<LikedTracksRepository>()
+    factoryOf(::LikedTracksIdsRepositoryImpl).bind<LikedTracksIdsRepository>()
     factory { MediaPlayer() }
+    factory { TrackMapper() }
 }

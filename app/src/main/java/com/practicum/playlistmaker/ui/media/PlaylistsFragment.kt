@@ -6,16 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
-import com.practicum.playlistmaker.presentation.media.TrackCollectionsVIewModel
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import com.practicum.playlistmaker.presentation.media.MediaPlaylistsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment: Fragment()  {
 
-    companion object {
-        fun newInstance() = PlaylistsFragment().apply { }
-    }
-
-    val hostViewModel by activityViewModel<TrackCollectionsVIewModel>()
+    private val viewModel by viewModel<MediaPlaylistsViewModel>()
 
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
@@ -32,5 +28,9 @@ class PlaylistsFragment: Fragment()  {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        fun newInstance() = PlaylistsFragment().apply { }
     }
 }

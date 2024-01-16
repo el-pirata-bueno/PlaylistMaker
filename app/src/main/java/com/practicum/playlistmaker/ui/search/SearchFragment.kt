@@ -14,18 +14,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
+import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.presentation.search.SearchState
 import com.practicum.playlistmaker.presentation.search.SearchViewModel
-import com.practicum.playlistmaker.ui.models.TrackUi
 import com.practicum.playlistmaker.ui.player.PlayerFragment
+import com.practicum.playlistmaker.util.ErrorType
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
-
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-    }
 
     private lateinit var binding: FragmentSearchBinding
     private val viewModel: SearchViewModel by viewModel()
@@ -33,9 +30,8 @@ class SearchFragment: Fragment() {
     private val trackAdapter = TrackAdapter()
     private var historyAdapter = TrackAdapter()
     private lateinit var searchText: String
-    private var message = ""
 
-    private lateinit var onTrackClickDebounce: (TrackUi) -> Unit
+    private lateinit var onTrackClickDebounce: (Track) -> Unit
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -47,26 +43,30 @@ class SearchFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onTrackClickDebounce = debounce<TrackUi>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
-                findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track.trackId))
+        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+                findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(
+                    track.trackId,
+                    track.trackName,
+                    track.artistName,
+                    track.collectionName,
+                    track.releaseDate,
+                    track.trackTime,
+                    track.artworkUrl100,
+                    track.primaryGenreName,
+                    track.country,
+                    track.previewUrl,
+                    track.isFavorite,
+                    track.isInPlaylist
+                    )
+                )
         }
 
+        viewModel.fillData()
 
-
-        message = getString(R.string.nothing_found)
-
-        viewModel.getSearchStateLiveData().observe(viewLifecycleOwner) { screenState ->
-            when (screenState) {
-                is SearchState.Content -> showContent(screenState.tracks)
-                is SearchState.History -> showHistory(screenState.historyTracks, screenState.clearSearch)
-                is SearchState.Empty -> showEmpty()
-                is SearchState.Error -> showError(screenState.errorMessage)
-                is SearchState.Loading -> showLoading()
-                is SearchState.PreLoading -> showPreLoading(screenState.buttonVisible)
-                else -> {}
-            }
+        viewModel.getSearchStateLiveData().observe(viewLifecycleOwner) {
+            render(it)
         }
-        viewModel.changeText(binding.inputSearch.text.toString())
+        //viewModel.changeText(binding.inputSearch.text.toString())
 
         initTrackAdapter()
         initHistoryAdapter()
@@ -76,6 +76,21 @@ class SearchFragment: Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("SEARCH_TEXT", binding.inputSearch.text.toString())
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (binding.inputSearch.text.toString() != "") {
+            viewModel.changeText(binding.inputSearch.text.toString())
+        }
+        else {
+            viewModel.onResume()
+        }
+
+        viewModel.getSearchStateLiveData().observe(viewLifecycleOwner) {
+            render(it)
+        }
     }
 
     private fun initHistoryAdapter() {
@@ -92,6 +107,7 @@ class SearchFragment: Fragment() {
         trackAdapter.itemClickListener = { track ->
             onTrackClickDebounce(track)
             viewModel.addTrackToHistory(track)
+            historyAdapter.notifyDataSetChanged()
         }
 
         binding.tracklistRecycler.adapter = trackAdapter
@@ -140,6 +156,17 @@ class SearchFragment: Fragment() {
         binding.inputSearch.removeTextChangedListener(null)
     }
 
+    private fun render(state: SearchState) {
+        when (state) {
+            is SearchState.Content -> showContent(state.tracks)
+            is SearchState.History -> showHistory(state.historyTracks, state.clearSearch)
+            is SearchState.Empty -> showEmpty()
+            is SearchState.Error -> showError(state.errorType)
+            is SearchState.Loading -> showLoading()
+            is SearchState.PreLoading -> showPreLoading(state.buttonVisible)
+        }
+    }
+
     private fun showPreLoading(clearSearchTextButtonVisible: Boolean) {
         if (clearSearchTextButtonVisible) {
             binding.clearSearchTextButton.visibility = View.VISIBLE
@@ -162,7 +189,7 @@ class SearchFragment: Fragment() {
         hideKeyboard()
     }
 
-    private fun showError(errorMessage: String) {
+    private fun showError(errorType: ErrorType) {
         binding.progressBar.visibility = View.GONE
         binding.tracklistRecycler.visibility = View.GONE
         binding.searchHistoryViewGroup.visibility = View.GONE
@@ -171,7 +198,12 @@ class SearchFragment: Fragment() {
         binding.placeholderImage.visibility = View.VISIBLE
         binding.placeholderMessage.visibility = View.VISIBLE
         binding.placeholderImage.setImageResource(R.drawable.something_went_wrong)
-        binding.placeholderMessage.text = errorMessage
+        when(errorType) {
+            is ErrorType.ConnectionError -> binding.placeholderMessage.text = getString(
+                R.string.something_went_wrong)
+            is ErrorType.ServerError -> binding.placeholderMessage.text = getString(
+                R.string.server_error)
+        }
         hideKeyboard()
     }
 
@@ -184,11 +216,11 @@ class SearchFragment: Fragment() {
         binding.placeholderImage.visibility = View.VISIBLE
         binding.placeholderMessage.visibility = View.VISIBLE
         binding.placeholderImage.setImageResource(R.drawable.nothing_found)
-        binding.placeholderMessage.text = message
+        binding.placeholderMessage.text = getString(R.string.nothing_found)
         hideKeyboard()
     }
 
-    private fun showContent(tracks: List<TrackUi>) {
+    private fun showContent(tracks: List<Track>) {
         binding.progressBar.visibility = View.GONE
         binding.tracklistRecycler.visibility = View.VISIBLE
         binding.searchHistoryViewGroup.visibility = View.GONE
@@ -204,7 +236,7 @@ class SearchFragment: Fragment() {
         hideKeyboard()
     }
 
-    private fun showHistory(tracksHistory: List<TrackUi>, clearSearch: Boolean) {
+    private fun showHistory(tracksHistory: List<Track>, clearSearch: Boolean) {
         if (clearSearch) {
             clearSearchText()
             hideKeyboard()
@@ -223,6 +255,7 @@ class SearchFragment: Fragment() {
         historyAdapter.tracks.addAll(tracksHistory)
         historyAdapter.notifyDataSetChanged()
 
+        hideKeyboard()
     }
 
     fun clearSearchText() {
@@ -234,6 +267,14 @@ class SearchFragment: Fragment() {
         val inputMethodManager =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(binding.inputSearch.windowToken, 0)
+    }
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+
+        fun newInstance() = SearchFragment().apply {
+        }
+
     }
 
 }

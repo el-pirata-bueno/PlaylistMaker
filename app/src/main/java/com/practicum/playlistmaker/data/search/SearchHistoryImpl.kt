@@ -3,23 +3,27 @@ package com.practicum.playlistmaker.data.search
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.data.storage.impl.HistoryLocalStorage
-import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.search.SearchHistory
 
-class TracksSearchHistory(private val localStorage: HistoryLocalStorage) : SearchHistory {
+class SearchHistoryImpl(
+    private val localStorage: HistoryLocalStorage,
+    private val gson: Gson
+) : SearchHistory {
 
     companion object {
         const val MAX_HISTORY_SIZE = 10
     }
 
-    override fun getHistory(): List<Track> {
+    override suspend fun getHistory(): List<Track> {
         val json = localStorage.getHistory()
-        return Gson().fromJson(json, object : TypeToken<ArrayList<Track?>?>() {}.type)
-            ?: emptyList()
+        val data: List<Track> = gson.fromJson(json, object : TypeToken<ArrayList<Track?>?>() {}.type) ?: emptyList()
+
+        return data
     }
 
     override fun saveHistory(tracks: List<Track>) {
-        val json = Gson().toJson(tracks)
+        val json = gson.toJson(tracks)
         localStorage.saveHistory(json)
     }
 
@@ -27,7 +31,7 @@ class TracksSearchHistory(private val localStorage: HistoryLocalStorage) : Searc
         localStorage.clearHistory()
     }
 
-    override fun addTrackToHistory(track: Track) {
+    override suspend fun addTrackToHistory(track: Track) {
         val history = getHistory().toMutableList()
         for (i in history.indices) {
             if (track.trackId == history[i].trackId) {

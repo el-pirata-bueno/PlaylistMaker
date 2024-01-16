@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.data.storage.impl
 
 import android.content.SharedPreferences
 import com.practicum.playlistmaker.data.storage.PlaylistsStorage
+import com.practicum.playlistmaker.domain.model.Track
 
 class PlaylistsLocalStorage(private val sharedPreferences: SharedPreferences): PlaylistsStorage {
 
@@ -9,19 +10,19 @@ class PlaylistsLocalStorage(private val sharedPreferences: SharedPreferences): P
         const val PLAYLISTS_KEY = "PLAYLISTS_KEY"
     }
 
-    override fun addTrackToPlaylist(trackId: Int) {
-        changePlaylists(trackId = trackId, remove = false)
+    override fun addTrackToPlaylist(track: Track) {
+        changePlaylists(trackId = track.trackId, remove = false)
     }
 
-    override fun removeTrackFromPlaylist(trackId: Int) {
-        changePlaylists(trackId = trackId, remove = true)
+    override fun removeTrackFromPlaylist(track: Track) {
+        changePlaylists(trackId = track.trackId, remove = true)
     }
 
     override fun getPlaylists(): Set<String> {
         return sharedPreferences.getStringSet(PLAYLISTS_KEY, emptySet()) ?: emptySet()
     }
 
-    private fun changePlaylists(trackId: Int, remove: Boolean) {
+    private fun changePlaylists(trackId: Long, remove: Boolean) {
         val mutableSet = getPlaylists().toMutableSet()
         val modified =
             if (remove) mutableSet.remove(trackId.toString()) else mutableSet.add(trackId.toString())

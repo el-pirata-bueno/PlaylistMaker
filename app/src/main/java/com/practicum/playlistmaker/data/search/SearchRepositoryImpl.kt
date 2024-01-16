@@ -1,73 +1,62 @@
 package com.practicum.playlistmaker.data.search
 
-import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.data.dto.TrackGetRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchRequest
 import com.practicum.playlistmaker.data.dto.TracksSearchResponse
-import com.practicum.playlistmaker.data.models.TrackDto
+import com.practicum.playlistmaker.data.model.TrackDto
 import com.practicum.playlistmaker.data.network.NetworkClient
-import com.practicum.playlistmaker.data.storage.impl.LikesLocalStorage
 import com.practicum.playlistmaker.data.storage.impl.PlaylistsLocalStorage
-import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.search.SearchRepository
+import com.practicum.playlistmaker.util.ErrorType
 import com.practicum.playlistmaker.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-const val ERROR = R.string.something_went_wrong.toString()
-const val SERVER_ERROR = R.string.server_error.toString()
-class PlayerSearchRepository(
+class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
-    likeLocalStorage: LikesLocalStorage,
+    private val likedTracksIdsRepositoryImpl: LikedTracksIdsRepositoryImpl,
     playlistsLocalStorage: PlaylistsLocalStorage
 ) : SearchRepository {
 
-    private val tracksLiked = likeLocalStorage.getLiked()
+
     private val tracksInPlaylists = playlistsLocalStorage.getPlaylists()
 
     override fun searchTracks(term: String): Flow<Resource<List<Track>>> = flow {
         val tracksSearchResponse = networkClient.doRequest(TracksSearchRequest(term))
         when (tracksSearchResponse.resultCode) {
             -1 -> {
-                emit(Resource.Error(ERROR))
+                emit(Resource.Error(ErrorType.ConnectionError))
             }
 
             200 -> {
-                emit(Resource.Success((tracksSearchResponse as TracksSearchResponse).results.map {
-                    mapTrack(tracksLiked, tracksInPlaylists, it)
-                }))
+                with(tracksSearchResponse as TracksSearchResponse) {
+                    val data = results.map {
+                        mapTrack(false, tracksInPlaylists, it)
+                    }
+                    var likedTracksIds = likedTracksIdsRepositoryImpl.getLikedTracksIds()
+
+                    for (track in data) {
+                        for (likedTrack in likedTracksIds) {
+                            if (track.trackId == likedTrack) {
+                                track.isFavorite = true
+                                break
+                            }
+                        }
+                    }
+                    emit(Resource.Success(data))
+                }
             }
 
             else -> {
-                emit(Resource.Error(SERVER_ERROR))
-            }
-        }
-    }
-
-    override fun getTrack(trackId: Int): Flow<Resource<List<Track>>> = flow {
-        val trackGetResponse = networkClient.doRequest(TrackGetRequest(trackId))
-
-        when (trackGetResponse.resultCode) {
-            -1 -> {
-                emit(Resource.Error(ERROR))
-            }
-
-            200 -> {
-                emit(Resource.Success((trackGetResponse as TracksSearchResponse).results.map {
-                    mapTrack(tracksLiked, tracksInPlaylists, it)
-                }))
-            }
-
-            else -> {
-                emit(Resource.Error(SERVER_ERROR))
+                emit(Resource.Error(ErrorType.ServerError))
             }
         }
     }
 
     private fun mapTrack(
-        tracksLiked: Set<String>,
+        isFavorite: Boolean,
         tracksInPlaylists: Set<String>,
         trackDto: TrackDto
     ): Track {
@@ -83,7 +72,7 @@ class PlayerSearchRepository(
             primaryGenreName = trackDto.primaryGenreName ?: "",
             country = trackDto.country ?: "",
             previewUrl = trackDto.previewUrl ?: "",
-            isLiked = tracksLiked.contains(trackDto.trackId.toString()),
+            isFavorite = isFavorite,
             isInPlaylist = tracksInPlaylists.contains(trackDto.trackId.toString())
         )
     }
