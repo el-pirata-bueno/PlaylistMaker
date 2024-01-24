@@ -36,5 +36,14 @@
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
     <string name="current_track_time_placeholder">00:00</string>
+    <string name="new_playlist">Новый плейлист</string>
+    <string name="title_star">Название*</string>
+    <string name="description">Описание</string>
+    <string name="create">Создать</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
+    <string name="playlist_cover">Обложка плейлиста</string>
+    <string name="any_playlist_created">Плейлист %s создан</string>
+    <string name="added_to_playlist">Добавлено в плейлист %s</string>
+    <string name="already_added_to_playlist">Трек уже добавлен в плейлист %s</string>
 
 </resources>

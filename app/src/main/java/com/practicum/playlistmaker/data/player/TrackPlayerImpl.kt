@@ -1,19 +1,18 @@
 package com.practicum.playlistmaker.data.player
 
 import android.media.MediaPlayer
-import com.practicum.playlistmaker.data.db.LikedTracksDatabase
-import com.practicum.playlistmaker.data.model.TrackEntity
-import com.practicum.playlistmaker.data.storage.impl.PlaylistsLocalStorage
+import com.practicum.playlistmaker.data.converters.TrackMapper
+import com.practicum.playlistmaker.data.db.AppDatabase
+import com.practicum.playlistmaker.data.search.SearchHistory
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.domain.player.TrackPlayer
-import com.practicum.playlistmaker.domain.search.SearchHistory
 
 class TrackPlayerImpl (
-    private val appDatabase: LikedTracksDatabase,
+    private val appDatabase: AppDatabase,
     private val searchHistory: SearchHistory,
-    private val playlistsLocalStorage: PlaylistsLocalStorage,
-    private val mediaPlayer: MediaPlayer
-) : TrackPlayer {
+    private val mediaPlayer: MediaPlayer,
+    private val trackMapper: TrackMapper
+    ) : TrackPlayer {
 
     override var playerState = MediaPlayerState.STATE_DEFAULT
 
@@ -43,43 +42,15 @@ class TrackPlayerImpl (
     }
 
     override suspend fun likeTrack(track: Track) {
-        appDatabase.trackDao().insertLikedTrack(mapTrackToEntity(track))
+        appDatabase.trackDao().insertLikedTrack(trackMapper.mapTrackToEntity(track))
         searchHistory.addTrackToHistory(track)
     }
 
     override suspend fun unlikeTrack(track: Track) {
-        appDatabase.trackDao().deleteLikedTrack(mapTrackToEntity(track))
+        appDatabase.trackDao().deleteLikedTrack(trackMapper.mapTrackToEntity(track))
         searchHistory.addTrackToHistory(track)
-    }
-
-    override fun addTrackToPlaylist(track: Track) {
-        playlistsLocalStorage.addTrackToPlaylist(track)
-    }
-
-    override fun removeTrackFromPlaylist(track: Track) {
-        playlistsLocalStorage.removeTrackFromPlaylist(track)
     }
 
     override fun getCurrentPosition(): Int = mediaPlayer.currentPosition
     override fun getTrackDuration(): Int = mediaPlayer.duration
-
-    private fun mapTrackToEntity(
-        track: Track
-    ): TrackEntity {
-        return TrackEntity(
-            trackName = track.trackName ?: "",
-            artistName = track.artistName ?: "",
-            trackId = track.trackId ?: 0,
-            trackTime = track.trackTime ?: "",
-            artworkUrl100 = track.artworkUrl100 ?: "",
-            collectionName = track.collectionName ?: "",
-            releaseDate = track.releaseDate ?: "",
-            primaryGenreName = track.primaryGenreName ?: "",
-            country = track.country ?: "",
-            previewUrl = track.previewUrl ?: "",
-            isFavorite = track.isFavorite,
-            isInPlaylist = track.isInPlaylist,
-            createdAt = System.currentTimeMillis()
-        )
-    }
 }

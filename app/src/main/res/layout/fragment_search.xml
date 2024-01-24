@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/searchTracks"
     style="@style/LayoutStyle"
-    android:orientation="vertical"
-    tools:context="com.practicum.playlistmaker.ui.search.SearchFragment">
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/titleSearch"
         style="@style/ToolbarTextStyle"
         android:paddingStart="@dimen/standard_padding"
         android:layout_marginBottom="8dp"

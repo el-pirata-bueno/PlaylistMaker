@@ -7,6 +7,7 @@
     <dimen name="text_size_track_small">11sp</dimen>
     <dimen name="small_text_size">16sp</dimen>
     <dimen name="text_size_button">14sp</dimen>
+    <dimen name="text_size_playlist">11sp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
     <dimen name="string_height">61dp</dimen>
     <dimen name="track_string_height">32dp</dimen>
@@ -14,7 +15,11 @@
     <dimen name="corner_radius_small">8dp</dimen>
     <dimen name="input_height">36dp</dimen>
     <dimen name="icon_padding">8dp</dimen>
+    <dimen name="small_padding">8dp</dimen>
     <dimen name="standard_padding">16dp</dimen>
+    <dimen name="large_padding">24dp</dimen>
+    <dimen name="extra_large_padding">32dp</dimen>
+    <dimen name="extra_extra_large_padding">48dp</dimen>
     <dimen name="right_padding">12dp</dimen>
     <dimen name="inset_button">8dp</dimen>
     <dimen name="small_icon">16dp</dimen>
@@ -22,5 +27,6 @@
     <dimen name="artwork_size">45dp</dimen>
     <dimen name="track_text_margin">19dp</dimen>
     <dimen name="tracklist_cover_rounded_corners">2dp</dimen>
-    <dimen name="player_cover_rounded_corners">8dp</dimen>
+    <dimen name="player_cover_rounded_corners">22dp</dimen>
+    <dimen name="item_offset">4dp</dimen>
 </resources>

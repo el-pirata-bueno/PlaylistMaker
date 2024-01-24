@@ -150,7 +150,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">36dp</item>
         <item name="android:backgroundTint">?attr/colorOnSecondary</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">center|center_vertical</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:inset">0dp</item>
@@ -172,16 +172,26 @@
     <style name="ArrowBackStyle">
         <item name="android:layout_width">@dimen/icon</item>
         <item name="android:layout_height">@dimen/icon</item>
+        <item name="android:gravity">center</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:backgroundTint">?attr/colorSecondary</item>
-        <item name="android:inset">"0dp"</item>
-        <item name="android:layout_gravity">start|center_vertical</item>
+        <item name="android:iconTint">?attr/colorOnSecondary</item>
     </style>
 
     <style name="Switch" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/active_element</item>
         <item name="colorSwitchThumbNormal">@color/inactive_element</item>
         <item name="android:colorForeground">@color/inactive_element</item>
+    </style>
+
+    <style name="Theme.MyApp.Dialog.Alert" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/Alert.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Alert.Button</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Alert.Button</item>
+    </style>
+
+    <style name="Alert.Button" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/active_element</item>
     </style>
 
 </resources>

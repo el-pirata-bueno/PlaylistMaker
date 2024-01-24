@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.di
 
-import com.practicum.playlistmaker.presentation.media.MediaLikedViewModel
+import com.practicum.playlistmaker.presentation.media.MediaLikedTracksViewModel
+import com.practicum.playlistmaker.presentation.media.MediaNewPlaylistViewModel
 import com.practicum.playlistmaker.presentation.media.MediaPlaylistsViewModel
 import com.practicum.playlistmaker.presentation.player.PlayerViewModel
 import com.practicum.playlistmaker.presentation.search.SearchViewModel
@@ -13,14 +14,15 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModelOf(::SearchViewModel)
     viewModelOf(::SettingsViewModel)
-    viewModelOf(::MediaLikedViewModel)
+    viewModelOf(::MediaLikedTracksViewModel)
     viewModelOf(::MediaPlaylistsViewModel)
+    viewModelOf(::MediaNewPlaylistViewModel)
     viewModel { (trackId: Long, trackName: String?, artistName: String?,
                     collectionName: String?, releaseDate: String?, trackTime: String?,
                     artworkUrl100: String?, primaryGenreName: String?, country: String?,
-                    previewUrl: String?, isFavorite: Boolean, isInPlaylist: Boolean) ->
+                    previewUrl: String?, isFavorite: Boolean) ->
         PlayerViewModel(trackId, trackName, artistName, collectionName, releaseDate, trackTime,
-            artworkUrl100, primaryGenreName, country, previewUrl, isFavorite, isInPlaylist, get()) }
+            artworkUrl100, primaryGenreName, country, previewUrl, isFavorite, get(), get(), get()) }
 }
 
 private operator fun ParametersHolder.component12(): Boolean = get(11)
