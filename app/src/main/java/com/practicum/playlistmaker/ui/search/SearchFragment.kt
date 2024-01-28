@@ -22,13 +22,14 @@ import com.practicum.playlistmaker.util.ErrorType
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
 class SearchFragment: Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
     private val viewModel: SearchViewModel by viewModel()
 
-    private val trackAdapter = TrackAdapter()
-    private var historyAdapter = TrackAdapter()
+    private val searchTrackAdapter = SearchTrackAdapter()
+    private var historyAdapter = SearchTrackAdapter()
     private lateinit var searchText: String
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
@@ -36,14 +37,14 @@ class SearchFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentSearchBinding.inflate(inflater, container, false)
-        binding.inputSearch.setText(savedInstanceState?.getString("SEARCH_TEXT", ""))
+        //binding.inputSearch.setText(savedInstanceState?.getString("SEARCH_TEXT", ""))
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY_MILLIS, viewLifecycleOwner.lifecycleScope, false) { track ->
                 findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(
                     track.trackId,
                     track.trackName,
@@ -55,8 +56,7 @@ class SearchFragment: Fragment() {
                     track.primaryGenreName,
                     track.country,
                     track.previewUrl,
-                    track.isFavorite,
-                    track.isInPlaylist
+                    track.isFavorite
                     )
                 )
         }
@@ -75,7 +75,7 @@ class SearchFragment: Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("SEARCH_TEXT", binding.inputSearch.text.toString())
+        //outState.putString("SEARCH_TEXT", binding.inputSearch.text.toString())
     }
 
     override fun onResume() {
@@ -104,13 +104,13 @@ class SearchFragment: Fragment() {
     }
 
     private fun initTrackAdapter() {
-        trackAdapter.itemClickListener = { track ->
+        searchTrackAdapter.itemClickListener = { track ->
             onTrackClickDebounce(track)
             viewModel.addTrackToHistory(track)
             historyAdapter.notifyDataSetChanged()
         }
 
-        binding.tracklistRecycler.adapter = trackAdapter
+        binding.tracklistRecycler.adapter = searchTrackAdapter
         binding.tracklistRecycler.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
     }
@@ -140,8 +140,8 @@ class SearchFragment: Fragment() {
 
         binding.clearSearchTextButton.setOnClickListener {
             viewModel.clearSearchText()
-            trackAdapter.tracks.clear()
-            trackAdapter.notifyDataSetChanged()
+            searchTrackAdapter.tracks.clear()
+            searchTrackAdapter.notifyDataSetChanged()
         }
 
         binding.updateSearchButton.setOnClickListener {
@@ -180,8 +180,8 @@ class SearchFragment: Fragment() {
     }
 
     private fun showLoading() {
-        trackAdapter.tracks.clear()
-        trackAdapter.notifyDataSetChanged()
+        searchTrackAdapter.tracks.clear()
+        searchTrackAdapter.notifyDataSetChanged()
         binding.progressBar.visibility = View.VISIBLE
         binding.placeholder.visibility = View.GONE
         binding.searchHistoryViewGroup.visibility = View.GONE
@@ -229,9 +229,9 @@ class SearchFragment: Fragment() {
         historyAdapter.tracks.clear()
         historyAdapter.notifyDataSetChanged()
 
-        trackAdapter.tracks.clear()
-        trackAdapter.tracks.addAll(tracks)
-        trackAdapter.notifyDataSetChanged()
+        searchTrackAdapter.tracks.clear()
+        searchTrackAdapter.tracks.addAll(tracks)
+        searchTrackAdapter.notifyDataSetChanged()
 
         hideKeyboard()
     }
@@ -248,8 +248,8 @@ class SearchFragment: Fragment() {
         binding.progressBar.visibility = View.GONE
         binding.tracklistRecycler.visibility = View.GONE
 
-        trackAdapter.tracks.clear()
-        trackAdapter.notifyDataSetChanged()
+        searchTrackAdapter.tracks.clear()
+        searchTrackAdapter.notifyDataSetChanged()
 
         historyAdapter.tracks.clear()
         historyAdapter.tracks.addAll(tracksHistory)
@@ -270,7 +270,6 @@ class SearchFragment: Fragment() {
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
 
         fun newInstance() = SearchFragment().apply {
         }

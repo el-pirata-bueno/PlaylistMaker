@@ -11,6 +11,7 @@ import com.practicum.playlistmaker.util.debounce
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
 class SearchViewModel(
     private val searchInteractor: SearchInteractor
 ) : ViewModel() {
@@ -20,7 +21,7 @@ class SearchViewModel(
     private var latestSearchText: String? = null
     fun getSearchStateLiveData(): LiveData<SearchState> = searchStateLiveData
 
-    private val trackSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) { changedText ->
+    private val trackSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY_MILLIS, viewModelScope, true) { changedText ->
         loadTracks(changedText)
     }
 
@@ -141,10 +142,6 @@ class SearchViewModel(
                 )
             }
         }
-    }
-
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
 

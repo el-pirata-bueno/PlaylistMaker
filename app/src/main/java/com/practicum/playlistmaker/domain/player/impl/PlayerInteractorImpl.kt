@@ -16,8 +16,6 @@ class PlayerInteractorImpl(
 
     override suspend fun likeTrack(track: Track) = repository.likeTrack(track)
     override suspend fun unlikeTrack(track: Track) = repository.unlikeTrack(track)
-    override fun addTrackToPlaylist(track: Track) = repository.addTrackToPlaylist(track)
-    override fun removeTrackFromPlaylist(track: Track) = repository.removeTrackFromPlaylist(track)
 
     override fun getPlayerState(): MediaPlayerState = repository.playerState
     override fun getCurrentPosition(): Int = repository.getCurrentPosition()

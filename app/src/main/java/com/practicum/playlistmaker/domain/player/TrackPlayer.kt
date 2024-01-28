@@ -13,8 +13,6 @@ interface TrackPlayer {
 
     suspend fun likeTrack(track: Track)
     suspend fun unlikeTrack(track: Track)
-    fun addTrackToPlaylist(track: Track)
-    fun removeTrackFromPlaylist(track: Track)
 
     fun getCurrentPosition(): Int
     fun getTrackDuration(): Int

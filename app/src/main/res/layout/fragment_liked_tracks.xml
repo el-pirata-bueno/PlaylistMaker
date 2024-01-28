@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:gravity="center"
     android:layout_height="match_parent"
+    android:gravity="center"
     style="@style/LayoutStyle"
-    tools:context="com.practicum.playlistmaker.ui.media.LikedTracksFragment">
+    tools:context="com.practicum.playlistmaker.ui.media.MediaLikedTracksFragment">
 
     <ImageView
         android:id="@+id/placeholderImage"
@@ -39,12 +39,5 @@
         style="@style/LayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    <!--
-    <androidx.recyclerview.widget.RecyclerView
-        tools:listitem="@layout/tracks_view"
-        android:id="@+id/likedTracksRecycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    -->
 
 </LinearLayout>

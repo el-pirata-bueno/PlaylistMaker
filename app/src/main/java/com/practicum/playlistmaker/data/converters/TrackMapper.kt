@@ -1,10 +1,11 @@
 package com.practicum.playlistmaker.data.converters
 
 import com.practicum.playlistmaker.data.model.TrackEntity
+import com.practicum.playlistmaker.data.model.TrackInPlaylistEntity
 import com.practicum.playlistmaker.domain.model.Track
 
 class TrackMapper {
-    fun map(track: TrackEntity): Track {
+    fun mapEntityToTrack(track: TrackEntity): Track {
         return with(track) {
             Track(
                 trackId,
@@ -17,9 +18,43 @@ class TrackMapper {
                 primaryGenreName,
                 country,
                 previewUrl,
-                isFavorite,
-                isInPlaylist)
+                isFavorite)
         }
+    }
 
+    fun mapTrackToEntity(track: Track): TrackEntity {
+        return with(track) {
+            TrackEntity(
+                trackId,
+                trackName,
+                artistName,
+                collectionName,
+                releaseDate,
+                trackTime,
+                artworkUrl100,
+                primaryGenreName,
+                country,
+                previewUrl,
+                isFavorite,
+                System.currentTimeMillis())
+        }
+    }
+
+    fun mapTrackToTrackInPlaylistEntity(track: Track): TrackInPlaylistEntity {
+        return with(track) {
+            TrackInPlaylistEntity(
+                trackId,
+                trackName,
+                artistName,
+                collectionName,
+                releaseDate,
+                trackTime,
+                artworkUrl100,
+                primaryGenreName,
+                country,
+                previewUrl,
+                isFavorite,
+                System.currentTimeMillis())
+        }
     }
 }

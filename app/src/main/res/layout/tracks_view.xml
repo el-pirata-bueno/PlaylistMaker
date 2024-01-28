@@ -46,7 +46,7 @@
             style="@style/SecondaryTrackStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/dot"
+            android:layout_toStartOf="@id/dot"
             android:ellipsize="end"
             android:maxLines="1"
             tools:text="Long Long Long Long  Long Long  Long Long Artist Name" />
@@ -63,7 +63,7 @@
             style="@style/SecondaryTrackStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:maxLines="1"
             tools:text="Track Time" />
 

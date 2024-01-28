@@ -1,9 +1,9 @@
 package com.practicum.playlistmaker.domain.search.impl
 
+import com.practicum.playlistmaker.data.search.SearchHistory
+import com.practicum.playlistmaker.data.search.SearchRepository
 import com.practicum.playlistmaker.domain.model.Track
-import com.practicum.playlistmaker.domain.search.SearchHistory
 import com.practicum.playlistmaker.domain.search.SearchInteractor
-import com.practicum.playlistmaker.domain.search.SearchRepository
 import com.practicum.playlistmaker.util.ErrorType
 import com.practicum.playlistmaker.util.Resource
 import kotlinx.coroutines.flow.Flow

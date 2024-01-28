@@ -4,21 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlayerBinding
+import com.practicum.playlistmaker.domain.model.Playlist
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.presentation.player.PlayerState
 import com.practicum.playlistmaker.presentation.player.PlayerViewModel
+import com.practicum.playlistmaker.ui.media.MediaPlaylistsListAdapter
+import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
+private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
 class PlayerFragment: Fragment() {
 
     private val viewModel: PlayerViewModel by viewModel {
@@ -33,38 +41,40 @@ class PlayerFragment: Fragment() {
             requireArguments().getString(ARGS_GENRE_NAME),
             requireArguments().getString(ARGS_COUNTRY),
             requireArguments().getString(ARGS_PREVIEW_URL),
-            if (ARGS_IS_FAVORITE != null) requireArguments().getBoolean(ARGS_IS_FAVORITE) else false,
-            if (ARGS_IS_IN_PLAYLISTS != null) requireArguments().getBoolean(ARGS_IS_IN_PLAYLISTS) else false
+            if (ARGS_IS_FAVORITE != null) requireArguments().getBoolean(ARGS_IS_FAVORITE) else false
             )
     }
 
+    private val playlistsAdapter = MediaPlaylistsListAdapter()
 
-    private lateinit var binding: FragmentPlayerBinding
-    private var errorText = ""
+    private var _binding: FragmentPlayerBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var onPlaylistClickDebounce: (Playlist) -> Unit
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState:
         Bundle?): View? {
-        binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        errorText = getString(R.string.track_error)
-
-        viewModel.getPlayerStateLiveData().observe(viewLifecycleOwner) { screenState ->
-            when (screenState) {
-                is PlayerState.Error -> showError(errorText)
-                is PlayerState.Content -> {
-                    showContent()
-                    drawTrack(screenState.track, screenState.isPlaying,
-                        screenState.currentTrackTime)
-                }
-                else -> {}
-            }
+        onPlaylistClickDebounce = debounce(CLICK_DEBOUNCE_DELAY_MILLIS, viewLifecycleOwner.lifecycleScope, false) { playlist ->
+            viewModel.onPlaylistClicked(playlist)
         }
 
+        viewModel.getPlayerStateLiveData().observe(viewLifecycleOwner) {
+            render(it)
+        }
+
+        viewModel.observeShowToast().observe(viewLifecycleOwner) {
+            showToast(it)
+        }
+
+        initPlaylistAdapter()
         initListeners()
     }
 
@@ -78,32 +88,57 @@ class PlayerFragment: Fragment() {
         viewModel.releasePlayer()
     }
 
-    private fun showContent() {
-        binding.arrowBackButton.isVisible = true
-        binding.progressBar.isVisible = false
-        binding.trackCoverBig.isVisible = true
-        binding.trackName.isVisible = true
-        binding.artistName.isVisible = true
-        binding.addToPlaylistButton.isVisible = true
-        binding.playButton.isVisible = true
-        binding.likeButton.isVisible = true
-        binding.currentTrackTime.isVisible = true
-        binding.length.isVisible = true
-        binding.trackLength.isVisible = true
-        binding.album.isVisible = true
-        binding.trackAlbum.isVisible = true
-        binding.year.isVisible = true
-        binding.trackYear.isVisible = true
-        binding.genre.isVisible = true
-        binding.trackGenre.isVisible = true
-        binding.country.isVisible = true
-        binding.artistCountry.isVisible = true
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getPlayerStateLiveData().observe(viewLifecycleOwner) {
+            render(it)
+        }
+    }
+
+    private fun render(state: PlayerState) {
+        when (state) {
+            is PlayerState.Error -> showError(getString(R.string.track_error))
+            is PlayerState.Player -> {
+                showPlayer()
+                drawTrack(state.track, state.isPlaying,
+                    state.currentTrackTime)
+            }
+            is PlayerState.BottomSheet -> {
+                showPlayer()
+                showBottomSheet(state.playlists)
+                drawTrack(state.track, state.isPlaying, state.currentTrackTime)
+            }
+            else -> {}
+        }
+    }
+
+    private fun showPlayer() {
+        binding.playerContent.isVisible = true
+        binding.playerBottomSheet.isVisible = true
+    }
+
+    private fun showBottomSheet(playlists: List<Playlist>) {
+        binding.playerContent.isVisible = true
+        binding.playerBottomSheet.isVisible = true
+
+        playlistsAdapter.playlists.clear()
+        playlistsAdapter.playlists.addAll(playlists)
+        playlistsAdapter.notifyDataSetChanged()
     }
 
     private fun showError(errorMessage: String) {
         binding.arrowBackButton.isVisible = true
         binding.progressBar.isVisible = true
         Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+    }
+
+    private fun showToast(message: String?) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
     private fun drawTrack(track: Track, isPlaying: Boolean, currentTrackTime: String) {
@@ -117,7 +152,6 @@ class PlayerFragment: Fragment() {
 
         binding.playButton.setImageResource(if (isPlaying) R.drawable.button_pause else R.drawable.button_play)
         binding.likeButton.setImageResource(if (track.isFavorite) R.drawable.button_liked else R.drawable.button_like)
-        binding.addToPlaylistButton.setImageResource(if (track.isInPlaylist) R.drawable.button_added_to_playlist else R.drawable.button_add_to_playlist)
 
         binding.currentTrackTime.text = currentTrackTime
 
@@ -131,6 +165,11 @@ class PlayerFragment: Fragment() {
     }
 
     private fun initListeners() {
+
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.playerBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
         binding.arrowBackButton.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -140,12 +179,49 @@ class PlayerFragment: Fragment() {
         }
 
         binding.addToPlaylistButton.setOnClickListener {
-            viewModel.addTrackToPlaylist()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            viewModel.onAddToPlaylistClicked()
         }
 
         binding.likeButton.setOnClickListener {
             viewModel.onFavoriteClicked()
         }
+
+        binding.addNewPlaylistButton.setOnClickListener {
+            findNavController().navigate(R.id.action_playerFragment_to_newPlaylistFragment)
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+                    else -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+        })
+
+
+    }
+
+    private fun initPlaylistAdapter() {
+        playlistsAdapter.itemClickListener = { playlist ->
+            onPlaylistClickDebounce(playlist)
+            playlistsAdapter.notifyDataSetChanged()
+        }
+
+        binding.playlistsListRecycler.adapter = playlistsAdapter
+        binding.playlistsListRecycler.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
     }
 
     companion object {
@@ -160,11 +236,11 @@ class PlayerFragment: Fragment() {
         private const val ARGS_COUNTRY = "country"
         private const val ARGS_PREVIEW_URL = "previewUrl"
         private const val ARGS_IS_FAVORITE = "isFavorite"
-        private const val ARGS_IS_IN_PLAYLISTS = "isInPlaylist"
+
         fun createArgs(trackId: Long, trackName: String?, artistName: String?,
                        collectionName: String?, releaseDate: String?, trackTime: String?,
                        artworkUrl100: String?, primaryGenreName: String?, country: String?,
-                       previewUrl: String?, isFavorite: Boolean?, isInPlaylist: Boolean?): Bundle =
+                       previewUrl: String?, isFavorite: Boolean?): Bundle =
             bundleOf(
                 ARGS_TRACK_ID to trackId,
                 ARGS_TRACK_NAME to trackName,
@@ -176,8 +252,7 @@ class PlayerFragment: Fragment() {
                 ARGS_GENRE_NAME to primaryGenreName,
                 ARGS_COUNTRY to country,
                 ARGS_PREVIEW_URL to previewUrl,
-                ARGS_IS_FAVORITE to isFavorite,
-                ARGS_IS_IN_PLAYLISTS to isInPlaylist
+                ARGS_IS_FAVORITE to isFavorite
                 )
     }
 }

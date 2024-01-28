@@ -1,10 +1,12 @@
 package com.practicum.playlistmaker.di
 
-import com.practicum.playlistmaker.domain.db.LikedTracksIdsInteractor
-import com.practicum.playlistmaker.domain.db.LikedTracksInteractor
+import com.practicum.playlistmaker.domain.media.MediaLikedTracksIdsInteractor
+import com.practicum.playlistmaker.domain.media.MediaLikedTracksInteractor
+import com.practicum.playlistmaker.domain.media.MediaPlaylistsInteractor
+import com.practicum.playlistmaker.domain.media.impl.MediaLikedTracksIdsInteractorImpl
+import com.practicum.playlistmaker.domain.media.impl.MediaLikedTracksInteractorImpl
+import com.practicum.playlistmaker.domain.media.impl.MediaPlaylistsInteractorImpl
 import com.practicum.playlistmaker.domain.player.PlayerInteractor
-import com.practicum.playlistmaker.domain.player.impl.LikedTracksInteractorImpl
-import com.practicum.playlistmaker.domain.search.impl.LikedTracksIdsInteractorImpl
 import com.practicum.playlistmaker.domain.player.impl.PlayerInteractorImpl
 import com.practicum.playlistmaker.domain.search.SearchInteractor
 import com.practicum.playlistmaker.domain.search.impl.SearchInteractorImpl
@@ -21,6 +23,7 @@ val interactorModule = module {
     factoryOf(::SearchInteractorImpl).bind<SearchInteractor>()
     factoryOf(::SharingInteractorImpl).bind<SharingInteractor>()
     factoryOf(::SettingsInteractorImpl).bind<SettingsInteractor>()
-    factoryOf(::LikedTracksInteractorImpl).bind<LikedTracksInteractor>()
-    factoryOf(::LikedTracksIdsInteractorImpl).bind<LikedTracksIdsInteractor>()
+    factoryOf(::MediaLikedTracksInteractorImpl).bind<MediaLikedTracksInteractor>()
+    factoryOf(::MediaLikedTracksIdsInteractorImpl).bind<MediaLikedTracksIdsInteractor>()
+    factoryOf(::MediaPlaylistsInteractorImpl).bind<MediaPlaylistsInteractor>()
 }

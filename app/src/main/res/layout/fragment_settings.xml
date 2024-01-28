@@ -8,6 +8,7 @@
     tools:context="com.practicum.playlistmaker.ui.settings.SettingsFragment">
 
     <TextView
+        android:id="@+id/titleSettings"
         style="@style/ToolbarTextStyle"
         android:paddingStart="@dimen/standard_padding"
         android:layout_marginBottom="24dp"
