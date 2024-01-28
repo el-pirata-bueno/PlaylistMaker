@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +17,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -93,8 +92,10 @@ class MediaNewPlaylistFragment : Fragment()  {
 
     private fun initListeners() {
 
-        binding.createPlaylistButton.isEnabled = binding.inputTitleEditText.text.toString().isNotEmpty()
-        binding.createPlaylistButton.isClickable = binding.inputTitleEditText.text.toString().isNotEmpty()
+        binding.createPlaylistButton.isEnabled =
+            binding.inputTitleEditText.text.toString().isNotEmpty()
+        binding.createPlaylistButton.isClickable =
+            binding.inputTitleEditText.text.toString().isNotEmpty()
 
         binding.arrowBackButton.setOnClickListener {
             dialogBuilder()
@@ -104,7 +105,10 @@ class MediaNewPlaylistFragment : Fragment()  {
         }
         binding.createPlaylistButton.setOnClickListener {
             if (coverUri != null) {
-                coverFilePath = saveImageToPrivateStorage(coverUri!!, binding.inputTitleEditText.text.toString())
+                coverFilePath = saveImageToPrivateStorage(
+                    coverUri!!,
+                    binding.inputTitleEditText.text.toString()
+                )
             }
             viewModel.createPlaylist(
                 binding.inputTitleEditText.text.toString(),
@@ -113,10 +117,16 @@ class MediaNewPlaylistFragment : Fragment()  {
             )
 
             findNavController().popBackStack()
-            val toastText = getString(R.string.any_playlist_created, binding.inputTitleEditText.text.toString())
+            val toastText =
+                getString(R.string.any_playlist_created, binding.inputTitleEditText.text.toString())
             Toast.makeText(requireContext(), toastText, Toast.LENGTH_LONG).show()
         }
 
+        binding.inputTitleEditText.doOnTextChanged { text, start, before, count ->
+                buttonCreateCheckActive(text.toString())
+        }
+
+            /*
         binding.inputTitleEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -128,6 +138,9 @@ class MediaNewPlaylistFragment : Fragment()  {
         }
         )
 
+         */
+
+            /*
         binding.inputDescriptionEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -135,17 +148,19 @@ class MediaNewPlaylistFragment : Fragment()  {
         }
         )
 
+ */
         binding.inputDescriptionEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT) {
                 hideKeyboard()
             }
             false
-        }
+            }
     }
 
-    private fun buttonCreateCheckActive() {
-        binding.createPlaylistButton.isEnabled = binding.inputTitleEditText.text.toString().isNotEmpty()
-        binding.createPlaylistButton.isClickable = binding.inputTitleEditText.text.toString().isNotEmpty()
+
+    private fun buttonCreateCheckActive(text: String) {
+        binding.createPlaylistButton.isEnabled = text.isNotEmpty()
+        binding.createPlaylistButton.isClickable = text.isNotEmpty()
     }
 
     private fun dialogBuilder() {

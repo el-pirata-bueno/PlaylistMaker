@@ -11,8 +11,7 @@ class MediaPlaylistsListViewHolder(private val binding: PlaylistsViewListBinding
 
     fun bind(model: Playlist) {
         binding.playlistName.text = model.name
-        binding.tracksNumber.text= model.numTracks.toString()
-        binding.tracks.text = getDeclination(model.numTracks)
+        binding.tracksNumber.text = itemView.resources.getQuantityString(R.plurals.plurals_track, model.numTracks, model.numTracks)
 
         if (model.imageLink != null) {
             binding.playlistImage.setImageURI(Uri.parse(model.imageLink))

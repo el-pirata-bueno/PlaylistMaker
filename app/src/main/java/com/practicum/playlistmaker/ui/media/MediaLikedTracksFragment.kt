@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -42,7 +43,7 @@ class MediaLikedTracksFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY_MILLIS, viewLifecycleOwner.lifecycleScope, false) { track ->
             findNavController().navigate(R.id.action_mediaFragment_to_playerFragment, PlayerFragment.createArgs(
                 track.trackId,
                 track.trackName,
@@ -96,15 +97,15 @@ class MediaLikedTracksFragment: Fragment() {
     }
 
     private fun showEmpty() {
-        binding.placeholderImage.visibility = View.VISIBLE
-        binding.placeholderMessage.visibility = View.VISIBLE
-        binding.likedTracksRecycler.visibility = View.GONE
+        binding.placeholderImage.isVisible = true
+        binding.placeholderMessage.isVisible = true
+        binding.likedTracksRecycler.isVisible = false
     }
 
     private fun showContent(tracks: List<Track>) {
-        binding.placeholderImage.visibility = View.GONE
-        binding.placeholderMessage.visibility = View.GONE
-        binding.likedTracksRecycler.visibility = View.VISIBLE
+        binding.placeholderImage.isVisible = false
+        binding.placeholderMessage.isVisible = false
+        binding.likedTracksRecycler.isVisible = true
 
         likedTracksAdapter?.tracks?.clear()
         likedTracksAdapter?.tracks?.addAll(tracks)
@@ -118,7 +119,7 @@ class MediaLikedTracksFragment: Fragment() {
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
         fun newInstance() = MediaLikedTracksFragment().apply { }
     }
 

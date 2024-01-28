@@ -26,6 +26,7 @@ import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
+private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
 class PlayerFragment: Fragment() {
 
     private val viewModel: PlayerViewModel by viewModel {
@@ -61,7 +62,7 @@ class PlayerFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onPlaylistClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { playlist ->
+        onPlaylistClickDebounce = debounce(CLICK_DEBOUNCE_DELAY_MILLIS, viewLifecycleOwner.lifecycleScope, false) { playlist ->
             viewModel.onPlaylistClicked(playlist)
         }
 
@@ -235,7 +236,6 @@ class PlayerFragment: Fragment() {
         private const val ARGS_COUNTRY = "country"
         private const val ARGS_PREVIEW_URL = "previewUrl"
         private const val ARGS_IS_FAVORITE = "isFavorite"
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
 
         fun createArgs(trackId: Long, trackName: String?, artistName: String?,
                        collectionName: String?, releaseDate: String?, trackTime: String?,

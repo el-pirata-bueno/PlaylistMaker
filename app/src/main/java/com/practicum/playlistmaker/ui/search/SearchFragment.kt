@@ -22,6 +22,7 @@ import com.practicum.playlistmaker.util.ErrorType
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
 class SearchFragment: Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
@@ -43,7 +44,7 @@ class SearchFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY_MILLIS, viewLifecycleOwner.lifecycleScope, false) { track ->
                 findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(
                     track.trackId,
                     track.trackName,
@@ -269,7 +270,6 @@ class SearchFragment: Fragment() {
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
 
         fun newInstance() = SearchFragment().apply {
         }

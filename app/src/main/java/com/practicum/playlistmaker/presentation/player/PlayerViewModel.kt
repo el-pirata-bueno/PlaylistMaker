@@ -19,6 +19,8 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+private const val UPDATE_PLAYLISTS_DELAY_TIME_MILLIS = 500L
+private const val UPDATE_PLAYER_DELAY_TIME_MILLIS = 300L
 class PlayerViewModel(
     val trackId: Long,
     val trackName: String?,
@@ -93,7 +95,7 @@ class PlayerViewModel(
 
     fun onAddToPlaylistClicked() {
         viewModelScope.launch(Dispatchers.IO) {
-            delay(500)
+            delay(UPDATE_PLAYLISTS_DELAY_TIME_MILLIS)
             mediaPlaylistsInteractor
                 .getPlaylists()
                 .collect {playlists ->
@@ -123,9 +125,9 @@ class PlayerViewModel(
 
     private fun addToPlaylist(playlist: Playlist) {
         playlist.listTracks.add(currentTrack.trackId)
-        playlist.numTracks = playlist.listTracks.size
+        val playlistCopy = playlist.copy(numTracks = playlist.listTracks.size)
         viewModelScope.launch(Dispatchers.IO) {
-            mediaPlaylistsInteractor.updatePlaylist(currentTrack, playlist)
+            mediaPlaylistsInteractor.updatePlaylist(currentTrack, playlistCopy)
         }
         val toastText = getApplication<Application>().resources.getString(R.string.added_to_playlist, playlist.name)
         showToast.postValue(toastText)
@@ -165,7 +167,7 @@ class PlayerViewModel(
     private fun startTimer() {
         timerJob = viewModelScope.launch {
             while (getPlayerState() == MediaPlayerState.STATE_PLAYING) {
-                delay(300L)
+                delay(UPDATE_PLAYER_DELAY_TIME_MILLIS)
                 currentTrackTime = getPlayerCurrentPosition()
                 playerStateLiveData.postValue(
                     PlayerState.Player(currentTrack, isPlaying, currentTrackTime)

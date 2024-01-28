@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.ui.media
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,11 @@ class MediaPlaylistsFragment: Fragment()  {
 
         viewModel.getMediaPlaylistsStateLiveData().observe(viewLifecycleOwner) {
             render(it)
+        }
+
+        for (i in 0..33) {
+            val trackPlural = this.resources.getQuantityString(com.practicum.playlistmaker.R.plurals.plurals_track, i, i)
+            Log.i(trackPlural, " $trackPlural")
         }
     }
 

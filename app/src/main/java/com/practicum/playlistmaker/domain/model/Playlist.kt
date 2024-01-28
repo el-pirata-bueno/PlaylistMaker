@@ -6,5 +6,5 @@ data class Playlist(
     val description: String?,
     val imageLink: String?,
     val listTracks: MutableList<Long>,
-    var numTracks: Int
+    val numTracks: Int
 )
