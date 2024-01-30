@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.ui.media
+package com.practicum.playlistmaker.ui.media.playlists.recycler
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -24,20 +24,6 @@ class MediaPlaylistsGridViewHolder(private val binding: PlaylistsViewGridBinding
             .transform(RoundedCorners(roundedCorner))
             .into(binding.playlistImage)
 
-    }
-
-    private fun getDeclination (numTracks: Int): String {
-        var result = numTracks
-        result %= 100
-        if (result in 10..20 ) {
-            return " треков"
-        }
-        result %= 10
-        return when {
-            result == 0 || result > 4 -> " треков"
-            result > 1 -> " трека"
-            else -> " трек"
-        }
     }
 }
 

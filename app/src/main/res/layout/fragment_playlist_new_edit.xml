@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/LayoutStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -40,12 +40,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/titleNewPlaylist"
+                android:id="@+id/titlePlaylist"
                 style="@style/ToolbarTextStyle"
                 android:layout_marginStart="@dimen/large_padding"
-                android:text="@string/new_playlist"
                 app:layout_constraintStart_toEndOf="@id/arrowBackButton"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Заголовок"/>
 
             <ImageView
                 android:id="@+id/playlistCover"
@@ -58,7 +58,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="@id/rightBorder"
                 app:layout_constraintStart_toStartOf="@id/leftBorder"
-                app:layout_constraintTop_toBottomOf="@id/titleNewPlaylist"
+                app:layout_constraintTop_toBottomOf="@id/titlePlaylist"
                 app:srcCompat="@drawable/layer_list_add_photo" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -79,6 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="?attr/colorOnSecondary"
+                    android:text=""
                     android:hint="@string/title_star"
                     android:imeOptions="actionNext"
                     android:singleLine="true" />
@@ -103,6 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="?attr/colorOnSecondary"
+                    android:text=""
                     android:hint="@string/description"
                     android:imeOptions="actionNext"
                     android:singleLine="true"/>
@@ -110,14 +112,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/createPlaylistButton"
+                android:id="@+id/playlistButton"
                 android:layout_gravity="center"
                 android:layout_width="0dp"
                 android:layout_height="44dp"
                 android:background="@drawable/button_color"
                 android:clickable="true"
                 android:layout_marginBottom="@dimen/extra_large_padding"
-                android:text="@string/create"
                 android:letterSpacing="0"
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -127,7 +128,8 @@
                 android:textFontWeight="500"
                 app:layout_constraintEnd_toEndOf="@id/rightBorder"
                 app:layout_constraintStart_toStartOf="@id/leftBorder"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="Название кнопки"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

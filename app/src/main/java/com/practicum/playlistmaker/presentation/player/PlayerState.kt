@@ -14,7 +14,7 @@ sealed interface PlayerState {
         val isPlaying: Boolean,
         val currentTrackTime: String
     ) : PlayerState
-    data class BottomSheet(
+    data class PlayerWithBottomSheet(
         val playlists: List<Playlist>,
         val track: Track,
         val isPlaying: Boolean,

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-private const val UPDATE_PLAYLISTS_DELAY_TIME_MILLIS = 500L
+private const val UPDATE_PLAYLISTS_DELAY_TIME_MILLIS = 200L
 private const val UPDATE_PLAYER_DELAY_TIME_MILLIS = 300L
 class PlayerViewModel(
     val trackId: Long,
@@ -27,7 +27,7 @@ class PlayerViewModel(
     val artistName: String?,
     val collectionName: String?,
     val releaseDate: String?,
-    val trackTime: String?,
+    val trackTimeMillis: Int?,
     val artworkUrl100: String?,
     val primaryGenreName: String?,
     val country: String?,
@@ -36,7 +36,6 @@ class PlayerViewModel(
     application: Application,
     private val playerInteractor: PlayerInteractor,
     private val mediaPlaylistsInteractor: MediaPlaylistsInteractor,
-
     ) : AndroidViewModel(application) {
 
     private var currentTrackTime: String = "00:00"
@@ -44,7 +43,7 @@ class PlayerViewModel(
     private var timerJob: Job? = null
 
     private var currentTrack: Track = mapArgsToTrack(trackId, trackName, artistName,
-        collectionName, releaseDate, trackTime, artworkUrl100, primaryGenreName, country,
+        collectionName, releaseDate, trackTimeMillis, artworkUrl100, primaryGenreName, country,
         previewUrl, isFavorite)
 
     private var playerStateLiveData = MutableLiveData<PlayerState>()
@@ -99,7 +98,7 @@ class PlayerViewModel(
             mediaPlaylistsInteractor
                 .getPlaylists()
                 .collect {playlists ->
-                    renderState(PlayerState.BottomSheet(playlists, currentTrack, isPlaying, currentTrackTime))
+                    renderState(PlayerState.PlayerWithBottomSheet(playlists, currentTrack, isPlaying, currentTrackTime))
                 }
         }
     }
@@ -110,7 +109,7 @@ class PlayerViewModel(
         if (trackIds.isNotEmpty()) {
             for (trackId in trackIds) {
                 if (currentTrack.trackId == trackId) {
-                    val toastText = getApplication<Application>().resources.getString(R.string.already_added_to_playlist, playlist.name)
+                    val toastText = getApplication<Application>().resources.getString(R.string.toast_already_added_to_playlist, playlist.name)
                     showToast.postValue(toastText)
                     trackAdded = true
                     break
@@ -124,12 +123,10 @@ class PlayerViewModel(
     }
 
     private fun addToPlaylist(playlist: Playlist) {
-        playlist.listTracks.add(currentTrack.trackId)
-        val playlistCopy = playlist.copy(numTracks = playlist.listTracks.size)
         viewModelScope.launch(Dispatchers.IO) {
-            mediaPlaylistsInteractor.updatePlaylist(currentTrack, playlistCopy)
+            mediaPlaylistsInteractor.insertTrackInPlaylist(currentTrack, playlist)
         }
-        val toastText = getApplication<Application>().resources.getString(R.string.added_to_playlist, playlist.name)
+        val toastText = getApplication<Application>().resources.getString(R.string.toast_added_to_playlist, playlist.name)
         showToast.postValue(toastText)
         onAddToPlaylistClicked()
     }
@@ -197,11 +194,11 @@ class PlayerViewModel(
     }
 
     private fun mapArgsToTrack(trackId: Long, trackName: String?, artistName: String?,
-                               collectionName: String?, releaseDate: String?, trackTime: String?,
+                               collectionName: String?, releaseDate: String?, trackTimeMillis: Int?,
                                artworkUrl100: String?, primaryGenreName: String?, country: String?,
                                previewUrl: String?, isFavorite: Boolean):
             Track {
-        return Track (trackId, trackName, artistName, collectionName, releaseDate, trackTime,
+        return Track (trackId, trackName, artistName, collectionName, releaseDate, trackTimeMillis,
             artworkUrl100, primaryGenreName, country, previewUrl, isFavorite)
     }
 }

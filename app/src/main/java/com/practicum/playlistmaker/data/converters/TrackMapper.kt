@@ -13,7 +13,7 @@ class TrackMapper {
                 artistName,
                 collectionName,
                 releaseDate,
-                trackTime,
+                trackTimeMillis,
                 artworkUrl100,
                 primaryGenreName,
                 country,
@@ -30,13 +30,14 @@ class TrackMapper {
                 artistName,
                 collectionName,
                 releaseDate,
-                trackTime,
+                trackTimeMillis,
                 artworkUrl100,
                 primaryGenreName,
                 country,
                 previewUrl,
                 isFavorite,
-                System.currentTimeMillis())
+                System.currentTimeMillis()
+            )
         }
     }
 
@@ -48,13 +49,32 @@ class TrackMapper {
                 artistName,
                 collectionName,
                 releaseDate,
-                trackTime,
+                trackTimeMillis,
                 artworkUrl100,
                 primaryGenreName,
                 country,
                 previewUrl,
                 isFavorite,
-                System.currentTimeMillis())
+                System.currentTimeMillis()
+            )
+        }
+    }
+
+    fun mapTrackInPlaylistEntitytoTrack(track: TrackInPlaylistEntity): Track {
+        return with(track) {
+            Track(
+                trackId,
+                trackName,
+                artistName,
+                collectionName,
+                releaseDate,
+                trackTimeMillis,
+                artworkUrl100,
+                primaryGenreName,
+                country,
+                previewUrl,
+                isFavorite
+            )
         }
     }
 }

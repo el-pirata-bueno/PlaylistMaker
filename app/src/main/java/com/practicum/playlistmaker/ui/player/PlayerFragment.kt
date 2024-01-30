@@ -21,10 +21,13 @@ import com.practicum.playlistmaker.domain.model.Playlist
 import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.presentation.player.PlayerState
 import com.practicum.playlistmaker.presentation.player.PlayerViewModel
-import com.practicum.playlistmaker.ui.media.MediaPlaylistsListAdapter
+import com.practicum.playlistmaker.ui.media.playlists.MediaNewPlaylistFragment
+import com.practicum.playlistmaker.ui.media.playlists.recycler.MediaPlaylistsListAdapter
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
 class PlayerFragment: Fragment() {
@@ -36,7 +39,7 @@ class PlayerFragment: Fragment() {
             requireArguments().getString(ARGS_ARTIST_NAME),
             requireArguments().getString(ARGS_COLLECTION_NAME),
             requireArguments().getString(ARGS_RELEASE_DATE),
-            requireArguments().getString(ARGS_TRACK_TIME),
+            requireArguments().getInt(ARGS_TRACK_TIME),
             requireArguments().getString(ARGS_ARTWORK_URL),
             requireArguments().getString(ARGS_GENRE_NAME),
             requireArguments().getString(ARGS_COUNTRY),
@@ -45,16 +48,19 @@ class PlayerFragment: Fragment() {
             )
     }
 
-    private val playlistsAdapter = MediaPlaylistsListAdapter()
-
     private var _binding: FragmentPlayerBinding? = null
     private val binding get() = _binding!!
+
+    private val playlistsAdapter = MediaPlaylistsListAdapter()
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private lateinit var onPlaylistClickDebounce: (Playlist) -> Unit
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState:
-        Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentPlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -93,13 +99,6 @@ class PlayerFragment: Fragment() {
         _binding = null
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getPlayerStateLiveData().observe(viewLifecycleOwner) {
-            render(it)
-        }
-    }
-
     private fun render(state: PlayerState) {
         when (state) {
             is PlayerState.Error -> showError(getString(R.string.track_error))
@@ -108,9 +107,9 @@ class PlayerFragment: Fragment() {
                 drawTrack(state.track, state.isPlaying,
                     state.currentTrackTime)
             }
-            is PlayerState.BottomSheet -> {
+            is PlayerState.PlayerWithBottomSheet -> {
                 showPlayer()
-                showBottomSheet(state.playlists)
+                showContentWithBottomSheet(state.playlists)
                 drawTrack(state.track, state.isPlaying, state.currentTrackTime)
             }
             else -> {}
@@ -119,10 +118,10 @@ class PlayerFragment: Fragment() {
 
     private fun showPlayer() {
         binding.playerContent.isVisible = true
-        binding.playerBottomSheet.isVisible = true
+        binding.playerBottomSheet.isVisible = false
     }
 
-    private fun showBottomSheet(playlists: List<Playlist>) {
+    private fun showContentWithBottomSheet(playlists: List<Playlist>) {
         binding.playerContent.isVisible = true
         binding.playerBottomSheet.isVisible = true
 
@@ -155,7 +154,13 @@ class PlayerFragment: Fragment() {
 
         binding.currentTrackTime.text = currentTrackTime
 
-        binding.trackLength.text = track.trackTime
+        if (track.trackTimeMillis != null) {
+            binding.trackLength.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+        }
+        else {
+            binding.trackLength.text = "00:00"
+        }
+
         binding.trackAlbum.text = track.collectionName ?: ""
         binding.trackName.text = track.trackName
         binding.artistName.text = track.artistName
@@ -171,7 +176,7 @@ class PlayerFragment: Fragment() {
         }
 
         binding.arrowBackButton.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
 
         binding.playButton.setOnClickListener {
@@ -188,11 +193,12 @@ class PlayerFragment: Fragment() {
         }
 
         binding.addNewPlaylistButton.setOnClickListener {
-            findNavController().navigate(R.id.action_playerFragment_to_newPlaylistFragment)
+            findNavController().navigate(R.id.action_playerFragment_to_newPlaylistFragment, MediaNewPlaylistFragment.createArgs(
+                null
+            ))
         }
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-
             override fun onStateChanged(bottomSheet: View, newState: Int) {
 
                 when (newState) {
@@ -208,7 +214,8 @@ class PlayerFragment: Fragment() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
             }
-        })
+            }
+        )
 
 
     }
@@ -238,7 +245,7 @@ class PlayerFragment: Fragment() {
         private const val ARGS_IS_FAVORITE = "isFavorite"
 
         fun createArgs(trackId: Long, trackName: String?, artistName: String?,
-                       collectionName: String?, releaseDate: String?, trackTime: String?,
+                       collectionName: String?, releaseDate: String?, trackTimeMillis: Int?,
                        artworkUrl100: String?, primaryGenreName: String?, country: String?,
                        previewUrl: String?, isFavorite: Boolean?): Bundle =
             bundleOf(
@@ -247,7 +254,7 @@ class PlayerFragment: Fragment() {
                 ARGS_ARTIST_NAME to artistName,
                 ARGS_COLLECTION_NAME to collectionName,
                 ARGS_RELEASE_DATE to releaseDate,
-                ARGS_TRACK_TIME to trackTime,
+                ARGS_TRACK_TIME to trackTimeMillis,
                 ARGS_ARTWORK_URL to artworkUrl100,
                 ARGS_GENRE_NAME to primaryGenreName,
                 ARGS_COUNTRY to country,

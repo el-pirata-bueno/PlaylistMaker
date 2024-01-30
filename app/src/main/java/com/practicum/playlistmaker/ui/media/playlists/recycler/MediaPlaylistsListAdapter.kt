@@ -1,20 +1,20 @@
-package com.practicum.playlistmaker.ui.media
+package com.practicum.playlistmaker.ui.media.playlists.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.databinding.PlaylistsViewGridBinding
+import com.practicum.playlistmaker.databinding.PlaylistsViewListBinding
 import com.practicum.playlistmaker.domain.model.Playlist
 
-class MediaPlaylistsGridAdapter : RecyclerView.Adapter<MediaPlaylistsGridViewHolder>() {
+class MediaPlaylistsListAdapter : RecyclerView.Adapter<MediaPlaylistsListViewHolder>() {
 
     var itemClickListener: ((Playlist) -> Unit)? = null
     val playlists = ArrayList<Playlist>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaPlaylistsGridViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaPlaylistsListViewHolder {
         val layoutInspector = LayoutInflater.from(parent.context)
-        return MediaPlaylistsGridViewHolder(
-            PlaylistsViewGridBinding.inflate(
+        return MediaPlaylistsListViewHolder(
+            PlaylistsViewListBinding.inflate(
                 layoutInspector,
                 parent,
                 false
@@ -22,7 +22,7 @@ class MediaPlaylistsGridAdapter : RecyclerView.Adapter<MediaPlaylistsGridViewHol
         )
     }
 
-    override fun onBindViewHolder(holder: MediaPlaylistsGridViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MediaPlaylistsListViewHolder, position: Int) {
         val playlist = playlists[position]
         holder.bind(playlist)
         holder.itemView.setOnClickListener {

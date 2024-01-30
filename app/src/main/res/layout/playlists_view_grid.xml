@@ -43,7 +43,7 @@
             android:textSize="@dimen/text_size_playlist"
             android:ellipsize="end"
             android:maxLines="1"
-            tools:text="666 tracks" />
+            tools:text="6666 tracks" />
 
     </LinearLayout>
 

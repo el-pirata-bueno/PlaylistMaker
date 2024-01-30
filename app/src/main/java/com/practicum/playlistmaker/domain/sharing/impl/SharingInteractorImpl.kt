@@ -11,6 +11,10 @@ class SharingInteractorImpl(
         externalNavigator.shareApp(shareUrl, typeText)
     }
 
+    override fun sharePlaylist(messageText: String, typeText: String) {
+        externalNavigator.sharePlaylist(messageText, typeText)
+    }
+
     override fun openSupport(email: EmailData) {
         externalNavigator.openSupport(email)
     }

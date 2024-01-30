@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/standard_padding"
         android:layout_marginEnd="@dimen/standard_padding"
-        tools:context="com.practicum.playlistmaker.ui.media.MediaPlaylistsFragment">
+        tools:context="com.practicum.playlistmaker.ui.media.playlists.MediaPlaylistsFragment">
 
         <Button
             android:id="@+id/addNewPlaylistButton"

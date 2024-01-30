@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation.media
+package com.practicum.playlistmaker.presentation.media.favorites
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.media.MediaLikedTracksInteractor
 import com.practicum.playlistmaker.domain.model.Track
+import com.practicum.playlistmaker.presentation.media.favorites.MediaLikedTracksState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

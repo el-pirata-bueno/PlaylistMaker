@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation.media
+package com.practicum.playlistmaker.presentation.media.playlists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MediaPlaylistsViewModel(
-    private val mediaPlaylistsInteractor: MediaPlaylistsInteractor
+    val mediaPlaylistsInteractor: MediaPlaylistsInteractor
 ): ViewModel() {
 
     private var mediaPlaylistsStateLiveData = MutableLiveData<MediaPlaylistsState>()

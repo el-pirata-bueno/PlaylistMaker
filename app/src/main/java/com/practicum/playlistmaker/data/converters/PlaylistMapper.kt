@@ -18,12 +18,15 @@ class PlaylistMapper(private val gson: Gson) {
                 description,
                 imageLink,
                 listTracks.toMutableList(),
-                numTracks)
+                numTracks,
+                createdAt
+            )
         }
     }
 
     fun mapPlaylistToEntity(playlist: Playlist): PlaylistEntity {
         val listTracksEntity = gson.toJson(playlist.listTracks)
+
 
         return with(playlist) {
             PlaylistEntity(
@@ -32,7 +35,9 @@ class PlaylistMapper(private val gson: Gson) {
                 description,
                 imageLink,
                 listTracksEntity,
-                numTracks)
+                numTracks,
+                createdAt
+            )
         }
     }
 }

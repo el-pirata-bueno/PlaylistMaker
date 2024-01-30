@@ -1,7 +1,6 @@
-package com.practicum.playlistmaker.ui.media
+package com.practicum.playlistmaker.ui.media.favorites
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentLikedTracksBinding
 import com.practicum.playlistmaker.domain.model.Track
-import com.practicum.playlistmaker.presentation.media.MediaLikedTracksState
-import com.practicum.playlistmaker.presentation.media.MediaLikedTracksViewModel
+import com.practicum.playlistmaker.presentation.media.favorites.MediaLikedTracksState
+import com.practicum.playlistmaker.presentation.media.favorites.MediaLikedTracksViewModel
 import com.practicum.playlistmaker.ui.player.PlayerFragment
-import com.practicum.playlistmaker.ui.search.SearchTrackAdapter
+import com.practicum.playlistmaker.ui.search.recycler.SearchTrackAdapter
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -50,7 +49,7 @@ class MediaLikedTracksFragment: Fragment() {
                 track.artistName,
                 track.collectionName,
                 track.releaseDate,
-                track.trackTime,
+                track.trackTimeMillis,
                 track.artworkUrl100,
                 track.primaryGenreName,
                 track.country,
@@ -81,7 +80,6 @@ class MediaLikedTracksFragment: Fragment() {
         likedTracksAdapter = SearchTrackAdapter()
         likedTracksAdapter!!.itemClickListener = { track ->
             onTrackClickDebounce(track)
-            Log.d("ISFAVORITE","$track.isFavorite")
         }
 
         binding.likedTracksRecycler.adapter = likedTracksAdapter

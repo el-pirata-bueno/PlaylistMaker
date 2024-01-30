@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="large_text_size">24sp</dimen>
     <dimen name="text_size">22sp</dimen>
     <dimen name="text_size_error">19sp</dimen>
+    <dimen name="text_size_playlist_page">18sp</dimen>
     <dimen name="text_size_track_big">16sp</dimen>
     <dimen name="text_size_track_medium">13sp</dimen>
     <dimen name="text_size_track_small">11sp</dimen>
