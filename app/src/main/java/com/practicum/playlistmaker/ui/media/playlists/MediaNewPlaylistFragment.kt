@@ -94,7 +94,7 @@ open class MediaNewPlaylistFragment : Fragment()  {
             render(it)
         }
 
-        buttonStatus()
+        buttonStatus(null)
         initListeners()
         initEditText()
         initButtonListener()
@@ -181,13 +181,9 @@ open class MediaNewPlaylistFragment : Fragment()  {
         }
     }
 
-    private fun buttonCreateCheckActive(text: String) {
-        binding.playlistButton.isEnabled = text.isNotEmpty()
-        binding.playlistButton.isClickable = text.isNotEmpty()
-    }
     private fun initEditText() {
         binding.inputTitleEditText.doOnTextChanged { text, start, before, count ->
-            buttonCreateCheckActive(text.toString())
+            buttonStatus(text.toString())
         }
 
         binding.inputDescriptionEditText.setOnEditorActionListener { _, actionId, _ ->
@@ -197,11 +193,15 @@ open class MediaNewPlaylistFragment : Fragment()  {
             false
         }
     }
-    private fun buttonStatus() {
-        binding.playlistButton.isEnabled =
-            binding.inputTitleEditText.text.toString().isNotEmpty()
-        binding.playlistButton.isClickable =
-            binding.inputTitleEditText.text.toString().isNotEmpty()
+    private fun buttonStatus(text: String?) {
+        if (text != null) {
+            binding.playlistButton.isEnabled = text.trim().isNotEmpty()
+            binding.playlistButton.isClickable = text.trim().isNotEmpty()
+        }
+        else {
+            binding.playlistButton.isEnabled = false
+            binding.playlistButton.isClickable = false
+        }
     }
 
     private fun dialogBuilder() {

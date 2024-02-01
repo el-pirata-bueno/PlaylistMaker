@@ -55,6 +55,7 @@ class PlayerFragment: Fragment() {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private lateinit var onPlaylistClickDebounce: (Playlist) -> Unit
+    private var currentListPlaylists: MutableList<Playlist> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -103,31 +104,11 @@ class PlayerFragment: Fragment() {
         when (state) {
             is PlayerState.Error -> showError(getString(R.string.track_error))
             is PlayerState.Player -> {
-                showPlayer()
-                drawTrack(state.track, state.isPlaying,
+                drawTrack(state.playlists, state.track, state.isPlaying,
                     state.currentTrackTime)
-            }
-            is PlayerState.PlayerWithBottomSheet -> {
-                showPlayer()
-                showContentWithBottomSheet(state.playlists)
-                drawTrack(state.track, state.isPlaying, state.currentTrackTime)
             }
             else -> {}
         }
-    }
-
-    private fun showPlayer() {
-        binding.playerContent.isVisible = true
-        binding.playerBottomSheet.isVisible = false
-    }
-
-    private fun showContentWithBottomSheet(playlists: List<Playlist>) {
-        binding.playerContent.isVisible = true
-        binding.playerBottomSheet.isVisible = true
-
-        playlistsAdapter.playlists.clear()
-        playlistsAdapter.playlists.addAll(playlists)
-        playlistsAdapter.notifyDataSetChanged()
     }
 
     private fun showError(errorMessage: String) {
@@ -140,7 +121,8 @@ class PlayerFragment: Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    private fun drawTrack(track: Track, isPlaying: Boolean, currentTrackTime: String) {
+    private fun drawTrack(playlists: List<Playlist>, track: Track, isPlaying: Boolean, currentTrackTime: String) {
+        currentListPlaylists = playlists.toMutableList()
 
         Glide.with(requireContext())
             .load(track.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg"))
@@ -167,6 +149,10 @@ class PlayerFragment: Fragment() {
         binding.trackYear.text = track.releaseDate?.substring(0, 4) ?: ""
         binding.trackGenre.text = track.primaryGenreName
         binding.artistCountry.text = track.country
+
+        playlistsAdapter.playlists.clear()
+        playlistsAdapter.playlists.addAll(currentListPlaylists)
+        playlistsAdapter.notifyDataSetChanged()
     }
 
     private fun initListeners() {
