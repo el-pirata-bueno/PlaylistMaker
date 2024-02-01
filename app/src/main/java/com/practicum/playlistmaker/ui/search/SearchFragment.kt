@@ -18,6 +18,7 @@ import com.practicum.playlistmaker.domain.model.Track
 import com.practicum.playlistmaker.presentation.search.SearchState
 import com.practicum.playlistmaker.presentation.search.SearchViewModel
 import com.practicum.playlistmaker.ui.player.PlayerFragment
+import com.practicum.playlistmaker.ui.search.recycler.SearchTrackAdapter
 import com.practicum.playlistmaker.util.ErrorType
 import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -51,7 +52,7 @@ class SearchFragment: Fragment() {
                     track.artistName,
                     track.collectionName,
                     track.releaseDate,
-                    track.trackTime,
+                    track.trackTimeMillis,
                     track.artworkUrl100,
                     track.primaryGenreName,
                     track.country,

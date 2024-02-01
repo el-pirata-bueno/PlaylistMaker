@@ -5,6 +5,7 @@ data class Playlist(
     val name: String,
     val description: String?,
     val imageLink: String?,
-    val listTracks: MutableList<Long>,
-    val numTracks: Int
+    val listTracks: List<Long>,
+    val numTracks: Int,
+    val createdAt: Long
 )

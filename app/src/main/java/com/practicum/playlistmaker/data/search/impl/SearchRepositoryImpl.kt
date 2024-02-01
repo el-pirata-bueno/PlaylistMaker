@@ -60,8 +60,7 @@ class SearchRepositoryImpl(
             trackName = trackDto.trackName ?: "",
             artistName = trackDto.artistName ?: "",
             trackId = trackDto.trackId ?: 0,
-            trackTime = if (trackDto.trackTimeMillis != null)
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackDto.trackTimeMillis) else "",
+            trackTimeMillis = trackDto.trackTimeMillis,
             artworkUrl100 = trackDto.artworkUrl100 ?: "",
             collectionName = trackDto.collectionName ?: "",
             releaseDate = trackDto.releaseDate ?: "",

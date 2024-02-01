@@ -17,6 +17,15 @@ class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
         context.startActivity(shareIntent)
     }
 
+    override fun sharePlaylist(messageText: String, typeText: String) {
+        val sharePlaylistIntent = Intent(Intent.ACTION_SEND).apply {
+            type = typeText
+            putExtra(Intent.EXTRA_TEXT, messageText)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(sharePlaylistIntent)
+    }
+
     override fun openSupport(email: EmailData) {
         val helpIntent = Intent(Intent.ACTION_SEND).apply {
             type = email.typeText

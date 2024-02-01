@@ -8,7 +8,7 @@ interface ITunesApiService {
     @GET("/search")
     suspend fun searchTracks(
         @Query("term") term: String,
-        @Query("resultEntity") entity: String = "music"
+        @Query("resultEntity") entity: String = "musicTrack"
     ): TracksSearchResponse
 
 }

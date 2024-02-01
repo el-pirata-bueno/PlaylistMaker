@@ -1,5 +1,4 @@
 <resources>
-
     <string name="app_name">Playlist Maker</string>
     <string name="search">Поиск</string>
     <string name="input_hint">Поиск</string>
@@ -7,7 +6,7 @@
     <string name="settings">Настройки</string>
     <string name="dark_theme">Темная тема</string>
     <string name="system_theme">Системная тема</string>
-    <string name="share">Поделиться приложением</string>
+    <string name="share_app">Поделиться приложением</string>
     <string name="help">Написать в поддержку</string>
     <string name="update">Обновить</string>
     <string name="agreement">Пользовательское соглашение</string>
@@ -40,17 +39,44 @@
     <string name="title_star">Название*</string>
     <string name="description">Описание</string>
     <string name="create">Создать</string>
+    <string name="save">Сохранить</string>
+    <string name="edit">Редактировать</string>
     <string name="add_to_playlist">Добавить в плейлист</string>
     <string name="playlist_cover">Обложка плейлиста</string>
     <string name="any_playlist_created">Плейлист %s создан</string>
-    <string name="added_to_playlist">Добавлено в плейлист %s</string>
-    <string name="already_added_to_playlist">Трек уже добавлен в плейлист %s</string>
+    <string name="toast_added_to_playlist">Добавлено в плейлист %s</string>
+    <string name="toast_already_added_to_playlist">Трек уже добавлен в плейлист %s</string>
+    <string name="dialog_title_new_playlist">Завершить создание плейлиста?</string>
+    <string name="dialog_message_new_playlist">Все несохраненные данные будут потеряны</string>
+    <string name="dialog_positive_button_new_playlist">Завершить</string>
+    <string name="dialog_negative_button_new_playlist">Отмена</string>
+    <string name="dialog_title_delete_track_from_playlist">Удалить трек?</string>
+    <string name="dialog_message_delete_track_from_playlist">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="dialog_positive_button_delete_track_from_playlist">Удалить</string>
+    <string name="dialog_negative_button_delete_track_from_playlist">Отмена</string>
+    <string name="dialog_title_delete_playlist">Удалить плейлист</string>
+    <string name="dialog_message_delete_playlist">Хотите удалить плейлист "%s"?</string>
+    <string name="dialog_positive_button_delete_playlist">Да</string>
+    <string name="dialog_negative_button_delete_playlist">Нет</string>
+    <string name="share_no_tracks">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="share">Поделиться</string>
+    <string name="edit_info">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
+    <string name="share_playlist">%s\n%s\n%s\n</string>
+    <string name="share_track_in_playlist">\n%d. %s - %s (%s)</string>
 
     <plurals name="plurals_track">
         <item quantity="one">%1$d трек</item>
         <item quantity="few">%1$d трека</item>
         <item quantity="many">%1$d треков</item>
         <item quantity="other">%1$d треков</item>
+    </plurals>
+
+    <plurals name="plurals_minute">
+        <item quantity="one">%1$d минута</item>
+        <item quantity="few">%1$d минуты</item>
+        <item quantity="many">%1$d минут</item>
+        <item quantity="other">%1$d минут</item>
     </plurals>
 
 </resources>

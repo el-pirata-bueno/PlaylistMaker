@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     style="@style/LayoutStyle"
-    tools:context="com.practicum.playlistmaker.ui.media.MediaLikedTracksFragment">
+    tools:context="com.practicum.playlistmaker.ui.media.favorites.MediaLikedTracksFragment">
 
     <ImageView
         android:id="@+id/placeholderImage"

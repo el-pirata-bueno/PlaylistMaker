@@ -18,11 +18,31 @@ class MediaPlaylistsInteractorImpl(
         mediaPlaylistsRepository.createPlaylist(playlistMapper.mapPlaylistToEntity(playlist))
     }
 
-    override suspend fun updatePlaylist(track: Track, playlist: Playlist) {
-        mediaPlaylistsRepository.updatePlaylist(trackMapper.mapTrackToTrackInPlaylistEntity(track), playlistMapper.mapPlaylistToEntity(playlist))
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        mediaPlaylistsRepository.updatePlaylist(playlistMapper.mapPlaylistToEntity(playlist))
+    }
+
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        mediaPlaylistsRepository.deletePlaylist(playlist)
+    }
+
+    override suspend fun insertTrackInPlaylist(track: Track, playlist: Playlist) {
+        mediaPlaylistsRepository.insertTrackInPlaylist(track, playlist)
+    }
+
+    override suspend fun deleteTrackFromPlaylist(track: Track, playlist: Playlist) : Playlist {
+        return mediaPlaylistsRepository.deleteTrackFromPlaylist(track, playlist)
     }
 
     override suspend fun getPlaylists(): Flow<List<Playlist>> {
         return mediaPlaylistsRepository.getPlaylists()
+    }
+
+    override suspend fun getPlaylistById(playlistId: Int): Playlist {
+        return mediaPlaylistsRepository.getPlaylistById(playlistId)
+    }
+
+    override suspend fun getPlaylistTracks(trackIds: List<Long>): Flow<List<Track>> {
+        return mediaPlaylistsRepository.getPlaylistTracks(trackIds)
     }
 }

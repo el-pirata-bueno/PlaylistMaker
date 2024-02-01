@@ -20,6 +20,7 @@
             android:layout_marginTop="@dimen/standard_padding"
             android:layout_marginStart="@dimen/standard_padding"
             android:layout_marginBottom="@dimen/standard_padding"
+            android:background="@android:color/transparent"
             android:src="@drawable/arrow_back" />
 
         <ScrollView
@@ -342,7 +343,7 @@
     <LinearLayout
         android:id="@+id/playerBottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="505dp"
+        android:layout_height="match_parent"
         android:background="@drawable/bottom_sheet_rounder"
         android:backgroundTint="?attr/colorSecondary"
         android:orientation="vertical"

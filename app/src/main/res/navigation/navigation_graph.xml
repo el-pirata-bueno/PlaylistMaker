@@ -10,12 +10,21 @@
         android:name="com.practicum.playlistmaker.ui.media.MediaFragment"
         android:label="fragment_media"
         tools:layout="@layout/fragment_media" >
-    <action
-        android:id="@+id/action_mediaFragment_to_playerFragment"
-        app:destination="@id/playerFragment" />
         <action
             android:id="@+id/action_mediaFragment_to_newPlaylistFragment"
-            app:destination="@id/newPlaylistFragment" />
+            app:destination="@id/newPlaylistFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in" />
+        <action
+            android:id="@+id/action_mediaFragment_to_mediaPlaylistPageFragment"
+            app:destination="@id/mediaPlaylistPageFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in" />
+        <action
+            android:id="@+id/action_mediaFragment_to_playerFragment"
+            app:destination="@id/playerFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in" />
     </fragment>
     <fragment
         android:id="@+id/playerFragment"
@@ -24,7 +33,9 @@
         tools:layout="@layout/fragment_player" >
         <action
             android:id="@+id/action_playerFragment_to_newPlaylistFragment"
-            app:destination="@id/newPlaylistFragment" />
+            app:destination="@id/newPlaylistFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -33,11 +44,13 @@
         tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_searchFragment_to_playerFragment"
-            app:destination="@id/playerFragment" />
+            app:destination="@id/playerFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in" />
     </fragment>
     <fragment
         android:id="@+id/likedTracksFragment"
-        android:name="com.practicum.playlistmaker.ui.media.MediaLikedTracksFragment"
+        android:name="com.practicum.playlistmaker.ui.media.favorites.MediaLikedTracksFragment"
         android:label="fragment_liked_tracks"
         tools:layout="@layout/fragment_liked_tracks" >
     </fragment>
@@ -48,11 +61,32 @@
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/playlistsFragment"
-        android:name="com.practicum.playlistmaker.ui.media.MediaPlaylistsFragment"
+        android:name="com.practicum.playlistmaker.ui.media.playlists.MediaPlaylistsFragment"
         android:label="fragment_playlists"
         tools:layout="@layout/fragment_playlists" />
     <fragment
         android:id="@+id/newPlaylistFragment"
-        android:name="com.practicum.playlistmaker.ui.media.MediaNewPlaylistFragment"
+        android:name="com.practicum.playlistmaker.ui.media.playlists.MediaNewPlaylistFragment"
         android:label="NewPlaylistFragment" />
+    <fragment
+        android:id="@+id/mediaPlaylistPageFragment"
+        android:name="com.practicum.playlistmaker.ui.media.playlists.MediaPlaylistPageFragment"
+        android:label="MediaPlaylistPageFragment" >
+        <action
+            android:id="@+id/action_mediaPlaylistPageFragment_to_playerFragment"
+            app:destination="@id/playerFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in" />
+        <action
+            android:id="@+id/action_mediaPlaylistPageFragment_to_mediaEditPlaylistFragment"
+            app:destination="@id/mediaEditPlaylistFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in" />
+    </fragment>
+    <fragment
+        android:id="@+id/mediaEditPlaylistFragment"
+        android:name="com.practicum.playlistmaker.ui.media.playlists.MediaEditPlaylistFragment"
+        android:label="MediaEditPlaylistFragment"
+        app:enterAnim="@anim/fade_in"
+        app:popEnterAnim="@anim/fade_in" />
 </navigation>

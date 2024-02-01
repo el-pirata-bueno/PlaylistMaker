@@ -10,7 +10,7 @@ import com.practicum.playlistmaker.data.model.TrackEntity
 @Dao
 interface TrackDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = TrackEntity::class, onConflict = OnConflictStrategy.REPLACE)
     fun insertLikedTrack(trackEntity: TrackEntity)
 
     @Delete(entity = TrackEntity::class)

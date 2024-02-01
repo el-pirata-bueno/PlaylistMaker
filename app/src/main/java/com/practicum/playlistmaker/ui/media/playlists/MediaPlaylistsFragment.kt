@@ -1,32 +1,37 @@
-package com.practicum.playlistmaker.ui.media
+package com.practicum.playlistmaker.ui.media.playlists
 
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.playlistmaker.domain.model.Playlist
-import com.practicum.playlistmaker.presentation.media.MediaPlaylistsState
-import com.practicum.playlistmaker.presentation.media.MediaPlaylistsViewModel
+import com.practicum.playlistmaker.presentation.media.playlists.MediaPlaylistsState
+import com.practicum.playlistmaker.presentation.media.playlists.MediaPlaylistsViewModel
+import com.practicum.playlistmaker.ui.media.playlists.recycler.MediaPlaylistsGridAdapter
+import com.practicum.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
+private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
 class MediaPlaylistsFragment: Fragment()  {
 
     private val viewModel by viewModel<MediaPlaylistsViewModel>()
 
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
-    private var playlistsAdapter: MediaPlaylistsGridAdapter? = null
+    private val playlistsAdapter = MediaPlaylistsGridAdapter()
+
+    private lateinit var onPlaylistClickDebounce: (Playlist) -> Unit
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +48,13 @@ class MediaPlaylistsFragment: Fragment()  {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
+        onPlaylistClickDebounce = debounce(CLICK_DEBOUNCE_DELAY_MILLIS, viewLifecycleOwner.lifecycleScope, false) { playlist ->
+            findNavController().navigate(R.id.action_mediaFragment_to_mediaPlaylistPageFragment, MediaPlaylistPageFragment.createArgs(
+                playlist.playlistId
+                )
+            )
+        }
+
         initPlaylistAdapter()
         initListeners()
 
@@ -50,11 +62,6 @@ class MediaPlaylistsFragment: Fragment()  {
 
         viewModel.getMediaPlaylistsStateLiveData().observe(viewLifecycleOwner) {
             render(it)
-        }
-
-        for (i in 0..33) {
-            val trackPlural = this.resources.getQuantityString(com.practicum.playlistmaker.R.plurals.plurals_track, i, i)
-            Log.i(trackPlural, " $trackPlural")
         }
     }
 
@@ -73,18 +80,22 @@ class MediaPlaylistsFragment: Fragment()  {
 
     private fun initListeners() {
         binding.addNewPlaylistButton.setOnClickListener {
-            findNavController().navigate(com.practicum.playlistmaker.R.id.action_mediaFragment_to_newPlaylistFragment)
+            findNavController().navigate(R.id.action_mediaFragment_to_newPlaylistFragment, MediaNewPlaylistFragment.createArgs(
+                null
+            ))
         }
     }
 
     private fun initPlaylistAdapter() {
-        playlistsAdapter = MediaPlaylistsGridAdapter()
-
         binding.playlistsGridRecycler.adapter = playlistsAdapter
         binding.playlistsGridRecycler.layoutManager =
             GridLayoutManager(requireContext(), 2)
-        val itemDecoration = ItemOffsetDecoration(requireContext(), com.practicum.playlistmaker.R.dimen.item_offset)
+        val itemDecoration = ItemOffsetDecoration(requireContext(), R.dimen.item_offset)
         binding.playlistsGridRecycler.addItemDecoration(itemDecoration)
+
+        playlistsAdapter.itemClickListener = { playlist ->
+            onPlaylistClickDebounce(playlist)
+        }
     }
 
     private fun render(state: MediaPlaylistsState) {

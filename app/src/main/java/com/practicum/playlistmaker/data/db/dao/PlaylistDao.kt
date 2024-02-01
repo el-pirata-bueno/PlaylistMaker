@@ -11,10 +11,10 @@ import com.practicum.playlistmaker.data.model.PlaylistEntity
 @Dao
 interface PlaylistDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
     fun createPlaylist(playlistEntity: PlaylistEntity)
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
     fun updatePlaylist(playlistEntity: PlaylistEntity)
 
     @Delete(entity = PlaylistEntity::class)
@@ -23,4 +23,6 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlists_table")
     fun getPlaylists(): List<PlaylistEntity>
 
+    @Query("SELECT * FROM playlists_table WHERE playlistId = :playlistId")
+    fun getPlaylistById(playlistId: Int): PlaylistEntity
 }

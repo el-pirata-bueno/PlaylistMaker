@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 2,
-    "identityHash": "b9f78cfa8cd074e98fd49cbe2b0b96a0",
+    "version": 4,
+    "identityHash": "973b24faf4d16a7134eebfb10377a920",
     "entities": [
       {
         "tableName": "track_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trackId` INTEGER NOT NULL, `trackName` TEXT, `artistName` TEXT, `collectionName` TEXT, `releaseDate` TEXT, `trackTime` TEXT, `artworkUrl100` TEXT, `primaryGenreName` TEXT, `country` TEXT, `previewUrl` TEXT, `isFavorite` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`trackId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trackId` INTEGER NOT NULL, `trackName` TEXT, `artistName` TEXT, `collectionName` TEXT, `releaseDate` TEXT, `trackTimeMillis` INTEGER NOT NULL, `artworkUrl100` TEXT, `primaryGenreName` TEXT, `country` TEXT, `previewUrl` TEXT, `isFavorite` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`trackId`))",
         "fields": [
           {
             "fieldPath": "trackId",
@@ -39,10 +39,10 @@
             "notNull": false
           },
           {
-            "fieldPath": "trackTime",
-            "columnName": "trackTime",
-            "affinity": "TEXT",
-            "notNull": false
+            "fieldPath": "trackTimeMillis",
+            "columnName": "trackTimeMillis",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "artworkUrl100",
@@ -148,7 +148,7 @@
       },
       {
         "tableName": "tracks_in_playlists_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trackId` INTEGER NOT NULL, `trackName` TEXT, `artistName` TEXT, `collectionName` TEXT, `releaseDate` TEXT, `trackTime` TEXT, `artworkUrl100` TEXT, `primaryGenreName` TEXT, `country` TEXT, `previewUrl` TEXT, `isFavorite` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`trackId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trackId` INTEGER NOT NULL, `trackName` TEXT, `artistName` TEXT, `collectionName` TEXT, `releaseDate` TEXT, `trackTimeMillis` INTEGER, `artworkUrl100` TEXT, `primaryGenreName` TEXT, `country` TEXT, `previewUrl` TEXT, `isFavorite` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`trackId`))",
         "fields": [
           {
             "fieldPath": "trackId",
@@ -181,9 +181,9 @@
             "notNull": false
           },
           {
-            "fieldPath": "trackTime",
-            "columnName": "trackTime",
-            "affinity": "TEXT",
+            "fieldPath": "trackTimeMillis",
+            "columnName": "trackTimeMillis",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -236,7 +236,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b9f78cfa8cd074e98fd49cbe2b0b96a0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '973b24faf4d16a7134eebfb10377a920')"
     ]
   }
 }
